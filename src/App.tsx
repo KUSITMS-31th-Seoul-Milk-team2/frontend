@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import { createGlobalStyle } from "styled-components";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
 function App() {
-  const [count, setCount] = useState(0)
+  const GlobalStyles = createGlobalStyle`
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+  html, body {
+  width : 100%;
+  height : 100%;
+    max-width: 1920px;
+    max-height: 1080px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    &::-webkit-scrollbar {
+    display: none;
+  }
+  }`;
+
+  <>
+      <GlobalStyles />
+        <RouterProvider router={router} />
     </>
-  )
 }
 
 export default App
