@@ -10,10 +10,10 @@ function App() {
   }
 
   html, body {
-  width : 100%;
-  height : 100%;
-    max-width: 1920px;
-    max-height: 1080px;
+    width : 100%;
+    height : 100%;
+    max-width: 1440px;
+    max-height: 1024px;
     display: flex;
     align-items: center;
     justify-content: center;
