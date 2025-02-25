@@ -20,7 +20,6 @@ const Layout: React.FC = () => {
           </Nav>
         </HeaderContent>
       </Header>
-
       <Main>
         <Outlet />
       </Main>
@@ -48,6 +47,11 @@ const NotificationBar = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
+  @media screen and (max-width: 1104px) {
+    padding: 6px 20px;
+    font-size: 10px;
+  }
 `;
 
 const NotificationText = styled.div`
@@ -59,6 +63,10 @@ const NotificationText = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+
+  @media screen and (max-width: 1104px) {
+    font-size: 10px;
+  }
 `;
 
 const Header = styled.header`
@@ -66,7 +74,7 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   background-color: white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const HeaderContent = styled.div`
@@ -75,16 +83,30 @@ const HeaderContent = styled.div`
   min-width: 1104px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 40px;
 
-  gap: clamp(150px, 10vw, 800px);
+  @media screen and (max-width: 1280px) {
+    padding: 0 24px;
+  }
+  @media screen and (max-width: 1104px) {
+    padding: 0 16px;
+  }
 `;
-
 
 const LogoContainer = styled.div`
   width: 200px;
-height: 43.456px;
-margin-top : 10px;
+  height: 43.456px;
+  margin-top: 10px;
+  margin-left: 180px;
+
+  @media screen and (max-width: 1280px) {
+    margin-left: 100px;
+  }
+
+  @media screen and (max-width: 1104px) {
+    margin-left: 40px;
+  }
 `;
 
 const Logo = styled.img`
@@ -94,27 +116,33 @@ const Logo = styled.img`
 
 const Nav = styled.nav`
   display: flex;
-    color: var(--gray-1600, #393C3C);
-font-family: Pretendard;
-font-size: 16px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  color: var(--gray-1600, #393C3C);
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  gap: clamp(16px, 5vw, 44px);
+  margin-right: 100px;
 
-  gap: 44px;
   @media screen and (max-width: 1280px) {
-    gap: 24px;
+    margin-right: 60px;
   }
-  @media screen and (max-width: 1200px) {
-    gap: 16px;
-  }
+
   @media screen and (max-width: 1104px) {
-    gap: 8px;
+    margin-right: 30px;
   }
+
 `;
 
 const UserInfo = styled.span`
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 
+  @media screen and (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 const NavLink = styled.a`
@@ -122,6 +150,14 @@ const NavLink = styled.a`
   color: inherit;
   &:hover {
     text-decoration: underline;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 12px;
   }
 `;
 
@@ -133,4 +169,13 @@ const Main = styled.main`
   padding: 16px;
   display: flex;
   justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    padding: 8px;
+  }
+
+  @media screen and (max-width: 480px) {
+    margin-top: 32px;
+    padding: 4px;
+  }
 `;
