@@ -13,11 +13,31 @@ const SearchComponent: React.FC = () => {
     endDate: null as Date | null,
   });
 
+  const [filterTags, setFilterTags] = useState<string[]>([]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({
       ...filters,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: string) => {
+    const value = filters[field as keyof typeof filters];
+    if (e.nativeEvent.isComposing) return;
+  
+    if (e.key === "Enter" && typeof value === "string" && value.trim() !== "") {
+      if (!filterTags.includes(value.trim())) {
+        setFilterTags((prevTags) => [...prevTags, value.trim()]);
+      }
+      setFilters({ ...filters, [field]: "" });
+    }
+  };
+  
+  
+
+  const handleRemoveFilterTag = (index: number) => {
+    setFilterTags(filterTags.filter((_, i) => i !== index));
   };
 
   return (
@@ -32,6 +52,7 @@ const SearchComponent: React.FC = () => {
             placeholder="입력"
             value={filters.writer}
             onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, "writer")}
           />
         </InputContainer>
         <InputContainer>
@@ -42,6 +63,7 @@ const SearchComponent: React.FC = () => {
             placeholder="입력"
             value={filters.supplier}
             onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, "supplier")}
           />
         </InputContainer>
         <InputContainer>
@@ -52,6 +74,7 @@ const SearchComponent: React.FC = () => {
             placeholder="입력"
             value={filters.recipient}
             onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, "recipient")}
           />
         </InputContainer>
         <InputContainer>
@@ -62,6 +85,7 @@ const SearchComponent: React.FC = () => {
             placeholder="입력"
             value={filters.approvalNumber}
             onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
           />
         </InputContainer>
 
@@ -105,8 +129,11 @@ const SearchComponent: React.FC = () => {
           검색결과 <ResultCount>48</ResultCount>건
         </SearchResult>
         <SelectedFilters>
-          <FilterTag>작성 ⨉</FilterTag>
-          <FilterTag>작성 ⨉</FilterTag>
+          {filterTags.map((tag, index) => (
+            <FilterTag key={index} onClick={() => handleRemoveFilterTag(index)}>
+              {tag} ⨉
+            </FilterTag>
+          ))}
         </SelectedFilters>
         <SearchButton>검색</SearchButton>
       </ResultContainer>
@@ -115,6 +142,7 @@ const SearchComponent: React.FC = () => {
 };
 
 export default SearchComponent;
+
 
 const SearchContainer = styled.div`
   display: flex;
@@ -271,38 +299,16 @@ const SearchButton = styled.button`
 `;
 
 export const GlobalStyles = createGlobalStyle`
-  .custom-calendar {
+      .custom-calendar {
     font-family: Pretendard, sans-serif;
-    background-color: white !important;
   }
-
-  .react-datepicker {
-    background-color: white !important;
-    border: 1px solid #ddd;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-  }
-
-  .react-datepicker__header {
-    background-color: white !important;
-    border-bottom: 1px solid #ddd;
-  }
-
-  .react-datepicker__current-month {
-    color: #009857 !important;
-    font-weight: bold;
-  }
-
-  .react-datepicker__navigation {
-    color: #009857 !important;
-  }
-
   .react-datepicker__day--selected {
     background-color: #009857 !important;
     color: white !important;
     border-radius: 50%;
     font-weight: bold !important;
   }
+
 
   .react-datepicker__day--today {
     color: #009857 !important;
@@ -312,6 +318,13 @@ export const GlobalStyles = createGlobalStyle`
   .react-datepicker__day--today.react-datepicker__day--selected {
     color: white !important;
   }
+
+  .react-datepicker__navigation {
+    color: #009857 !important;
+  }
+
+  .react-datepicker__current-month {
+    color: #009857 !important;
+    font-weight: bold;
+  }
 `;
-
-
