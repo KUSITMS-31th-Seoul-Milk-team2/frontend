@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { startOfMonth, startOfQuarter, startOfYear, subWeeks } from "date-fns";
 
 const SearchComponent: React.FC = () => {
   const [filters, setFilters] = useState({
@@ -31,8 +32,41 @@ const SearchComponent: React.FC = () => {
       setFilters({ ...filters, [field]: "" });
     }
   };
-  const handleFilterClick = (filter: string) => {
+  
+const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
+  
+    const today = new Date();
+    let newStartDate: Date | null = null;
+    let newEndDate: Date | null = today;
+  
+    switch (filter) {
+      case "오늘":
+        newStartDate = today;
+        break;
+      case "1주 이내":
+        newStartDate = subWeeks(today, 1);
+        break;
+      case "이번 달":
+        newStartDate = startOfMonth(today); 
+        break;
+      case "이번 분기":
+        newStartDate = startOfQuarter(today);
+        break;
+      case "올해":
+        newStartDate = startOfYear(today);
+        break;
+      case "전체":
+        newStartDate = null;
+        newEndDate = null;
+        break;
+    }
+  
+    setFilters((prev) => ({
+      ...prev,
+      startDate: newStartDate,
+      endDate: newEndDate,
+    }));
   };
   const handleRemoveFilterTag = (index: number) => {
     setFilterTags(filterTags.filter((_, i) => i !== index));
@@ -113,14 +147,14 @@ const SearchComponent: React.FC = () => {
         </DateContainer>
 
         <ButtonContainer>
-      {["전체", "오늘", "1주 이내", "이번 달", "이번 분기", "올해"].map((filter) => (
+      {["초기화", "오늘", "1주 이내", "이번 달", "이번 분기", "올해"].map((filter) => (
         <DateFilterButton
-          key={filter}
-          onClick={() => handleFilterClick(filter)}
-          isSelected={selectedFilter === filter} 
-        >
-          {filter}
-        </DateFilterButton>
+        key={filter}
+        onClick={() => handleFilterClick(filter)}
+        isSelected={selectedFilter === filter} 
+      >
+        {filter}
+      </DateFilterButton>
       ))}
     </ButtonContainer>
       </SearchBox>
