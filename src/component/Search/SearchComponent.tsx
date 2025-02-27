@@ -194,6 +194,9 @@ const SearchBox = styled.div`
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  @media (max-width: 1104px) {
+    padding: 12px;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -222,11 +225,24 @@ const Input = styled.input`
   border: 1px solid #777;
   background: #FFF;
   font-size: 14px;
-
+  min-width: 150px;
   &::placeholder {
     color: #777;
   }
+
+  @media (max-width: 768px) {
+    width: 30%; 
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  @media (max-width: 480px) {
+    width: 20%;
+    font-size: 12px;
+    padding: 6px;
+  }
 `;
+
 
 const DateContainer = styled.div`
   display: flex;
@@ -280,6 +296,10 @@ const DateFilterButton = styled.button<{ isSelected: boolean }>`
   cursor: pointer;
   font-weight: bold;
   transition: background 0.2s, color 0.2s;
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
 `;
 
 const ResultContainer = styled.div`
@@ -337,6 +357,9 @@ const SearchButton = styled.button`
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 export const GlobalStyles = createGlobalStyle`
