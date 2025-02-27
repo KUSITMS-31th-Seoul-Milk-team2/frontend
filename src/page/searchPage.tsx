@@ -24,8 +24,12 @@ const PageContainer = styled.div`
 `;
 
 const Title = styled.h1`
+  font-family: Pretendard;
   font-size: 24px;
-  font-weight: bold;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
   margin-bottom: 16px;
-  color: #333;
+  text-align: left;  
+  align-items: center;
 `;
