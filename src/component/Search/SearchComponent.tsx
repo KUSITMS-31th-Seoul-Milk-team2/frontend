@@ -12,16 +12,14 @@ const SearchComponent: React.FC = () => {
     startDate: null as Date | null,
     endDate: null as Date | null,
   });
-
+  const [selectedFilter, setSelectedFilter] = useState<string | null>("전체");
   const [filterTags, setFilterTags] = useState<string[]>([]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({
       ...filters,
       [e.target.name]: e.target.value,
     });
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: string) => {
     const value = filters[field as keyof typeof filters];
     if (e.nativeEvent.isComposing) return;
@@ -33,9 +31,9 @@ const SearchComponent: React.FC = () => {
       setFilters({ ...filters, [field]: "" });
     }
   };
-  
-  
-
+  const handleFilterClick = (filter: string) => {
+    setSelectedFilter(filter);
+  };
   const handleRemoveFilterTag = (index: number) => {
     setFilterTags(filterTags.filter((_, i) => i !== index));
   };
@@ -115,13 +113,16 @@ const SearchComponent: React.FC = () => {
         </DateContainer>
 
         <ButtonContainer>
-          <DateFilterButton>전체</DateFilterButton>
-          <DateFilterButton>오늘</DateFilterButton>
-          <DateFilterButton>1주 이내</DateFilterButton>
-          <DateFilterButton>이번 달</DateFilterButton>
-          <DateFilterButton>이번 분기</DateFilterButton>
-          <DateFilterButton>올해</DateFilterButton>
-        </ButtonContainer>
+      {["전체", "오늘", "1주 이내", "이번 달", "이번 분기", "올해"].map((filter) => (
+        <DateFilterButton
+          key={filter}
+          onClick={() => handleFilterClick(filter)}
+          isSelected={selectedFilter === filter} 
+        >
+          {filter}
+        </DateFilterButton>
+      ))}
+    </ButtonContainer>
       </SearchBox>
 
       <ResultContainer>
@@ -177,7 +178,7 @@ const Label = styled.label`
 `;
 
 const DateLabel = styled(Label)`
-  margin-right: -10px;
+  margin-right: 30px;
 `;
 
 const Input = styled.input`
@@ -197,6 +198,7 @@ const DateContainer = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 12px;
+  margin-top : 12px;
 `;
 
 const DatePickerWrapper = styled.div`
@@ -232,15 +234,18 @@ const ButtonContainer = styled.div`
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
+  margin-top :5px;
 `;
 
-const DateFilterButton = styled.button`
+const DateFilterButton = styled.button<{ isSelected: boolean }>`
   padding: 8px 12px;
-  background: #009857;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 1px solid #009857;
+  background: ${({ isSelected }) => (isSelected ? "#009857" : "#FFF")};
+  color: ${({ isSelected }) => (isSelected ? "white" : "#009857")};
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s;
 `;
 
 const ResultContainer = styled.div`
@@ -257,6 +262,7 @@ const ResultContainer = styled.div`
 const SearchResult = styled.div`
   display: flex;
   align-items: center;
+  padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
   color: #393C3C;
@@ -272,8 +278,9 @@ const SelectedFilters = styled.div`
   gap: 8px;
   flex-grow: 1;
   background: #F7F7F7;
-  padding: 8px;
   border-radius: 8px;
+  padding: 14px 16px 60px 13.25px;
+  margin-right : 10px;
 `;
 
 const FilterTag = styled.div`
