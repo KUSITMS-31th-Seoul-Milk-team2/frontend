@@ -40,13 +40,16 @@ const Container = styled.div`
 
 const NotificationBar = styled.div`
   width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   background: var(--primary-main-200, #009857);
   height: 26px;
-  padding: 6px 1013px 6px 200px;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  z-index: 1000; 
 
   @media screen and (max-width: 1104px) {
     padding: 6px 20px;
@@ -60,7 +63,6 @@ const NotificationText = styled.div`
   text-align: center;
   font-family: Pretendard;
   font-size: 12px;
-  font-style: normal;
   font-weight: 600;
   line-height: normal;
 
@@ -71,10 +73,14 @@ const NotificationText = styled.div`
 
 const Header = styled.header`
   width: 100%;
+  position: fixed;
+  top: 26px;
+  left: 0;
   display: flex;
   justify-content: center;
   background-color: white;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+  z-index: 999; 
 `;
 
 const HeaderContent = styled.div`
@@ -119,7 +125,6 @@ const Nav = styled.nav`
   color: var(--gray-1600, #393C3C);
   font-family: Pretendard;
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
   line-height: normal;
   gap: clamp(16px, 5vw, 44px);
@@ -132,7 +137,6 @@ const Nav = styled.nav`
   @media screen and (max-width: 1104px) {
     margin-right: 30px;
   }
-
 `;
 
 const UserInfo = styled.span`
@@ -165,17 +169,18 @@ const Main = styled.main`
   width: 100%;
   max-width: 1440px;
   min-width: 1104px;
-  margin-top: 64px;
   padding: 16px;
   display: flex;
   justify-content: center;
+  margin-top: 110px;
 
   @media screen and (max-width: 768px) {
+    margin-top: 90px;
     padding: 8px;
   }
 
   @media screen and (max-width: 480px) {
-    margin-top: 32px;
+    margin-top: 70px;
     padding: 4px;
   }
 `;
