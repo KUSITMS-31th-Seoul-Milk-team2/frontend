@@ -52,7 +52,6 @@ const NotificationBar = styled.div`
   z-index: 1000; 
 
   @media screen and (max-width: 1104px) {
-    padding: 6px 20px;
     font-size: 10px;
   }
 `;
@@ -65,6 +64,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
+  margin-right:800px;
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
