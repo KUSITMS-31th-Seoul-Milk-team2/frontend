@@ -67,21 +67,27 @@ const SearchComponent: React.FC = () => {
 
         <DateContainer>
           <Label>기간</Label>
-          <StyledDatePicker
-            selected={filters.startDate}
-            onChange={(date: Date) => setFilters({ ...filters, startDate: date })}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="YYYY-MM-DD"
-            calendarClassName="custom-calendar"
-          />
+          <DatePickerWrapper>
+            <StyledDatePicker
+              selected={filters.startDate}
+              onChange={(date: Date) => setFilters({ ...filters, startDate: date })}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="YYYY-MM-DD"
+              calendarClassName="custom-calendar"
+            />
+           <Icon src="/calendar.svg" alt="Calendar Icon" />
+          </DatePickerWrapper>
           <span> ~ </span>
-          <StyledDatePicker
-            selected={filters.endDate}
-            onChange={(date: Date) => setFilters({ ...filters, endDate: date })}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="YYYY-MM-DD"
-            calendarClassName="custom-calendar"
-          />
+          <DatePickerWrapper>
+            <StyledDatePicker
+              selected={filters.endDate}
+              onChange={(date: Date) => setFilters({ ...filters, endDate: date })}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="YYYY-MM-DD"
+              calendarClassName="custom-calendar"
+            />
+          <Icon src="/calendar.svg" alt="Calendar Icon" />
+          </DatePickerWrapper>
         </DateContainer>
 
         <ButtonContainer>
@@ -132,8 +138,12 @@ const InputContainer = styled.div`
 `;
 
 const Label = styled.label`
-  font-size: 14px;
-  font-weight: bold;
+  color: var(--gray-1600, #393C3C);
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
   margin-bottom: 4px;
 `;
 
@@ -155,14 +165,30 @@ const DateContainer = styled.div`
   margin-bottom: 12px;
 `;
 
+const DatePickerWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
 const StyledDatePicker = styled(DatePicker)`
   padding: 8px;
+  padding-right: 36px;
   border: 1px solid var(--gray-800, #777);
   border-radius: 4px;
   background: var(--white, #FFF);
   font-size: 14px;
   cursor: pointer;
   width: 150px;
+`;
+
+const Icon = styled.img`
+  position: absolute;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  cursor: pointer;
 `;
 
 const ButtonContainer = styled.div`
@@ -217,10 +243,9 @@ const SearchButton = styled.button`
 `;
 
 export const GlobalStyles = createGlobalStyle`
-  .custom-calendar {
+    .custom-calendar {
     font-family: Pretendard, sans-serif;
   }
-
   .react-datepicker__day--selected {
     background-color: #009857 !important;
     color: white !important;
@@ -243,7 +268,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .react-datepicker__current-month {
-    color: var(--gray-1300, #545454); !important;
+    color: #009857 !important;
     font-weight: bold;
   }
 `;
