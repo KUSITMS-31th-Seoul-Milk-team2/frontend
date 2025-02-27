@@ -66,7 +66,7 @@ const SearchComponent: React.FC = () => {
         </InputContainer>
 
         <DateContainer>
-          <Label>기간</Label>
+          <DateLabel>기간</DateLabel>
           <DatePickerWrapper>
             <StyledDatePicker
               selected={filters.startDate}
@@ -75,9 +75,9 @@ const SearchComponent: React.FC = () => {
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
             />
-           <Icon src="/calendar.svg" alt="Calendar Icon" />
+            <Icon src="/calendar.svg" alt="Calendar Icon" />
           </DatePickerWrapper>
-          <span> ~ </span>
+          <DateCheck> ~ </DateCheck>
           <DatePickerWrapper>
             <StyledDatePicker
               selected={filters.endDate}
@@ -86,7 +86,7 @@ const SearchComponent: React.FC = () => {
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
             />
-          <Icon src="/calendar.svg" alt="Calendar Icon" />
+            <Icon src="/calendar.svg" alt="Calendar Icon" />
           </DatePickerWrapper>
         </DateContainer>
 
@@ -101,11 +101,13 @@ const SearchComponent: React.FC = () => {
       </SearchBox>
 
       <ResultContainer>
+        <SearchResult>
+          검색결과 <ResultCount>48</ResultCount>건
+        </SearchResult>
         <SelectedFilters>
           <FilterTag>작성 ⨉</FilterTag>
           <FilterTag>작성 ⨉</FilterTag>
         </SelectedFilters>
-        <SearchResult>검색결과 <strong>48건</strong></SearchResult>
         <SearchButton>검색</SearchButton>
       </ResultContainer>
     </SearchContainer>
@@ -133,29 +135,33 @@ const SearchBox = styled.div`
 
 const InputContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
   margin-bottom: 12px;
 `;
 
 const Label = styled.label`
-  color: var(--gray-1600, #393C3C);
-font-family: Pretendard;
-font-size: 14px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
-  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 30px;
+  width: 158px;
+`;
+
+const DateLabel = styled(Label)`
+  margin-right: -10px;
 `;
 
 const Input = styled.input`
-  padding: 8px;
+  flex: 1;
+  padding: 10.5px;
   border-radius: 4px;
-  border: 1px solid var(--gray-800, #777);
-  background: var(--white, #FFF);
+  border: 1px solid #777;
+  background: #FFF;
   font-size: 14px;
 
   &::placeholder {
-    color: var(--gray-800, #777);
+    color: #777;
   }
 `;
 
@@ -170,13 +176,17 @@ const DatePickerWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+const DateCheck = styled.span`
+  margin-left : 10px;
+  margin-right : 10px;
+`;
 
 const StyledDatePicker = styled(DatePicker)`
   padding: 8px;
   padding-right: 36px;
-  border: 1px solid var(--gray-800, #777);
+  border: 1px solid #777;
   border-radius: 4px;
-  background: var(--white, #FFF);
+  background: #FFF;
   font-size: 14px;
   cursor: pointer;
   width: 150px;
@@ -188,7 +198,6 @@ const Icon = styled.img`
   width: 20px;
   height: 20px;
   pointer-events: none;
-  cursor: pointer;
 `;
 
 const ButtonContainer = styled.div`
@@ -210,49 +219,90 @@ const ResultContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #eef7f1;
-  padding: 12px;
+  background: #ffffff;
+  padding: 16px;
   border-radius: 8px;
   margin-top: 12px;
+  border: 1px solid #009857;
+`;
+
+const SearchResult = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #393C3C;
+  margin-right : 13px;
+`;
+const ResultCount = styled.strong`
+    color: #009857;
+    margin-left: 4px;
 `;
 
 const SelectedFilters = styled.div`
   display: flex;
   gap: 8px;
+  flex-grow: 1;
+  background: #F7F7F7;
+  padding: 8px;
+  border-radius: 8px;
 `;
 
 const FilterTag = styled.div`
-  background: #009857;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-`;
-
-const SearchResult = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid #6A6A6A;
+  background: #FFF;
   font-size: 16px;
+  color: #6A6A6A;
 `;
 
 const SearchButton = styled.button`
-  padding: 8px 16px;
+  padding: 12px 32px;
   background: #009857;
   color: white;
+  font-size: 16px;
+  font-weight: bold;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
 `;
 
 export const GlobalStyles = createGlobalStyle`
-    .custom-calendar {
+  .custom-calendar {
     font-family: Pretendard, sans-serif;
+    background-color: white !important;
   }
+
+  .react-datepicker {
+    background-color: white !important;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  .react-datepicker__header {
+    background-color: white !important;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .react-datepicker__current-month {
+    color: #009857 !important;
+    font-weight: bold;
+  }
+
+  .react-datepicker__navigation {
+    color: #009857 !important;
+  }
+
   .react-datepicker__day--selected {
     background-color: #009857 !important;
     color: white !important;
     border-radius: 50%;
     font-weight: bold !important;
   }
-
 
   .react-datepicker__day--today {
     color: #009857 !important;
@@ -262,13 +312,6 @@ export const GlobalStyles = createGlobalStyle`
   .react-datepicker__day--today.react-datepicker__day--selected {
     color: white !important;
   }
-
-  .react-datepicker__navigation {
-    color: #009857 !important;
-  }
-
-  .react-datepicker__current-month {
-    color: #009857 !important;
-    font-weight: bold;
-  }
 `;
+
+
