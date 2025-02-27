@@ -24,7 +24,7 @@ const SearchComponent: React.FC = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: string) => {
     const value = filters[field as keyof typeof filters];
     if (e.nativeEvent.isComposing) return;
-  
+
     if (e.key === "Enter" && typeof value === "string" && value.trim() !== "") {
       if (!filterTags.includes(value.trim())) {
         setFilterTags((prevTags) => [...prevTags, value.trim()]);
@@ -32,14 +32,14 @@ const SearchComponent: React.FC = () => {
       setFilters({ ...filters, [field]: "" });
     }
   };
-  
+
 const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
-  
+
     const today = new Date();
     let newStartDate: Date | null = null;
     let newEndDate: Date | null = today;
-  
+
     switch (filter) {
       case "오늘":
         newStartDate = today;
@@ -48,7 +48,7 @@ const handleFilterClick = (filter: string) => {
         newStartDate = subWeeks(today, 1);
         break;
       case "이번 달":
-        newStartDate = startOfMonth(today); 
+        newStartDate = startOfMonth(today);
         break;
       case "이번 분기":
         newStartDate = startOfQuarter(today);
@@ -61,7 +61,7 @@ const handleFilterClick = (filter: string) => {
         newEndDate = null;
         break;
     }
-  
+
     setFilters((prev) => ({
       ...prev,
       startDate: newStartDate,
@@ -151,7 +151,7 @@ const handleFilterClick = (filter: string) => {
         <DateFilterButton
         key={filter}
         onClick={() => handleFilterClick(filter)}
-        isSelected={selectedFilter === filter} 
+        isSelected={selectedFilter === filter}
       >
         {filter}
       </DateFilterButton>
