@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const Layout: React.FC = () => {
+    const navigate = useNavigate();
   return (
     <Container>
       <NotificationBar>
@@ -10,7 +11,7 @@ const Layout: React.FC = () => {
       </NotificationBar>
       <Header>
         <HeaderContent>
-          <LogoContainer>
+          <LogoContainer onClick={() => navigate("/home")}>
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
@@ -100,11 +101,14 @@ const HeaderContent = styled.div`
   }
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.button`
   width: 200px;
   height: 43.456px;
   margin-top: 10px;
   margin-left: 180px;
+  border : none;
+  background : none;
+  cursor : pointer;
 
   @media screen and (max-width: 1280px) {
     margin-left: 100px;
