@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const SearchComponent: React.FC = () => {
   const [filters, setFilters] = useState({
@@ -7,8 +9,8 @@ const SearchComponent: React.FC = () => {
     supplier: "",
     recipient: "",
     approvalNumber: "",
-    startDate: "",
-    endDate: "",
+    startDate: null as Date | null,
+    endDate: null as Date | null,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,19 +20,9 @@ const SearchComponent: React.FC = () => {
     });
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSearch = () => {
-    console.log("검색 필터:", filters);
-  };
-
   return (
     <SearchContainer>
+      <GlobalStyles />
       <SearchBox>
         <InputContainer>
           <Label>작성자</Label>
@@ -72,22 +64,26 @@ const SearchComponent: React.FC = () => {
             onChange={handleChange}
           />
         </InputContainer>
+
         <DateContainer>
           <Label>기간</Label>
-          <DateInput
-            type="date"
-            name="startDate"
-            value={filters.startDate}
-            onChange={handleDateChange}
+          <StyledDatePicker
+            selected={filters.startDate}
+            onChange={(date: Date) => setFilters({ ...filters, startDate: date })}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="YYYY-MM-DD"
+            calendarClassName="custom-calendar"
           />
           <span> ~ </span>
-          <DateInput
-            type="date"
-            name="endDate"
-            value={filters.endDate}
-            onChange={handleDateChange}
+          <StyledDatePicker
+            selected={filters.endDate}
+            onChange={(date: Date) => setFilters({ ...filters, endDate: date })}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="YYYY-MM-DD"
+            calendarClassName="custom-calendar"
           />
         </DateContainer>
+
         <ButtonContainer>
           <DateFilterButton>전체</DateFilterButton>
           <DateFilterButton>오늘</DateFilterButton>
@@ -104,7 +100,7 @@ const SearchComponent: React.FC = () => {
           <FilterTag>작성 ⨉</FilterTag>
         </SelectedFilters>
         <SearchResult>검색결과 <strong>48건</strong></SearchResult>
-        <SearchButton onClick={handleSearch}>검색</SearchButton>
+        <SearchButton>검색</SearchButton>
       </ResultContainer>
     </SearchContainer>
   );
@@ -143,8 +139,14 @@ const Label = styled.label`
 
 const Input = styled.input`
   padding: 8px;
-  border: 1px solid #ddd;
   border-radius: 4px;
+  border: 1px solid var(--gray-800, #777);
+  background: var(--white, #FFF);
+  font-size: 14px;
+
+  &::placeholder {
+    color: var(--gray-800, #777);
+  }
 `;
 
 const DateContainer = styled.div`
@@ -153,11 +155,14 @@ const DateContainer = styled.div`
   margin-bottom: 12px;
 `;
 
-const DateInput = styled.input`
+const StyledDatePicker = styled(DatePicker)`
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--gray-800, #777);
   border-radius: 4px;
-  margin: 0 4px;
+  background: var(--white, #FFF);
+  font-size: 14px;
+  cursor: pointer;
+  width: 150px;
 `;
 
 const ButtonContainer = styled.div`
@@ -209,4 +214,36 @@ const SearchButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+`;
+
+export const GlobalStyles = createGlobalStyle`
+  .custom-calendar {
+    font-family: Pretendard, sans-serif;
+  }
+
+  .react-datepicker__day--selected {
+    background-color: #009857 !important;
+    color: white !important;
+    border-radius: 50%;
+    font-weight: bold !important;
+  }
+
+
+  .react-datepicker__day--today {
+    color: #009857 !important;
+    font-weight: bold;
+  }
+
+  .react-datepicker__day--today.react-datepicker__day--selected {
+    color: white !important;
+  }
+
+  .react-datepicker__navigation {
+    color: #009857 !important;
+  }
+
+  .react-datepicker__current-month {
+    color: var(--gray-1300, #545454); !important;
+    font-weight: bold;
+  }
 `;
