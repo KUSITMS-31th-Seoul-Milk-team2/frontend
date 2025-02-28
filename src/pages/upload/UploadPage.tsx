@@ -1,4 +1,6 @@
+import Uploader from "@components/upload/Uploader";
+
 const UploadPage = () =>{
-    return <div>hello</div>
+    return <Uploader/>
 }
 export default UploadPage
