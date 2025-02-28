@@ -196,10 +196,21 @@ const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 16px;
+  
+  @media (max-width: 768px) {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 `;
 
 const TableRow = styled.tr`
   border-bottom: 1px solid #ddd;
+  
+  @media (max-width: 480px) {
+    display: block;
+    margin-bottom: 10px;
+  }
 `;
 
 const TableHeader = styled.th`
@@ -207,11 +218,31 @@ const TableHeader = styled.th`
   padding: 12px;
   text-align: left;
   font-weight: bold;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
 const TableCell = styled.td`
   padding: 12px;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  @media (max-width: 480px) {
+    display: block;
+    padding: 8px;
+  }
 `;
+
 
 const PaginationContainer = styled.div`
   display: flex;
