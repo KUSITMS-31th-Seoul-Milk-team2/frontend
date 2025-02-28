@@ -1,12 +1,18 @@
+import { useState, useRef, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { useState } from "react";
+import Webcam from "react-webcam";
 import cameraIcon from "../../assets/icons/cameraIcon.svg";
+import fileUploadIcon from "../../assets/icons/fileUploadIcon.svg";
 import styled from "styled-components";
 
 const Uploader = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [isClicked, setIsClicked] = useState(false);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
 
+    const webcamRef = useRef<Webcam>(null);
+
+    // Dropzone 설정
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: {
             "image/png": [".png"],
@@ -20,6 +26,37 @@ const Uploader = () => {
         },
     });
 
+    const handleOpenCamera = () => {
+        setIsCameraOpen(true);
+    };
+
+    const handleCapture = useCallback(() => {
+        if (webcamRef.current) {
+            const screenshot = webcamRef.current.getScreenshot();
+            if (screenshot) {
+                const file = dataURLtoFile(screenshot, `camera_${Date.now()}.png`);
+                setFiles((prevFiles) => [...prevFiles, file]);
+            }
+        }
+        setIsCameraOpen(false);
+    }, []);
+
+    const handleCloseCamera = () => {
+        setIsCameraOpen(false);
+    };
+
+    function dataURLtoFile(dataURL: string, fileName: string): File {
+        const arr = dataURL.split(",");
+        const mime = arr[0].match(/:(.*?);/)?.[1] || "image/png";
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], fileName, { type: mime });
+    }
+
     return (
         <Container>
             <HeaderRow>
@@ -31,8 +68,7 @@ const Uploader = () => {
                     </Subtitle>
                 </TitleArea>
 
-                {/* 아래 줄에 버튼을 배치할 때 */}
-                <CameraButton>
+                <CameraButton onClick={handleOpenCamera}>
                     <img
                         src={cameraIcon}
                         alt="Camera Icon"
@@ -50,7 +86,13 @@ const Uploader = () => {
                     onMouseDown={() => setIsClicked(true)}
                 >
                     <input {...getInputProps()} />
-                    <p>PNG, PDF</p>
+                        <FileUploadButton>
+                            <UploadIcon
+                                src={fileUploadIcon}
+                                alt="File Upload Icon"
+                            />
+                        </FileUploadButton>
+
                     <FileSelectButton>파일 선택</FileSelectButton>
                 </DropZone>
 
@@ -64,6 +106,24 @@ const Uploader = () => {
                 <FileInfo>파일 형식 PNG, PDF, JPG, JPEG</FileInfo>
                 <FileInfo>최대 크기 20MB</FileInfo>
             </DropZoneContainer>
+
+            {isCameraOpen && (
+                <ModalOverlay>
+                    <ModalContainer>
+                        <Webcam
+                            audio={false}
+                            ref={webcamRef}
+                            screenshotFormat="image/png"
+                            style={{ width: "100%", height: "auto" }}
+                            videoConstraints={{ facingMode: { exact: "environment" } }}
+                        />
+                        <ButtonRow>
+                            <CaptureButton onClick={handleCapture}>촬영하기</CaptureButton>
+                            <CancelButton onClick={handleCloseCamera}>취소</CancelButton>
+                        </ButtonRow>
+                    </ModalContainer>
+                </ModalOverlay>
+            )}
         </Container>
     );
 };
@@ -75,18 +135,19 @@ export default Uploader;
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    width: 85%;
+    justify-content: center;
+    align-content: center;
+    max-width: 900px;
     margin: 0 auto;
-    min-height: 70vh;
+    width: 85%;
 `;
-
 
 const HeaderRow = styled.div`
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     margin-top: 1rem;
-    margin-left: 10rem;
-    margin-right: 10rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
 
     @media (max-width: 768px) {
         margin-left: 3rem;
@@ -117,7 +178,6 @@ const Subtitle = styled.p`
     line-height: 1.4;
 `;
 
-
 const CameraButton = styled.div`
     display: flex;
     flex-direction: row;
@@ -125,7 +185,32 @@ const CameraButton = styled.div`
     cursor: pointer;
     margin-top: 1rem;
     align-self: flex-end;
-   
+`;
+
+const FileUploadButton = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-top: 1rem;
+
+`;
+
+/** 반응형 아이콘 */
+const UploadIcon = styled.img`
+    width: 5rem;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    @media (max-width: 768px) {
+        width: 4rem;
+    }
+    @media (max-width: 480px) {
+        width: 3rem;
+    }
 `;
 
 const Text = styled.span`
@@ -147,7 +232,7 @@ const DropZoneContainer = styled.div`
 const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
     width: 100%;
     max-width: 1000px;
-    aspect-ratio: 2 / 1;
+    aspect-ratio: 2.5 / 1;
     border: 2px
     ${(props) => (props.$isClicked ? "solid #000" : "dashed #ccc")};
     border-radius: 0.75rem;
@@ -167,10 +252,12 @@ const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
     @media (max-width: 768px) {
         width: 90%;
         max-width: 600px;
+        aspect-ratio: auto; 
     }
     @media (max-width: 480px) {
         width: 95%;
         max-width: 400px;
+        aspect-ratio: auto;
     }
 `;
 
@@ -184,13 +271,15 @@ const FileSelectButton = styled.button`
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease;
-
-    &:hover {
-        background-color: #45a049;
+    
+    @media (max-width: 768px) {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
     }
+
     @media (max-width: 480px) {
         font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
+        padding: 0.35rem 0.7rem;
     }
 `;
 
@@ -208,8 +297,65 @@ const FileItem = styled.li`
 `;
 
 const FileInfo = styled.p`
-    font-size: 0.8rem;
-    color: #999;
-    margin-top: 0.5rem;
-    align-self: flex-start;
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.5rem;
+  align-self: flex-start;
+`;
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const ModalContainer = styled.div`
+    width: 90%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const ButtonRow = styled.div`
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+`;
+
+const CaptureButton = styled.button`
+    background-color: #4caf50;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover {
+        background-color: #45a049;
+    }
+`;
+
+const CancelButton = styled.button`
+    background-color: #999;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover {
+        background-color: #777;
+    }
 `;
