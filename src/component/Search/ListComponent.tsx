@@ -10,7 +10,7 @@ interface ListItem {
   date: string;
 }
 
-const dummyData: ListItem[] = Array.from({ length: 32 }, (_, index) => ({
+const dummyData: ListItem[] = Array.from({ length: 134 }, (_, index) => ({
   id: index + 1,
   supplier: "공급자 사업체명",
   recipient: "공급받는자 사업체명",
@@ -57,8 +57,8 @@ const ListComponent: React.FC = () => {
 
       <PaginationContainer>
         <ReactPaginate
-          previousLabel={"‹"}
-          nextLabel={"›"}
+          previousLabel={"<"}
+          nextLabel={">"}
           breakLabel={"..."}
           pageCount={pageCount}
           marginPagesDisplayed={1}
@@ -66,6 +66,11 @@ const ListComponent: React.FC = () => {
           onPageChange={handlePageClick}
           containerClassName={"pagination"}
           activeClassName={"active"}
+          previousClassName={"prev"}
+          nextClassName={"next"}
+          breakClassName={"break"}
+          pageClassName={"page"}
+          disabledClassName={"disabled"}
         />
       </PaginationContainer>
     </Container>
@@ -77,7 +82,7 @@ export default ListComponent;
 const Container = styled.div`
   width: 100%;
   max-width: 800px;
-  margin-top : 30px;
+  margin-top: 30px;
 `;
 
 const Table = styled.table`
@@ -110,19 +115,46 @@ const PaginationContainer = styled.div`
     display: flex;
     list-style: none;
     gap: 8px;
+    align-items: center;
   }
 
   .pagination li {
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    padding: 10px 14px;
+    border-radius: 50%;
+    border: 1px solid transparent;
     background: #fff;
+    color: #444;
+    font-weight: bold;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .pagination .page {
+    border: none;
   }
 
   .pagination .active {
     background: #009857;
     color: white;
     font-weight: bold;
+    border: 1px solid #009857;
+  }
+
+  .pagination .prev,
+  .pagination .next {
+    font-size: 16px;
+    background: transparent;
+    color: #444;
+    border: none;
+    padding: 10px;
+  }
+
+  .pagination .disabled {
+    color: #bbb;
+    pointer-events: none;
+  }
+
+  .pagination .break {
+    cursor: default;
   }
 `;
