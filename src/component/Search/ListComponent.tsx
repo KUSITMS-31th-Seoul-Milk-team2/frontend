@@ -48,7 +48,7 @@ const ListComponent: React.FC = () => {
     const worksheet = XLSX.utils.json_to_sheet(sortedData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "리스트");
-    XLSX.writeFile(workbook, "정렬된_리스트.xlsx");
+    XLSX.writeFile(workbook, "지급 결의서.xlsx");
   };
 
   return (
