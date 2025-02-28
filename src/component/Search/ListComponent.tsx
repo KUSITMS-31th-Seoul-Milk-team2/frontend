@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import ReactPaginate from "react-paginate";
+import * as XLSX from "xlsx";
 
 interface ListItem {
   id: number;
@@ -15,23 +16,71 @@ const dummyData: ListItem[] = Array.from({ length: 134 }, (_, index) => ({
   supplier: "공급자 사업체명",
   recipient: "공급받는자 사업체명",
   writer: "김혜연",
-  date: "2025.01.20",
+  date: `2025.01.${String(20 - (index % 10)).padStart(2, "0")}`,
 }));
 
 const itemsPerPage = 10;
 
 const ListComponent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [sortOrder, setSortOrder] = useState("최신순");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const sortedData = [...dummyData].sort((a, b) =>
+    sortOrder === "최신순" ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date)
+  );
+
   const offset = currentPage * itemsPerPage;
-  const currentItems = dummyData.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(dummyData.length / itemsPerPage);
+  const currentItems = sortedData.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(sortedData.length / itemsPerPage);
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
 
+  const handleSortChange = (order: string) => {
+    setSortOrder(order);
+    setIsDropdownOpen(false);
+    setCurrentPage(0);
+  };
+
+  const handleExcelDownload = () => {
+    const worksheet = XLSX.utils.json_to_sheet(sortedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "리스트");
+    XLSX.writeFile(workbook, "정렬된_리스트.xlsx");
+  };
+
   return (
     <Container>
+      <ButtonContainer>
+        <ExcelButton onClick={handleExcelDownload}>
+          엑셀 다운로드
+          <Icon src="/download.svg" alt="엑셀 다운로드 아이콘" />
+        </ExcelButton>
+
+        <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          {sortOrder} <span>▼</span>
+        </SortButton>
+
+        {isDropdownOpen && (
+          <Dropdown>
+            <DropdownItem
+              onClick={() => handleSortChange("최신순")}
+              isSelected={sortOrder === "최신순"}
+            >
+              ✅ 최신순
+            </DropdownItem>
+            <DropdownItem
+              onClick={() => handleSortChange("오래된순")}
+              isSelected={sortOrder === "오래된순"}
+            >
+              ✅ 오래된 순
+            </DropdownItem>
+          </Dropdown>
+        )}
+      </ButtonContainer>
+
       <Table>
         <thead>
           <TableRow>
@@ -66,11 +115,6 @@ const ListComponent: React.FC = () => {
           onPageChange={handlePageClick}
           containerClassName={"pagination"}
           activeClassName={"active"}
-          previousClassName={"prev"}
-          nextClassName={"next"}
-          breakClassName={"break"}
-          pageClassName={"page"}
-          disabledClassName={"disabled"}
         />
       </PaginationContainer>
     </Container>
@@ -83,6 +127,59 @@ const Container = styled.div`
   width: 100%;
   max-width: 800px;
   margin-top: 30px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+`;
+
+const ExcelButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-weight: bold;
+`;
+
+const Icon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+const SortButton = styled(ExcelButton)`
+  display: flex;
+  align-items: center;
+`;
+
+const Dropdown = styled.div`
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #009857;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+`;
+
+const DropdownItem = styled.div<{ isSelected: boolean }>`
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  background: ${({ isSelected }) => (isSelected ? "#009857" : "white")};
+  color: ${({ isSelected }) => (isSelected ? "white" : "black")};
+  border-radius: 4px;
+  &:hover {
+    background: #009857;
+    color: white;
+  }
 `;
 
 const Table = styled.table`
@@ -122,39 +219,14 @@ const PaginationContainer = styled.div`
     cursor: pointer;
     padding: 10px 14px;
     border-radius: 50%;
-    border: 1px solid transparent;
     background: #fff;
     color: #444;
     font-weight: bold;
     transition: background 0.2s, color 0.2s;
   }
 
-  .pagination .page {
-    border: none;
-  }
-
   .pagination .active {
     background: #009857;
     color: white;
-    font-weight: bold;
-    border: 1px solid #009857;
-  }
-
-  .pagination .prev,
-  .pagination .next {
-    font-size: 16px;
-    background: transparent;
-    color: #444;
-    border: none;
-    padding: 10px;
-  }
-
-  .pagination .disabled {
-    color: #bbb;
-    pointer-events: none;
-  }
-
-  .pagination .break {
-    cursor: default;
   }
 `;
