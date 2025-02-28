@@ -14,7 +14,7 @@ interface ListItem {
 const dummyData: ListItem[] = Array.from({ length: 134 }, (_, index) => ({
   id: index + 1,
   supplier: "공급자 사업체명",
-  recipient: "공급받는자 사업체명",
+  recipient: `공급받는자 사업체명 ${index % 2 === 0 ? "가나다" : "하바사"}`,
   writer: "김혜연",
   date: `2025.01.${String(20 - (index % 10)).padStart(2, "0")}`,
 }));
@@ -26,9 +26,13 @@ const ListComponent: React.FC = () => {
   const [sortOrder, setSortOrder] = useState("최신순");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const sortedData = [...dummyData].sort((a, b) =>
-    sortOrder === "최신순" ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date)
-  );
+  const sortedData = [...dummyData].sort((a, b) => {
+    if (sortOrder === "최신순") return b.date.localeCompare(a.date);
+    if (sortOrder === "오래된순") return a.date.localeCompare(b.date);
+    if (sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)") return a.recipient.localeCompare(b.recipient);
+    if (sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)") return b.recipient.localeCompare(a.recipient);
+    return 0;
+  });
 
   const offset = currentPage * itemsPerPage;
   const currentItems = sortedData.slice(offset, offset + itemsPerPage);
@@ -48,7 +52,7 @@ const ListComponent: React.FC = () => {
     const worksheet = XLSX.utils.json_to_sheet(sortedData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "리스트");
-    XLSX.writeFile(workbook, "지급 결의서.xlsx");
+    XLSX.writeFile(workbook, "지급결의서.xlsx");
   };
 
   return (
@@ -60,22 +64,23 @@ const ListComponent: React.FC = () => {
         </ExcelButton>
 
         <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          {sortOrder} <span>▼</span>
+          {sortOrder}
+          <Icon src="/dropdown.svg" alt="드롭다운 아이콘" />
         </SortButton>
 
         {isDropdownOpen && (
           <Dropdown>
-            <DropdownItem
-              onClick={() => handleSortChange("최신순")}
-              isSelected={sortOrder === "최신순"}
-            >
-              ✅ 최신순
+            <DropdownItem onClick={() => handleSortChange("최신순")} isSelected={sortOrder === "최신순"}>
+              최신순
             </DropdownItem>
-            <DropdownItem
-              onClick={() => handleSortChange("오래된순")}
-              isSelected={sortOrder === "오래된순"}
-            >
-              ✅ 오래된 순
+            <DropdownItem onClick={() => handleSortChange("오래된순")} isSelected={sortOrder === "오래된순"}>
+              오래된 순
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSortChange("공급받는자 사업체명(ㄱ→ㅎ)")} isSelected={sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)"}>
+              공급받는자 사업체명(ㄱ→ㅎ)
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSortChange("공급받는자 사업체명(ㅎ→ㄱ)")} isSelected={sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)"}>
+              공급받는자 사업체명(ㅎ→ㄱ)
             </DropdownItem>
           </Dropdown>
         )}
@@ -129,13 +134,6 @@ const Container = styled.div`
   margin-top: 30px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 10px;
-`;
-
 const ExcelButton = styled.button`
   display: flex;
   align-items: center;
@@ -158,16 +156,28 @@ const SortButton = styled(ExcelButton)`
   align-items: center;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+`;
+
 const Dropdown = styled.div`
   position: absolute;
-  top: 60px;
+  top: 100%;
   right: 0;
   background: #fff;
   border: 1px solid #009857;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 8px;
+  z-index: 10;
+  min-width: 200px;
+  margin-top : 10px;
 `;
+
 
 const DropdownItem = styled.div<{ isSelected: boolean }>`
   padding: 8px 16px;
