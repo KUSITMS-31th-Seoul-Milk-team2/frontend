@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import SearchComponent from "../component/Search/SearchComponent";
+import ListComponent from "../component/Search/ListComponent";
 
 const SearchPage: React.FC = () => {
   return (
     <PageContainer>
       <Title>지급 결의서 조회</Title>
       <SearchComponent />
+      <ListComponent/>
     </PageContainer>
   );
 };
