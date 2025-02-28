@@ -10,11 +10,13 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
   
-  html, body {
+  html, body, #root {
     width: 100%;
     height: 100%;
     max-width: 1440px;
+      min-width: 480px;
     max-height: 1024px;
+      min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
