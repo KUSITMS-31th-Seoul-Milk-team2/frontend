@@ -1,21 +1,22 @@
 import { createBrowserRouter } from "react-router-dom";
-import UploadPage from "./pages/upload/UploadPage.tsx";
-import Layout from "./component/layout";
-import HomePage from "./page/home";
-import SearchPage from "./page/searchPage";
+import UploadPage from "@pages/upload/UploadPage.tsx";
+import HeaderLayout from "@components/layout/HeaderLayout.tsx";
+import HomePage from "@pages/home/home.tsx";
+import SearchPage from "@pages/search/searchPage.tsx";
 const router = createBrowserRouter([
     {
         path: "/upload",
-        element: <UploadPage />,
+        element: <HeaderLayout />,
+        children: [{ path: "", element: <UploadPage /> }]
     },
     {
-        path: "/home",
-        element: <Layout />,
+        path: "/",
+        element: <HeaderLayout />,
         children: [{ path: "", element: <HomePage /> }]
       },
       {
         path: "/search",
-        element: <Layout />,
+        element: <HeaderLayout />,
         children: [{ path: "", element: <SearchPage /> }]
       },
 ]);

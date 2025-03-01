@@ -1,9 +1,10 @@
 import { useState, useRef, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import Webcam from "react-webcam";
-import cameraIcon from "../../assets/icons/cameraIcon.svg";
-import fileUploadIcon from "../../assets/icons/fileUploadIcon.svg";
+import cameraIcon from "@assets/icons/cameraIcon.svg";
+import fileUploadIcon from "@assets/icons/fileUploadIcon.svg";
 import styled from "styled-components";
+
 
 const Uploader = () => {
     const [files, setFiles] = useState<File[]>([]);
