@@ -12,7 +12,7 @@ const Uploader = () => {
 
     const webcamRef = useRef<Webcam>(null);
 
-    // Dropzone 설정
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: {
             "image/png": [".png"],
@@ -83,6 +83,7 @@ const Uploader = () => {
                     {...getRootProps()}
                     $isDragActive={isDragActive}
                     $isClicked={isClicked}
+                    onMouseUp={() => setIsClicked(false)}
                     onMouseDown={() => setIsClicked(true)}
                 >
                     <input {...getInputProps()} />
@@ -114,8 +115,8 @@ const Uploader = () => {
                             audio={false}
                             ref={webcamRef}
                             screenshotFormat="image/png"
-                            style={{ width: "100%", height: "auto" }}
-                            videoConstraints={{ facingMode: { exact: "environment" } }}
+                            style={{ width: "auto", height: "100%" }}
+
                         />
                         <ButtonRow>
                             <CaptureButton onClick={handleCapture}>촬영하기</CaptureButton>
@@ -197,7 +198,6 @@ const FileUploadButton = styled.div`
 
 `;
 
-/** 반응형 아이콘 */
 const UploadIcon = styled.img`
     width: 5rem;
     height: auto;
@@ -234,7 +234,7 @@ const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
     max-width: 1000px;
     aspect-ratio: 2.5 / 1;
     border: 2px
-    ${(props) => (props.$isClicked ? "solid #000" : "dashed #ccc")};
+    ${({ $isClicked }) => ($isClicked ? "solid #0098571A" : "dashed #ccc")};
     border-radius: 0.75rem;
     background-color: ${(props) => (props.$isDragActive ? "#f0f0f0" : "#fff")};
     display: flex;
