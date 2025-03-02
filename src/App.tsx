@@ -1,5 +1,6 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle,ThemeProvider } from "styled-components";
 import { RouterProvider } from "react-router-dom";
+import {theme} from "@styles//theme.ts";
 import router from "./router";
 
 
@@ -29,10 +30,10 @@ const GlobalStyles = createGlobalStyle`
 
 function App() {
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <GlobalStyles />
             <RouterProvider router={router} />
-        </>
+        </ThemeProvider>
     );
 }
 
