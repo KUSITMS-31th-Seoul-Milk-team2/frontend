@@ -22,7 +22,7 @@ const Login = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ employeeId, password }),
-        // credentials: "include",
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -64,12 +64,13 @@ const Login = () => {
               required
             />
           </div>
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {error && <ErrorMessage>아이디 또는 비밀번호가 잘못 되었습니다.<br/>
+            아이디와 비밀번호를 정확히 입력해주세요.</ErrorMessage>}
           <Button type="submit">로그인</Button>
         </Form>
         <FooterText>*아이디는 사번으로 되어있습니다.</FooterText>
         <FooterText>*개인정보 보호를 위해 비밀번호는 정기적으로 변경 요망</FooterText>
-        <HelpLink href="#">🔗 사용방법 안내</HelpLink>
+        <HelpLink href="">🔗 사용방법 안내</HelpLink>
       </LoginBox>
     </LoginContainer>
   );
@@ -77,7 +78,6 @@ const Login = () => {
 
 export default Login;
 
-// ✅ 스타일 컴포넌트 정리
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
