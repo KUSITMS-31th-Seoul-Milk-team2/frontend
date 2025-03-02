@@ -8,8 +8,13 @@
     "baseUrl": "./",
     "paths": {
       "@components/*": ["src/components/*"],
+      "@assets/*": ["src/assets/*"],
+      "@assets/icons/*": ["src/assets/icons/*"],
       "@utils/*": ["src/utils/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@pages/*": ["src/pages/*"],
+      "@icons/*": ["public/icons/*"],
+      "@styles/*": ["src/styles*"]
     }
   }
 }

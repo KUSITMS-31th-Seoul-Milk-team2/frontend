@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const Layout: React.FC = () => {
+const HeaderLayout: React.FC = () => {
     const navigate = useNavigate();
   return (
     <Container>
@@ -28,7 +28,7 @@ const Layout: React.FC = () => {
   );
 };
 
-export default Layout;
+export default HeaderLayout;
 
 const Container = styled.div`
   display: flex;

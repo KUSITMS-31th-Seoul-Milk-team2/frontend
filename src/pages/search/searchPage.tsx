@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import SearchComponent from "../component/Search/SearchComponent";
-import ListComponent from "../component/Search/ListComponent";
+import SearchComponent from "@components/Search/SearchComponent.tsx";
+import ListComponent from "@components/Search/ListComponent.tsx";
 
 const SearchPage: React.FC = () => {
   return (
