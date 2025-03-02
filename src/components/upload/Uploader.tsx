@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import Webcam from "react-webcam";
 import cameraIcon from "@assets/icons/cameraIcon.svg";
 import fileUploadIcon from "@assets/icons/fileUploadIcon.svg";
+import { transparentize } from "polished";
 import styled from "styled-components";
 
 
@@ -247,7 +248,9 @@ const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
     transition: background-color 0.2s, border 0.2s;
 
     &:hover {
-        background-color: #0098571a;
+        background-color: ${({ theme }) =>
+                transparentize(0.9, theme.colors.main100)
+        };
     }
 
     @media (max-width: 768px) {
