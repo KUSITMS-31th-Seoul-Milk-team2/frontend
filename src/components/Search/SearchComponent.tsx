@@ -147,7 +147,7 @@ const handleFilterClick = (filter: string) => {
         </DateContainer>
 
         <ButtonContainer>
-      {["초기화", "오늘", "1주 이내", "이번 달", "이번 분기", "올해"].map((filter) => (
+      {["전체", "오늘", "1주 이내", "이번 달", "이번 분기", "올해"].map((filter) => (
         <DateFilterButton
         key={filter}
         onClick={() => handleFilterClick(filter)}

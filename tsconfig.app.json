@@ -18,7 +18,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
       "@icons/*": ["public/icons/*"],
-      "@styles/*": ["src/styles*"]
+      "@styles/*": ["src/styles/*"]
     },
 
     /* Bundler mode */
