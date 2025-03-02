@@ -32,7 +32,8 @@ const Login = () => {
       const data = await response.json();
       console.log("로그인 성공:", data);
 
-      navigate("/");
+    //   navigate("/home");
+    navigate("/");
     } catch (err: any) {
       console.error("로그인 요청 중 오류 발생:", err);
       setError(err.message || "로그인 중 문제가 발생했습니다.");
