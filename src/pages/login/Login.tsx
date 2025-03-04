@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import info from "@assets/icons/info.svg";
 
 const Login = () => {
   const [employeeId, setEmployeeId] = useState("");
@@ -45,33 +46,44 @@ const Login = () => {
       <LoginBox>
         <Logo src="/SeoulMilkLogo.png" alt="서울우유 로고" />
         <Form onSubmit={handleLogin}>
-          <div>
-            <Label>아이디</Label>
-            <Input
-              type="text"
-              value={employeeId}
-              onChange={(e) => setEmployeeId(e.target.value)}
-              placeholder="아이디를 입력하세요"
-              required
-            />
-          </div>
-          <div>
-            <Label>비밀번호</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력하세요"
-              required
-            />
-          </div>
-          {error && <ErrorMessage>아이디 또는 비밀번호가 잘못 되었습니다.<br/>
-            아이디와 비밀번호를 정확히 입력해주세요.</ErrorMessage>}
-          <Button type="submit">로그인</Button>
-        </Form>
-        <FooterText>*아이디는 사번으로 되어있습니다.</FooterText>
-        <FooterText>*개인정보 보호를 위해 비밀번호는 정기적으로 변경 요망</FooterText>
-        <HelpLink href="">🔗 사용방법 안내</HelpLink>
+    <InputContainer>
+    <Label>아이디</Label>
+    <Input 
+      type="text" 
+      value={employeeId} 
+      onChange={(e) => setEmployeeId(e.target.value)} 
+      placeholder="아이디를 입력하세요" 
+      required 
+    />
+     </InputContainer>
+
+     <InputContainer>
+    <Label>비밀번호</Label>
+    <Input 
+      type="password" 
+      value={password} 
+      onChange={(e) => setPassword(e.target.value)} 
+      placeholder="비밀번호를 입력하세요" 
+      required 
+    />
+     </InputContainer>
+
+    {error && <ErrorMessage>아이디 또는 비밀번호가 잘못되었습니다.<br/>아이디와 비밀번호를 정확히 입력해주세요.</ErrorMessage>}
+  
+    <Button type="submit">로그인</Button>
+  
+    <FooterText>
+    *아이디는 사번으로 되어있습니다.<br/>
+    *개인정보 보호를 위해 비밀번호는 정기적으로 변경 요망
+    </FooterText>
+    </Form>
+
+        
+        <HelpContainer>
+        <HelpLink href="">
+        <HelpLogo src={info}/>사용방법 안내
+            </HelpLink>
+        </HelpContainer>
       </LoginBox>
     </LoginContainer>
   );
@@ -85,89 +97,120 @@ const LoginContainer = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #ffffff;
 `;
 
 const LoginBox = styled.div`
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 380px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
 `;
 
 const Logo = styled.img`
-  width: 150px;
-  margin-bottom: 1rem;
+  width: 380px;
+  height: 82px;
 `;
 
 const Form = styled.form`
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 28px;
+  gap: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--gray-400, #D6D6D5);
+  width: 100%;
+  max-width: 360px;
+`;
+
+const InputContainer = styled.div`
+  width: 100%;
 `;
 
 const Label = styled.label`
-  display: block;
-  font-size: 0.9rem;
-  color: #333;
-  margin-bottom: 0.3rem;
+  font-size: 16px;
+  font-weight: 700;
   text-align: left;
+  margin-bottom: 8px;
+  display: block;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  background-color: #f9f9f9;
+  max-width: 320px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--gray-600, #A6A5A5);
+  font-size: 14px;
 
   &:focus {
-    border-color: #008c45;
-    outline: none;
+    border: 2px solid var(--primary-main-200, #009857);
   }
 `;
 
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-`;
-
 const Button = styled.button`
-  width: 100%;
-  background-color: #008c45;
-  color: white;
-  padding: 12px;
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  display: flex;
+height: 68px;
+padding: 10px 20px;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 10px;
+align-self: stretch;
+border-radius: 8px;
+background: var(--primary-main-200, #009857);
+box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+border : none;
+color: var(--white, #FFF);
+text-align: center;
+font-family: Pretendard;
+font-size: 20px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 
   &:hover {
     background-color: #00753a;
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.85rem;
+`;
+
 const FooterText = styled.p`
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 10px;
-  text-align: center;
+  display: flex;
+height: 40px;
+flex-direction: column;
+justify-content: center;
+align-self: stretch;
+color: var(--gray-1300, #545454);
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+`;
+
+const HelpContainer = styled.div`
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px; 
+`;
+
+const HelpLogo = styled.img`
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
 `;
 
 const HelpLink = styled.a`
   font-size: 0.8rem;
   color: #666;
-  text-decoration: none;
-  display: block;
-  text-align: center;
-  margin-top: 8px;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
 `;
