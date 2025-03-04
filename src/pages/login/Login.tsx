@@ -72,7 +72,8 @@ const Login = () => {
               required
             />
           </InputContainer>
-
+          {error && <ErrorMessage>아이디 또는 비밀번호가 잘못 되었습니다.<br/>
+            아이디와 비밀번호를 정확히 입력해주세요.</ErrorMessage>}
           <Button type="submit">로그인</Button>
           <FooterText>
             *아이디는 사번으로 되어있습니다.<br/>
@@ -118,7 +119,7 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
   padding: 36px 28px;
-  gap: 20px;
+  gap: 10px;
   border-radius: 16px;
   border: 1px solid var(--gray-400, #D6D6D5);
   width: 100%;
@@ -220,3 +221,17 @@ const FooterText = styled.p`
   font-weight: 400;
   line-height: normal;
 `;
+const ErrorMessage = styled.div`
+color: var(--Sub, #E60012);
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+display: flex;
+width: 448px;
+height: 40px;
+flex-direction: column;
+justify-content: center;
+margin-left : 60px;
+`
