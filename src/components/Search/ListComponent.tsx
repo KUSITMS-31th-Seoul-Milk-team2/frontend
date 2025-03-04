@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
+import dropdown from "@assets/icons/dropdown.svg";
+import download from "@assets/icons/download.svg"
 
 interface ListItem {
   id: number;
@@ -60,12 +62,12 @@ const ListComponent: React.FC = () => {
       <ButtonContainer>
         <ExcelButton onClick={handleExcelDownload}>
           엑셀 다운로드
-          <Icon src="/download.svg" alt="엑셀 다운로드 아이콘" />
+          <Icon src={download} alt="엑셀 다운로드 아이콘" />
         </ExcelButton>
 
         <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           {sortOrder}
-          <Icon src="/dropdown.svg" alt="드롭다운 아이콘" />
+          <Icon src={dropdown} alt="드롭다운 아이콘" />
         </SortButton>
 
         {isDropdownOpen && (

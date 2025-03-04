@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { startOfMonth, startOfQuarter, startOfYear, subWeeks } from "date-fns";
+import calendar from "@assets/icons/calendar.svg";
 
 const SearchComponent: React.FC = () => {
   const [filters, setFilters] = useState({
@@ -131,7 +132,7 @@ const handleFilterClick = (filter: string) => {
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
             />
-            <Icon src="/calendar.svg" alt="Calendar Icon" />
+            <Icon src={calendar} alt="Calendar Icon" />
           </DatePickerWrapper>
           <DateCheck> ~ </DateCheck>
           <DatePickerWrapper>
@@ -142,7 +143,7 @@ const handleFilterClick = (filter: string) => {
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
             />
-            <Icon src="/calendar.svg" alt="Calendar Icon" />
+            <Icon src={calendar} alt="Calendar Icon" />
           </DatePickerWrapper>
         </DateContainer>
 
