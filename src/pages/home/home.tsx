@@ -28,18 +28,18 @@ const Container = styled.div`
     justify-content: center;
     align-content: center;
     flex-direction:row;
-    width: 50%;
-    @media (max-width: 768px) { 
-        margin-top : 45%;
+    width: 100%;
+    @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;
         gap: 1rem;
     }
 `
 const AccessContainer = styled.div`
-   
+   margin: 0.5rem;
 `
 const NoticeContainer = styled.div`
+    margin: 0.5rem;
 `
 
 const CardContainer = styled.div`
