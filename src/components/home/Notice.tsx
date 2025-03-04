@@ -26,7 +26,7 @@ const Container = styled.div`
     align-items: center;
     flex-direction: column;
     padding: 1rem 2rem; 
-    border: 0.0625rem solid ${({theme})=>theme.colors.white};
+    border: 0.0625rem solid ${({theme})=>theme.colors.gray300};
     border-radius: 0.5rem;
     background-color: ${({theme})=>theme.colors.white};
 `;

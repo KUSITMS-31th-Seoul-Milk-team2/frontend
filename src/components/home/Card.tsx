@@ -16,7 +16,7 @@ const Card = ({title,bgColor,buttonText,imageSrc, onButtonClick,color}:CardProps
         <Title $color={color}>{title}</Title>
         <CardContent>
             <CardImage src={imageSrc} alt={title} />
-            <CardButton $color={color} onClick={onButtonClick}>{buttonText} <Arrow>
+            <CardButton $color={color} $bgColor={bgColor} onClick={onButtonClick}>{buttonText} <Arrow>
                 <img
                 src={ArrowRight}
                 alt="ArrowRight Icon"
@@ -78,7 +78,7 @@ const CardButton = styled.button<{ $color?: string,$bgColor?: string }>`
     cursor: pointer;
     box-shadow: ${({ theme }) => theme.shadows.shadow100};
     &:hover {
-        background-color: ${({ $bgColor }) => $bgColor};
+        background-color:  ${({ $bgColor }) => $bgColor};
     }
 `;
 
