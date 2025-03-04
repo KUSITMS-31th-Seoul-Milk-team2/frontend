@@ -34,16 +34,26 @@ const CardContainer = styled.div<{ $bgColor?: string }>`
     align-self: center;
     flex-direction: column;
     margin:1rem;
-    width: 30rem;
+    width: 32rem;
     height: 14.5rem;
     border-radius: 8px;
     background-color: ${({ $bgColor }) => $bgColor};
+    @media (max-width: 768px) {
+        width: 100%; 
+        max-width: 20rem; 
+        margin: 0.5rem auto; 
+        padding: 1rem;
+    }
 `;
 const CardContent = styled.div`
     display: flex;
     justify-content: center;
     align-self: center;
     gap: 1rem;
+    @media (max-width: 768px) {
+        flex-direction: column; /* 모바일에서는 세로 정렬 */
+        align-items: center;
+    }
 `;
 const Title = styled.h2<{ $color?: string }>`
     height: 3rem;
@@ -52,6 +62,9 @@ const Title = styled.h2<{ $color?: string }>`
     font-size: ${({ theme }) => theme.typography.headlineM.fontSize};
     font-weight: ${({ theme }) => theme.typography.headlineM.fontWeight};
     line-height: ${({ theme }) => theme.typography.headlineL.lineHeight};
+    @media (max-width: 768px) {
+        margin: 0;
+    }
 `;
 
 const CardImage = styled.img`
@@ -79,6 +92,9 @@ const CardButton = styled.button<{ $color?: string,$bgColor?: string }>`
     box-shadow: ${({ theme }) => theme.shadows.shadow100};
     &:hover {
         background-color:  ${({ $bgColor }) => $bgColor};
+    }
+    @media (max-width: 768px) {
+        display: none;
     }
 `;
 

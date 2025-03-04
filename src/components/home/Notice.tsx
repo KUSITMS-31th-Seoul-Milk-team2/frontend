@@ -19,7 +19,7 @@ const Notice = ({ title, date, isNew }: { title: string; date: string; isNew: bo
 export default Notice;
 
 const Container = styled.div`
-    width: 35rem;
+    width: 32rem;
     height: 7.5rem;
     max-width: 60rem;
     display: flex;
@@ -29,6 +29,12 @@ const Container = styled.div`
     border: 0.0625rem solid ${({theme})=>theme.colors.gray300};
     border-radius: 0.5rem;
     background-color: ${({theme})=>theme.colors.white};
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 32rem; 
+        padding: 1rem 3rem; 
+        margin: 0 auto; 
+    }
 `;
 
 const TopSection = styled.div`
@@ -77,4 +83,7 @@ const ArrowIcon = styled.div`
   font-size: 1.125rem;
   color: ${({theme})=>theme.colors.gray800};
   cursor: pointer;
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
