@@ -20,6 +20,5 @@ const NoticeList = () => {
 export default NoticeList
 
 const ListContainer = styled.div`
-    margin:1rem;
     
 `
