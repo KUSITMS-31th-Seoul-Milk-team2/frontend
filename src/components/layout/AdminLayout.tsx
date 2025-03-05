@@ -17,10 +17,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ name, employeeId, onClose }) 
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
+        <UserInfo>
         <RoleTitle>관리자 계정</RoleTitle>
         <UserName>
-          {name} <EmployeeId>{employeeId}</EmployeeId>
+         <Name>{name}</Name>님 <EmployeeId>{employeeId}</EmployeeId>
         </UserName>
+        </UserInfo>
         <Menu>
           <MenuItem onClick={() => navigate("/mypage")}>
             <Icon src={mypageIcon} alt="마이 페이지" />
@@ -48,18 +50,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ name, employeeId, onClose }) 
 export default AdminLayout;
 
 const ModalOverlay = styled.div`
-  position: fixed;
-  top: -208px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: absolute;
+  top: 11%;
+  right: 10%;
+  padding: 8px;
+  z-index: 10;
+  min-width: 200px;
+  margin-top : 10px;
   z-index: 1001;
-  margin-left : 440px;
-`;
+`
 
 const ModalContent = styled.div`
   background: white;
@@ -71,22 +70,45 @@ const ModalContent = styled.div`
 `;
 
 const RoleTitle = styled.div`
-  font-size: 14px;
-  font-weight: bold;
-  color: #009857;
-  margin-bottom: 8px;
+  color: var(--primary-main-200, #009857);
+font-family: Pretendard;
+font-size: 12px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
-
+const UserInfo = styled.div`
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: flex-start;
+ gap: 8px;
+`;
 const UserName = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  color: var(--gray-1600, #393C3C);
+font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+gap : 12px;
+`;
+const Name = styled.strong`
+color: var(--gray-1600, #393C3C);
+font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 `;
 
 const EmployeeId = styled.span`
-  font-size: 16px;
-  color: gray;
-  margin-left: 5px;
+  color: var(--gray-800, #777);
+font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const Menu = styled.div`

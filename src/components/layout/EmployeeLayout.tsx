@@ -16,10 +16,12 @@ const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ name, employeeId, onClo
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
+      <UserInfo>
         <RoleTitle>직원 계정</RoleTitle>
         <UserName>
           {name} <EmployeeId>{employeeId}</EmployeeId>
         </UserName>
+        </UserInfo>
         <Menu>
           <MenuItem onClick={() => navigate("/mypage")}>
             <Icon src={mypageIcon} alt="마이 페이지" />
@@ -43,18 +45,15 @@ const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ name, employeeId, onClo
 export default EmployeeLayout;
 
 const ModalOverlay = styled.div`
-  position: fixed;
-  top: -230px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 11%;
+  right: 10%;
+  padding: 8px;
+  z-index: 10;
+  min-width: 200px;
+  margin-top : 10px;
   z-index: 1001;
-  margin-left : 430px;
-`;
+`
 
 const ModalContent = styled.div`
   background: white;
@@ -108,4 +107,11 @@ const MenuItem = styled.div`
 const Icon = styled.img`
   width: 20px;
   height: 20px;
+`;
+const UserInfo = styled.div`
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: flex-start;
+ gap: 8px;
 `;
