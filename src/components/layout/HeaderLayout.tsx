@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
@@ -15,6 +15,7 @@ const HeaderLayout: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null); // 모달 감지용 ref
 
   useEffect(() => {
     const storedUser = localStorage.getItem("userInfo");
@@ -22,6 +23,22 @@ const HeaderLayout: React.FC = () => {
       setUserInfo(JSON.parse(storedUser));
     }
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
 
   return (
     <Container>
@@ -34,13 +51,13 @@ const HeaderLayout: React.FC = () => {
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
-          {userInfo && (
-          <UserInfo onClick={() => setIsModalOpen(true)}>
-          {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
-          <UserLogo src={Dropdown} />
-          </UserInfo>
-             )}
-        </Nav>
+            {userInfo && (
+              <UserInfo onClick={() => setIsModalOpen(true)}>
+                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
+                <UserLogo src={Dropdown} />
+              </UserInfo>
+            )}
+          </Nav>
         </HeaderContent>
       </Header>
       <Main>
@@ -48,19 +65,27 @@ const HeaderLayout: React.FC = () => {
       </Main>
 
       {isModalOpen && userInfo && (
-        userInfo.role === "ADMIN" ? (
-          <AdminLayout name={userInfo.name} employeeId={userInfo.employeeId} onClose={() => setIsModalOpen(false)} />
-        ) : (
-          <EmployeeLayout name={userInfo.name} employeeId={userInfo.employeeId} onClose={() => setIsModalOpen(false)} />
-        )
+        <ModalContainer ref={modalRef}>
+          {userInfo.role === "ADMIN" ? (
+            <AdminLayout
+              name={userInfo.name}
+              employeeId={userInfo.employeeId}
+              onClose={() => setIsModalOpen(false)}
+            />
+          ) : (
+            <EmployeeLayout
+              name={userInfo.name}
+              employeeId={userInfo.employeeId}
+              onClose={() => setIsModalOpen(false)}
+            />
+          )}
+        </ModalContainer>
       )}
     </Container>
-    
   );
 };
 
 export default HeaderLayout;
-
 
 const Container = styled.div`
   display: flex;
@@ -97,7 +122,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
-  margin-right:840px;
+  margin-right: 840px;
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
@@ -132,10 +157,11 @@ const HeaderContent = styled.div`
     padding: 0 16px;
   }
 `;
+
 const UserLogo = styled.img`
-width: 24px;
-height: 24px;
-flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 `;
 
 const LogoContainer = styled.button`
@@ -143,9 +169,9 @@ const LogoContainer = styled.button`
   height: 43.456px;
   margin-top: 10px;
   margin-left: 180px;
-  border : none;
-  background : none;
-  cursor : pointer;
+  border: none;
+  background: none;
+  cursor: pointer;
 
   @media screen and (max-width: 1280px) {
     margin-left: 100px;
@@ -183,6 +209,8 @@ const Nav = styled.nav`
 const UserInfo = styled.span`
   display: flex;
   align-items: center; 
+  cursor: pointer;
+
   @media screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -211,3 +239,7 @@ const Main = styled.main`
     padding: 4px;
   }
 `;
+
+const ModalContainer = styled.div`
+`;
+
