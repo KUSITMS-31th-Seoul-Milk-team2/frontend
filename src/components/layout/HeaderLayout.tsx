@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
+import AdminLayout from "./AdminLayout";
+import EmployeeLayout from "./EmployeeLayout";
+
+interface UserInfo {
+  name: string;
+  role: string;
+  employeeId: string;
+}
 
 const HeaderLayout: React.FC = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userInfo");
+    if (storedUser) {
+      setUserInfo(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
     <Container>
       <NotificationBar>
@@ -15,20 +33,33 @@ const HeaderLayout: React.FC = () => {
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
-            <UserInfo>김수혜님(관리자)</UserInfo>
-            <NavLink href="/mypage">마이페이지</NavLink>
-            <NavLink href="/logout">로그아웃</NavLink>
+            {userInfo && (
+              <UserInfo onClick={() => setIsModalOpen(true)}>
+                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
+                <UserLogo/>
+              </UserInfo>
+            )}
           </Nav>
         </HeaderContent>
       </Header>
       <Main>
         <Outlet />
       </Main>
+
+      {isModalOpen && userInfo && (
+        userInfo.role === "ADMIN" ? (
+          <AdminLayout name={userInfo.name} employeeId={userInfo.employeeId} onClose={() => setIsModalOpen(false)} />
+        ) : (
+          <EmployeeLayout name={userInfo.name} employeeId={userInfo.employeeId} onClose={() => setIsModalOpen(false)} />
+        )
+      )}
     </Container>
+    
   );
 };
 
 export default HeaderLayout;
+
 
 const Container = styled.div`
   display: flex;
@@ -65,7 +96,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
-  margin-right:800px;
+  margin-right:840px;
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
@@ -100,6 +131,12 @@ const HeaderContent = styled.div`
     padding: 0 16px;
   }
 `;
+const UserLogo = styled.img`
+width: 24px;
+height: 24px;
+transform: rotate(-90deg);
+flex-shrink: 0;
+`
 
 const LogoContainer = styled.button`
   width: 200px;
@@ -144,22 +181,6 @@ const Nav = styled.nav`
 `;
 
 const UserInfo = styled.span`
-  @media screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-
-  @media screen and (max-width: 480px) {
-    font-size: 12px;
-  }
-`;
-
-const NavLink = styled.a`
-  text-decoration: none;
-  color: inherit;
-  &:hover {
-    text-decoration: underline;
-  }
-
   @media screen and (max-width: 768px) {
     font-size: 14px;
   }
