@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Card from "@components/home/Card.tsx";
 import NoticeList from "@components/home/NoticeList.tsx";
 import { transparentize } from "polished";
@@ -5,7 +6,9 @@ import {theme} from "@styles/theme.ts";
 import styled from "styled-components";
 
 const HomePage = () => {
-  return (
+    const navigate = useNavigate();
+
+    return (
       <Container>
          <AccessContainer>
              <Title>{"바로 가기"}</Title>
@@ -13,7 +16,7 @@ const HomePage = () => {
                 <Card title={"지급결의서 조회"} buttonText={"조회하러 가기"} imageSrc={"/red_image.png"} color={theme.colors.sub100} bgColor={transparentize(0.9, theme.colors.sub100)}/></CardContainer>
          </AccessContainer>
           <NoticeContainer>
-             <TopContainer> <Title>{"공지 사항"}</Title> <ShowAllNotices>{"전체보기"}</ShowAllNotices>
+             <TopContainer> <Title>{"공지 사항"}</Title> <ShowAllNotices onClick={() => navigate("/announcement")}>{"전체보기"}</ShowAllNotices>
                  </TopContainer>
               <NoticeList/>
           </NoticeContainer>
