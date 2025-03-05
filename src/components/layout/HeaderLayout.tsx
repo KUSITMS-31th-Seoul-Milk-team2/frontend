@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import EmployeeLayout from "./EmployeeLayout";
+import Dropdown from "@assets/icons/LayoutLogo.svg";
 
 interface UserInfo {
   name: string;
@@ -33,13 +34,13 @@ const HeaderLayout: React.FC = () => {
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
-            {userInfo && (
-              <UserInfo onClick={() => setIsModalOpen(true)}>
-                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
-                <UserLogo/>
-              </UserInfo>
-            )}
-          </Nav>
+          {userInfo && (
+          <UserInfo onClick={() => setIsModalOpen(true)}>
+          {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
+          <UserLogo src={Dropdown} />
+          </UserInfo>
+             )}
+        </Nav>
         </HeaderContent>
       </Header>
       <Main>
@@ -134,9 +135,8 @@ const HeaderContent = styled.div`
 const UserLogo = styled.img`
 width: 24px;
 height: 24px;
-transform: rotate(-90deg);
 flex-shrink: 0;
-`
+`;
 
 const LogoContainer = styled.button`
   width: 200px;
@@ -181,6 +181,8 @@ const Nav = styled.nav`
 `;
 
 const UserInfo = styled.span`
+  display: flex;
+  align-items: center; 
   @media screen and (max-width: 768px) {
     font-size: 14px;
   }
