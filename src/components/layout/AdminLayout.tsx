@@ -49,15 +49,16 @@ export default AdminLayout;
 
 const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
+  top: -208px;
   left: 0;
   width: 100%;
   height: 100%;
-  background: none;
+  background:none;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1001;
+  margin-left : 440px;
 `;
 
 const ModalContent = styled.div`
