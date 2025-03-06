@@ -43,16 +43,20 @@ const NoticeHeader = styled.div`
     display: grid;
     grid-template-columns: 50px 1fr 100px 120px;
     align-items: center;
+    justify-content: center;
     padding: 1rem;
-    background-color:  ${theme.colors.white};
-    font-weight: bold;
-    border-top: 2px solid  ${theme.colors.gray500};
-    border-bottom: 2px solid ${theme.colors.gray500};
+    background-color:  ${theme.colors.gray100};
+    font-size: ${theme.typography.titleM};
+    font-weight:${theme.typography.titleM}; ;
+    border :  2px solid  ${theme.colors.gray300};
+    border-radius: 10px;
     color:  ${theme.colors.gray1600};
+    width: 100%;
+    height: auto;
 `;
 
 const HeaderItem = styled.div`
-    text-align: left;
+    //text-align: left;
     font-size: 1rem;
 `;
 
