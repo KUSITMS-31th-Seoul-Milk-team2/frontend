@@ -110,19 +110,29 @@ const ListComponent: React.FC = () => {
         </tbody>
       </Table>
 
-      <PaginationContainer>
-        <ReactPaginate
-          previousLabel={"<"}
-          nextLabel={">"}
-          breakLabel={"..."}
-          pageCount={pageCount}
-          marginPagesDisplayed={1}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          activeClassName={"active"}
-        />
-      </PaginationContainer>
+  <PaginationContainer>
+  <PaginationContainer>
+  <ReactPaginate
+    breakLabel="..."
+    pageCount={pageCount}
+    marginPagesDisplayed={1}
+    pageRangeDisplayed={3}
+    onPageChange={handlePageClick}
+    containerClassName="pagination"
+    activeClassName="active"
+    previousLabel="<"
+    nextLabel=">"
+    previousClassName="page-nav"
+    nextClassName="page-nav"
+    disabledClassName="disabled"
+    breakClassName="break"
+    forcePage={currentPage}
+    renderOnZeroPageCount={null}
+  />
+</PaginationContainer>
+
+</PaginationContainer>
+
     </Container>
   );
 };
@@ -248,27 +258,62 @@ const TableCell = styled.td`
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 12px;
+  gap: 4px;
 
   .pagination {
     display: flex;
     list-style: none;
-    gap: 8px;
+    gap: 4px;
     align-items: center;
   }
 
   .pagination li {
     cursor: pointer;
-    padding: 10px 14px;
-    border-radius: 50%;
+    padding: 4px 8px;
+    border-radius: 6px;
     background: #fff;
-    color: #444;
-    font-weight: bold;
+    color: #6A6A6A;
+    font-weight: 600;
+    font-size: 14px;
     transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
   }
 
   .pagination .active {
+    color: #009857;
+    position: relative;
+  }
+
+  .pagination .active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 80%;
+    height: 2px;
     background: #009857;
-    color: white;
+    transform: translateX(-50%);
+  }
+
+  .page-nav {
+    border: 1px solid #C4C4C4;
+    padding: 4px 8px;
+    border-radius: 6px;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .break {
+    color: #6A6A6A;
   }
 `;
