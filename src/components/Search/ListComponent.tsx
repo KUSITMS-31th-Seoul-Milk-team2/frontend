@@ -60,16 +60,15 @@ const ListComponent: React.FC = () => {
   return (
     <Container>
       <ButtonContainer>
-        <ExcelButton onClick={handleExcelDownload}>
-          엑셀 다운로드
-          <Icon src={download} alt="엑셀 다운로드 아이콘" />
-        </ExcelButton>
+  <ExcelButton onClick={handleExcelDownload}>
+    엑셀 다운로드
+    <Icon src={download} alt="엑셀 다운로드 아이콘" />
+  </ExcelButton>
 
-        <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          {sortOrder}
-          <Icon src={dropdown} alt="드롭다운 아이콘" />
-        </SortButton>
-
+  <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+    {sortOrder}
+    <Icon src={dropdown} alt="드롭다운 아이콘" />
+  </SortButton>
         {isDropdownOpen && (
           <Dropdown>
             <DropdownItem onClick={() => handleSortChange("최신순")} isSelected={sortOrder === "최신순"}>
