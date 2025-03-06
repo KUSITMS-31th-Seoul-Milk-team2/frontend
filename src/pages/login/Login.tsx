@@ -36,6 +36,7 @@ const Login = () => {
   
         const data = await response.json();
         console.log("로그인 성공:", data);
+        localStorage.setItem("userInfo", JSON.stringify(data.data.userInfo));
   
         navigate("/");
       } catch (err: any) {
@@ -124,6 +125,9 @@ const Form = styled.form`
   border: 1px solid var(--gray-400, #D6D6D5);
   width: 100%;
   max-width: 560px;
+  @media screen and (max-width: 500px) {
+  border : none;
+  }
 `;
 
 const InputContainer = styled.div`

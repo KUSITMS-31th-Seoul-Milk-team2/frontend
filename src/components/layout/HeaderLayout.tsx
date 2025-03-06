@@ -1,9 +1,45 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
+import AdminLayout from "./AdminLayout";
+import EmployeeLayout from "./EmployeeLayout";
+import Dropdown from "@assets/icons/LayoutLogo.svg";
+
+interface UserInfo {
+  name: string;
+  role: string;
+  employeeId: string;
+}
 
 const HeaderLayout: React.FC = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null); // 모달 감지용 ref
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userInfo");
+    if (storedUser) {
+      setUserInfo(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
+
   return (
     <Container>
       <NotificationBar>
@@ -15,15 +51,36 @@ const HeaderLayout: React.FC = () => {
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
-            <UserInfo>김수혜님(관리자)</UserInfo>
-            <NavLink href="/mypage">마이페이지</NavLink>
-            <NavLink href="/logout">로그아웃</NavLink>
+            {userInfo && (
+              <UserInfo onClick={() => setIsModalOpen(true)}>
+                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
+                <UserLogo src={Dropdown} />
+              </UserInfo>
+            )}
           </Nav>
         </HeaderContent>
       </Header>
       <Main>
         <Outlet />
       </Main>
+
+      {isModalOpen && userInfo && (
+        <ModalContainer ref={modalRef}>
+          {userInfo.role === "ADMIN" ? (
+            <AdminLayout
+              name={userInfo.name}
+              employeeId={userInfo.employeeId}
+              onClose={() => setIsModalOpen(false)}
+            />
+          ) : (
+            <EmployeeLayout
+              name={userInfo.name}
+              employeeId={userInfo.employeeId}
+              onClose={() => setIsModalOpen(false)}
+            />
+          )}
+        </ModalContainer>
+      )}
     </Container>
   );
 };
@@ -65,7 +122,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
-  margin-right:800px;
+ margin-right: clamp(200px, 50vw, 840px);
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
@@ -101,22 +158,42 @@ const HeaderContent = styled.div`
   }
 `;
 
+const UserLogo = styled.img`
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+`;
+
 const LogoContainer = styled.button`
   width: 200px;
   height: 43.456px;
   margin-top: 10px;
   margin-left: 180px;
-  border : none;
-  background : none;
-  cursor : pointer;
+  border: none;
+  background: none;
+  cursor: pointer;
 
-  @media screen and (max-width: 1280px) {
-    margin-left: 100px;
+  @media screen and (max-width: 1000px) {
+    margin-left : 95px;
   }
-
-  @media screen and (max-width: 1104px) {
-    margin-left: 40px;
+  @media screen and (max-width: 900px) {
+    margin-left : 130px;
   }
+  @media screen and (max-width: 800px) {
+    margin-left : 190px;
+  }  
+  @media screen and (max-width: 700px) {
+    margin-left : 230px;
+  }   
+ @media screen and (max-width: 630px) {
+    margin-left : 280px;
+  } 
+ @media screen and (max-width: 530px) {
+    margin-left : 300px;
+  }
+  @media screen and (max-width: 490px) {
+    margin-left : 330px;
+  }  
 `;
 
 const Logo = styled.img`
@@ -131,34 +208,34 @@ const Nav = styled.nav`
   font-size: 16px;
   font-weight: 700;
   line-height: normal;
-  gap: clamp(16px, 5vw, 44px);
-  margin-right: 100px;
-
-  @media screen and (max-width: 1280px) {
-    margin-right: 60px;
+  margin-right: 80px;
+  @media screen and (max-width: 1000px) {
+    margin-right : 95px;
   }
-
-  @media screen and (max-width: 1104px) {
-    margin-right: 30px;
+  @media screen and (max-width: 900px) {
+    margin-right : 140px;
   }
+  @media screen and (max-width: 800px) {
+    margin-right : 190px;
+  }  
+  @media screen and (max-width: 700px) {
+    margin-right : 230px;
+  }   
+ @media screen and (max-width: 630px) {
+    margin-right : 280px;
+  } 
+ @media screen and (max-width: 530px) {
+    margin-right : 300px;
+  }
+  @media screen and (max-width: 490px) {
+    margin-right : 330px;
+  }  
 `;
 
 const UserInfo = styled.span`
-  @media screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-
-  @media screen and (max-width: 480px) {
-    font-size: 12px;
-  }
-`;
-
-const NavLink = styled.a`
-  text-decoration: none;
-  color: inherit;
-  &:hover {
-    text-decoration: underline;
-  }
+  display: flex;
+  align-items: center; 
+  cursor: pointer;
 
   @media screen and (max-width: 768px) {
     font-size: 14px;
@@ -188,3 +265,7 @@ const Main = styled.main`
     padding: 4px;
   }
 `;
+
+const ModalContainer = styled.div`
+`;
+
