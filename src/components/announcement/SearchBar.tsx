@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "@styles/theme.ts";
 import searchButtonIcon from "@assets/icons/searchButtonIcon.svg";
-import bottomArrowIcon from "@assets/icons/bottomArrowIcon.svg";
+import bottomArrowColorIcon from "@assets/icons/bottomArrowColorIcon.svg";
 
 const SearchBar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -20,7 +20,7 @@ const SearchBar = () => {
             <SearchBarContainer>
                 <FilterWrapper>
                     <FilterButton onClick={() => setIsDropdownOpen(prev => !prev)}>
-                        {selectedFilter} <DropdownIcon src={bottomArrowIcon} alt="Dropdown Icon" />
+                        {selectedFilter} <DropdownIcon src={bottomArrowColorIcon} alt="Dropdown Icon" />
                     </FilterButton>
 
                     {isDropdownOpen && (
@@ -65,7 +65,7 @@ const SearchBarContainer = styled.div`
     background-color:${theme.colors.white};
     transition: width 0.3s ease-in-out;
     position: relative;
-
+    opacity: 0.6;
     @media (max-width: 1024px) {
         width: 100%;
     }
