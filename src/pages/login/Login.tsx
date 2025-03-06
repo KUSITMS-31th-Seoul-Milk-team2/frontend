@@ -125,6 +125,9 @@ const Form = styled.form`
   border: 1px solid var(--gray-400, #D6D6D5);
   width: 100%;
   max-width: 560px;
+  @media screen and (max-width: 500px) {
+  border : none;
+  }
 `;
 
 const InputContainer = styled.div`
