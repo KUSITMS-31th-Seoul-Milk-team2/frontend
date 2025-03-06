@@ -24,7 +24,7 @@ const TopSection = ({ totalCount, onToggleMyPosts, isMyPostsOnly, sortOption, on
             <SortFilterContainer>
                 <FilterSection>
                     <FilterLabel>내가 쓴 글</FilterLabel>
-                    <ToggleSwitch onClick={onToggleMyPosts} isActive={isMyPostsOnly} />
+                    <ToggleSwitch onClick={onToggleMyPosts} $isActive={isMyPostsOnly} />
                 </FilterSection>
                 <SortWrapper>
                     <SortButton onClick={() => setIsDropdownOpen((prev) => !prev)}>
@@ -56,7 +56,6 @@ const Container = styled.div`
     width: 100%;
     max-width: 1200px;
     padding: 1rem;
-    border-bottom: 1px solid ${theme.colors.gray300};
 `;
 
 const ResultCount = styled.div`
@@ -84,14 +83,16 @@ const FilterSection = styled.div`
 
 const FilterLabel = styled.span`
     font-size: 0.9rem;
+
     color: ${theme.colors.gray800};
 `;
 
-const ToggleSwitch = styled.button<{ isActive: boolean }>`
+const ToggleSwitch = styled.button<{ $isActive: boolean }>`
     width: 40px;
     height: 20px;
     border-radius: 10px;
-    background-color: ${({ isActive, theme }) => (isActive ? theme.colors.main200 : theme.colors.gray300)};
+    background-color: ${({ $isActive, theme }) =>
+            $isActive ? theme.colors.main200 : theme.colors.gray300};
     position: relative;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -101,15 +102,14 @@ const ToggleSwitch = styled.button<{ isActive: boolean }>`
         position: absolute;
         width: 16px;
         height: 16px;
-        background-color: ${theme.colors.white};
+        background-color: white;
         border-radius: 50%;
         top: 50%;
-        left: ${({ isActive }) => (isActive ? "calc(100% - 18px)" : "2px")};
+        left: ${({ $isActive }) => ($isActive ? "calc(100% - 18px)" : "2px")};
         transform: translateY(-50%);
         transition: left 0.3s ease;
     }
 `;
-
 const SortWrapper = styled.div`
     position: relative;
 `;
@@ -118,7 +118,9 @@ const SortButton = styled.button`
     display: flex;
     align-items: center;
     background: none;
-    border: none;
+    border: 1px solid ${theme.colors.gray300};
+    border-radius: 32px;
+    padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
     color: ${theme.colors.gray800};

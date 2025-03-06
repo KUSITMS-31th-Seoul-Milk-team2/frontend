@@ -3,6 +3,7 @@ import styled from "styled-components";
 import TopSection from "@components/announcement/TopSection";
 import SearchBar from "@components/announcement/SearchBar.tsx";
 import NoticeList from "@components/announcement/NoticeList.tsx";
+import BottomPagination from "@components/announcement/BottomPagination.tsx";
 
 const dummyNotices = [
     { id: 1, title: "공지사항 제목입니다.", author: "김혜연", date: "2025.01.20" },
@@ -16,13 +17,16 @@ const AnnouncementPage = () => {
     const [notices, setNotices] = useState(dummyNotices);
     const [isMyPostsOnly, setIsMyPostsOnly] = useState(false);
     const [sortOption, setSortOption] = useState("최신순");
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPageCount = 12;
 
-    // ✅ 내가 쓴 글 필터 토글
+    const handlePageChange = ({ selected }: { selected: number }) => {
+        setCurrentPage(selected + 1);
+    };
     const toggleMyPosts = () => {
         setIsMyPostsOnly((prev) => !prev);
     };
 
-    // ✅ 정렬 변경 (최신순/오래된순)
     const changeSortOption = (option: string) => {
         setSortOption(option);
         const sortedNotices = [...notices].sort((a, b) => {
@@ -34,10 +38,7 @@ const AnnouncementPage = () => {
 
     return (
         <Container>
-            {/* ✅ 검색창 */}
             <SearchBar />
-
-            {/* ✅ 검색 결과 개수, 필터, 정렬 기능 포함 */}
             <TopSection
                 totalCount={notices.length}
                 onToggleMyPosts={toggleMyPosts}
@@ -45,9 +46,10 @@ const AnnouncementPage = () => {
                 sortOption={sortOption}
                 onChangeSortOption={changeSortOption}
             />
-
-            {/* ✅ 공지사항 리스트 */}
             <NoticeList notices={notices} />
+            <BottomPagination  pageCount={totalPageCount}
+                               currentPage={currentPage}
+                               onPageChange={handlePageChange} />
         </Container>
     );
 };
