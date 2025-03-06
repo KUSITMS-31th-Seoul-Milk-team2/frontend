@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { startOfMonth, startOfQuarter, startOfYear, subWeeks } from "date-fns";
 import calendar from "@assets/icons/calendar.svg";
+import resetIcon from "@assets/icons/reset.svg";
 
 const SearchComponent: React.FC = () => {
   const [filters, setFilters] = useState({
@@ -73,6 +74,18 @@ const handleFilterClick = (filter: string) => {
     setFilterTags(filterTags.filter((_, i) => i !== index));
   };
 
+  const handleReset = () => {
+    setFilters({
+      writer: "",
+      supplier: "",
+      recipient: "",
+      approvalNumber: "",
+      startDate: null,
+      endDate: null,
+    });
+    setFilterTags([]); 
+    setSelectedFilter("전체");
+  };
   return (
     <SearchContainer>
       <GlobalStyles />
@@ -170,7 +183,12 @@ const handleFilterClick = (filter: string) => {
               {tag} ⨉
             </FilterTag>
           ))}
+            
         </SelectedFilters>
+        <ResetButton onClick={handleReset}>
+              <ResetIcon src={resetIcon} alt="초기화 아이콘" />
+                초기화
+          </ResetButton>
         <SearchButton>검색</SearchButton>
       </ResultContainer>
     </SearchContainer>
@@ -334,18 +352,19 @@ const SelectedFilters = styled.div`
   flex-grow: 1;
   background: #F7F7F7;
   border-radius: 8px;
-  padding: 14px 16px 60px 13.25px;
-  margin-right : 10px;
+  padding: 10px;
+  min-height: 44px; 
+  align-items: center; 
 `;
 
 const FilterTag = styled.div`
   display: flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: 1px solid #6A6A6A;
   background: #FFF;
-  font-size: 16px;
+  font-size: 14px;
   color: #6A6A6A;
 `;
 
@@ -353,7 +372,8 @@ const SearchButton = styled.button`
   padding: 12px 32px;
   background: #009857;
   color: white;
-  font-size: 16px;
+  width: 112px;
+ padding: 34px 40px;
   font-weight: bold;
   border: none;
   border-radius: 8px;
@@ -392,4 +412,27 @@ export const GlobalStyles = createGlobalStyle`
     color: #009857 !important;
     font-weight: bold;
   }
+`;
+const ResetButton = styled.button`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 76px;
+  height : 90px;
+  margin-right : 5px;
+  margin-left : 5px;
+  border-radius: 8px;
+  border: 1px solid #009857;
+  background: #FFF;
+  color: #009857;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+`;
+
+const ResetIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-bottom: 4px;
 `;
