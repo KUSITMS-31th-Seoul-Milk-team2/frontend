@@ -122,7 +122,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
-  margin-right: 840px;
+ margin-right: clamp(200px, 50vw, 840px);
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
@@ -173,13 +173,27 @@ const LogoContainer = styled.button`
   background: none;
   cursor: pointer;
 
-  @media screen and (max-width: 1280px) {
-    margin-left: 100px;
+  @media screen and (max-width: 1000px) {
+    margin-left : 95px;
   }
-
-  @media screen and (max-width: 1104px) {
-    margin-left: 40px;
+  @media screen and (max-width: 900px) {
+    margin-left : 130px;
   }
+  @media screen and (max-width: 800px) {
+    margin-left : 190px;
+  }  
+  @media screen and (max-width: 700px) {
+    margin-left : 230px;
+  }   
+ @media screen and (max-width: 630px) {
+    margin-left : 280px;
+  } 
+ @media screen and (max-width: 530px) {
+    margin-left : 300px;
+  }
+  @media screen and (max-width: 490px) {
+    margin-left : 330px;
+  }  
 `;
 
 const Logo = styled.img`
@@ -194,16 +208,28 @@ const Nav = styled.nav`
   font-size: 16px;
   font-weight: 700;
   line-height: normal;
-  gap: clamp(16px, 5vw, 44px);
-  margin-right: 100px;
-
-  @media screen and (max-width: 1280px) {
-    margin-right: 60px;
+  margin-right: 80px;
+  @media screen and (max-width: 1000px) {
+    margin-right : 95px;
   }
-
-  @media screen and (max-width: 1104px) {
-    margin-right: 30px;
+  @media screen and (max-width: 900px) {
+    margin-right : 140px;
   }
+  @media screen and (max-width: 800px) {
+    margin-right : 190px;
+  }  
+  @media screen and (max-width: 700px) {
+    margin-right : 230px;
+  }   
+ @media screen and (max-width: 630px) {
+    margin-right : 280px;
+  } 
+ @media screen and (max-width: 530px) {
+    margin-right : 300px;
+  }
+  @media screen and (max-width: 490px) {
+    margin-right : 330px;
+  }  
 `;
 
 const UserInfo = styled.span`
