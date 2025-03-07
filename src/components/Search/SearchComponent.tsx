@@ -95,7 +95,7 @@ const handleFilterClick = (filter: string) => {
           <Input
             type="text"
             name="writer"
-            placeholder="입력"
+            placeholder="작성자명 입력하세요."
             value={filters.writer}
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "writer")}
@@ -106,7 +106,7 @@ const handleFilterClick = (filter: string) => {
           <Input
             type="text"
             name="supplier"
-            placeholder="입력"
+            placeholder="지점명을 입력하세요."
             value={filters.supplier}
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "supplier")}
@@ -117,7 +117,7 @@ const handleFilterClick = (filter: string) => {
           <Input
             type="text"
             name="recipient"
-            placeholder="입력"
+            placeholder="대리점명 입력하세요."
             value={filters.recipient}
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "recipient")}
@@ -128,7 +128,7 @@ const handleFilterClick = (filter: string) => {
           <Input
             type="text"
             name="approvalNumber"
-            placeholder="입력"
+            placeholder="12345678"
             value={filters.approvalNumber}
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
@@ -136,7 +136,7 @@ const handleFilterClick = (filter: string) => {
           <Input
             type="text"
             name="approvalNumber"
-            placeholder="입력"
+            placeholder="12345678"
             value={filters.approvalNumber}
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
@@ -144,7 +144,7 @@ const handleFilterClick = (filter: string) => {
           <Input
             type="text"
             name="approvalNumber"
-            placeholder="입력"
+            placeholder="12345678"
             value={filters.approvalNumber}
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
@@ -291,6 +291,7 @@ const DatePickerWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  margin-left : 10px;
 `;
 const DateCheck = styled.span`
   margin-left : 10px;
