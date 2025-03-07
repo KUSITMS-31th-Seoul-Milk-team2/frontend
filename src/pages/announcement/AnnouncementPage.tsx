@@ -4,6 +4,8 @@ import TopSection from "@components/announcement/TopSection";
 import SearchBar from "@components/announcement/SearchBar.tsx";
 import NoticeList from "@components/announcement/NoticeList.tsx";
 import BottomPagination from "@components/announcement/BottomPagination.tsx";
+import WriteButton from "@components/announcement/WriteButton.tsx";
+
 
 const dummyNotices = [
     { id: 1, title: "공지사항 제목입니다.", author: "김혜연", date: "2025.01.20" },
@@ -14,6 +16,7 @@ const dummyNotices = [
 ];
 
 const AnnouncementPage = () => {
+
     const [notices, setNotices] = useState(dummyNotices);
     const [isMyPostsOnly, setIsMyPostsOnly] = useState(false);
     const [sortOption, setSortOption] = useState("최신순");
@@ -47,9 +50,11 @@ const AnnouncementPage = () => {
                 onChangeSortOption={changeSortOption}
             />
             <NoticeList notices={notices} />
+            <WriteButton onClick={() => console.log("글쓰기 버튼 클릭됨!")} />
             <BottomPagination  pageCount={totalPageCount}
                                currentPage={currentPage}
                                onPageChange={handlePageChange} />
+
         </Container>
     );
 };
