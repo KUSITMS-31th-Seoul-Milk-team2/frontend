@@ -5,24 +5,32 @@ import "react-datepicker/dist/react-datepicker.css";
 import { startOfMonth, startOfQuarter, startOfYear, subWeeks } from "date-fns";
 import calendar from "@assets/icons/calendar.svg";
 import resetIcon from "@assets/icons/reset.svg";
+import cancelIcon from "@assets/icons/cancel.svg";
 
 const SearchComponent: React.FC = () => {
   const [filters, setFilters] = useState({
     writer: "",
     supplier: "",
     recipient: "",
-    approvalNumber: "",
+    approvalNumber1: "",
+    approvalNumber2: "",
+    approvalNumber3: "",
     startDate: null as Date | null,
     endDate: null as Date | null,
   });
+  
   const [selectedFilter, setSelectedFilter] = useState<string | null>("전체");
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    const filteredValue = value.replace(/\D/g, "").slice(0, 8);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: filteredValue,
+    }));
   };
+  
+  
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: string) => {
     const value = filters[field as keyof typeof filters];
     if (e.nativeEvent.isComposing) return;
@@ -34,6 +42,24 @@ const SearchComponent: React.FC = () => {
       setFilters({ ...filters, [field]: "" });
     }
   };
+  const handleApprovalKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) return;
+    if (e.key === "Enter") {
+      const fullApprovalNumber = getFullApprovalNumber();
+      if (fullApprovalNumber.replace(/-/g, "").length === 24) {
+        if (!filterTags.includes(fullApprovalNumber)) {
+          setFilterTags((prevTags) => [...prevTags, fullApprovalNumber]);
+        }
+        setFilters({
+          ...filters,
+          approvalNumber1: "",
+          approvalNumber2: "",
+          approvalNumber3: "",
+        });
+      }
+    }
+  };
+  
 
 const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
@@ -79,78 +105,123 @@ const handleFilterClick = (filter: string) => {
       writer: "",
       supplier: "",
       recipient: "",
-      approvalNumber: "",
+      approvalNumber1: "", 
+      approvalNumber2: "", 
+      approvalNumber3: "", 
       startDate: null,
       endDate: null,
     });
     setFilterTags([]); 
     setSelectedFilter("전체");
   };
+  const handleClearField = (field: keyof typeof filters) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [field]: "", 
+    }));
+  };
+  const getFullApprovalNumber = () => {
+    return `${filters.approvalNumber1}-${filters.approvalNumber2}-${filters.approvalNumber3}`;
+  };
+  
+  
+  
   return (
     <SearchContainer>
       <GlobalStyles />
       <SearchBox>
-        <InputContainer>
-          <Label>작성자</Label>
-          <Input
-            type="text"
-            name="writer"
-            placeholder="작성자명 입력하세요."
-            value={filters.writer}
-            onChange={handleChange}
-            onKeyDown={(e) => handleKeyDown(e, "writer")}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label>공급자 사업체명</Label>
-          <Input
-            type="text"
-            name="supplier"
-            placeholder="지점명을 입력하세요."
-            value={filters.supplier}
-            onChange={handleChange}
-            onKeyDown={(e) => handleKeyDown(e, "supplier")}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label>공급받는자 사업체명</Label>
-          <Input
-            type="text"
-            name="recipient"
-            placeholder="대리점명 입력하세요."
-            value={filters.recipient}
-            onChange={handleChange}
-            onKeyDown={(e) => handleKeyDown(e, "recipient")}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label>승인번호</Label>
-          <Input
-            type="text"
-            name="approvalNumber"
-            placeholder="12345678"
-            value={filters.approvalNumber}
-            onChange={handleChange}
-            onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
-          />
-          <Input
-            type="text"
-            name="approvalNumber"
-            placeholder="12345678"
-            value={filters.approvalNumber}
-            onChange={handleChange}
-            onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
-          />
-          <Input
-            type="text"
-            name="approvalNumber"
-            placeholder="12345678"
-            value={filters.approvalNumber}
-            onChange={handleChange}
-            onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
-          />
-        </InputContainer>
+      <InputContainer>
+      <Label>작성자</Label>
+      <Input
+    type="text"
+    name="writer"
+    placeholder="작성자명 입력하세요."
+    value={filters.writer}
+    onChange={handleChange}
+    onKeyDown={(e) => handleKeyDown(e, "writer")}
+  />
+    {filters.writer && (
+    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("writer")} />
+    )}
+    </InputContainer>
+    <InputContainer>
+  <Label>공급자 사업체명</Label>
+  <Input
+    type="text"
+    name="supplier"
+    placeholder="지점명을 입력하세요."
+    value={filters.supplier}
+    onChange={handleChange}
+    onKeyDown={(e) => handleKeyDown(e, "supplier")}
+  />
+  {filters.supplier && (
+    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("supplier")} />
+  )}
+</InputContainer>
+<InputContainer>
+  <Label>공급받는자 사업체명</Label>
+  <Input
+    type="text"
+    name="recipient"
+    placeholder="대리점명 입력하세요."
+    value={filters.recipient}
+    onChange={handleChange}
+    onKeyDown={(e) => handleKeyDown(e, "recipient")}
+  />
+  {filters.recipient && (
+    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("recipient")} />
+  )}
+</InputContainer>
+<InputContainer>
+  <Label>승인번호</Label>
 
+  <InputWrapper>
+    <InputApproval
+      type="text"
+      name="approvalNumber1"
+      placeholder="12345678"
+      value={filters.approvalNumber1}
+      onChange={handleChange}
+      onKeyDown={handleApprovalKeyDown}
+      maxLength={8}
+    />
+  </InputWrapper>
+
+  <InputWrapper>
+    <InputApproval
+      type="text"
+      name="approvalNumber2"
+      placeholder="12345678"
+      value={filters.approvalNumber2}
+      onChange={handleChange}
+      onKeyDown={handleApprovalKeyDown}
+      maxLength={8}
+    />
+  </InputWrapper>
+
+  <InputWrapper>
+    <InputApproval
+      type="text"
+      name="approvalNumber3"
+      placeholder="12345678"
+      value={filters.approvalNumber3}
+      onChange={handleChange}
+      onKeyDown={handleApprovalKeyDown}
+      maxLength={8}
+    />
+  </InputWrapper>
+
+  {(filters.approvalNumber1 || filters.approvalNumber2 || filters.approvalNumber3) && (
+    <ClearIconApproval src={cancelIcon} alt="Clear" onClick={() => {
+      setFilters({
+        ...filters,
+        approvalNumber1: "",
+        approvalNumber2: "",
+        approvalNumber3: "",
+      });
+    }} />
+  )}
+</InputContainer>
         <DateContainer>
           <DateLabel>기간</DateLabel>
           <DatePickerWrapper>
@@ -262,6 +333,30 @@ const Input = styled.input`
   background: #FFF;
   font-size: 14px;
   min-width: 150px;
+  &::placeholder {
+    color: #777;
+  }
+
+  @media (max-width: 768px) {
+    width: 30%; 
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  @media (max-width: 480px) {
+    width: 20%;
+    font-size: 12px;
+    padding: 6px;
+  }
+`;
+const InputApproval = styled.input`
+  flex: 1;
+  padding: 10.5px;
+  border-radius: 4px;
+  border: 1px solid #777;
+  background: #FFF;
+  font-size: 14px;
+  max-width: 98px;
   &::placeholder {
     color: #777;
   }
@@ -459,4 +554,25 @@ const ResetIcon = styled.img`
   width: 20px;
   height: 20px;
   margin-bottom: 4px;
+`;
+
+const ClearIcon = styled.img`
+  position: absolute;
+  right: 320px;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+`;
+const ClearIconApproval = styled.img`
+  position: absolute;
+  right: 485px;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+`;
+const InputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
 `;
