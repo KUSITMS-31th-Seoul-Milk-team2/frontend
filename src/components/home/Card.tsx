@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ArrowRight from "@assets/icons/arrowRightIcon.svg";
+import ArrowRight from "@assets/icons/rightArrowIcon.svg";
 
 interface CardProps{
     title: string;

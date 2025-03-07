@@ -5,6 +5,7 @@ import HomePage from "@pages/home/home.tsx";
 import SearchPage from "@pages/search/searchPage.tsx";
 import Login from "@pages/login/Login";
 import UserSettingPage from "@pages/userSetting/UserSettingPage";
+import AnnouncementPage from "@pages/announcement/AnnouncementPage.tsx";
 const router = createBrowserRouter([
     {
         path: "/upload",
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
         children: [{ path: "", element: <UploadPage /> }]
     },
     {
-        path: "/",
+        path: "/home",
         element: <HeaderLayout />,
         children: [{ path: "", element: <HomePage /> }]
       },
@@ -26,7 +27,12 @@ const router = createBrowserRouter([
         element: <HeaderLayout />,
         children: [{ path: "", element: <UserSettingPage /> }]
       },
-      {path:"/login", element : <Login/>}
+      {path:"/login", element : <Login/>},
+    {
+        path: "/announcement",
+        element: <HeaderLayout />,
+        children: [{ path: "", element: <AnnouncementPage /> }]
+    },
 ]);
 
 export default router;
