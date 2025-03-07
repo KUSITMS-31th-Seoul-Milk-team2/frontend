@@ -47,7 +47,7 @@ const HeaderLayout: React.FC = () => {
       </NotificationBar>
       <Header>
         <HeaderContent>
-          <LogoContainer onClick={() => navigate("/home")}>
+          <LogoContainer onClick={() => navigate("/")}>
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
@@ -192,7 +192,7 @@ const LogoContainer = styled.button`
     margin-left : 300px;
   }
   @media screen and (max-width: 490px) {
-    margin-left : 330px;
+    margin-lef t : 330px;
   }  
 `;
 
