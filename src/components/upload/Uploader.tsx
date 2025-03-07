@@ -6,8 +6,10 @@ import fileUploadIcon from "@assets/icons/fileUploadIcon.svg";
 import { transparentize } from "polished";
 import styled from "styled-components";
 
-
-const Uploader = () => {
+interface UploaderProps {
+    onFilesAdded: (addedFiles: File[]) => void; // ✅ 상위로 파일 전달
+}
+const Uploader = ({ onFilesAdded }: UploaderProps) => {
     const [files, setFiles] = useState<File[]>([]);
     const [isClicked, setIsClicked] = useState(false);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -24,7 +26,8 @@ const Uploader = () => {
         maxSize: 20 * 1024 * 1024,
         multiple: true,
         onDrop: (acceptedFiles) => {
-            setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+            // ✅ 상위로 즉시 전달 & 모달 열림
+            onFilesAdded(acceptedFiles);
         },
     });
 
