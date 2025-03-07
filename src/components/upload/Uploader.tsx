@@ -6,14 +6,14 @@ import fileUploadIcon from "@assets/icons/fileUploadIcon.svg";
 import { transparentize } from "polished";
 import styled from "styled-components";
 
+interface UploaderProps {
+    onFilesAdded: (addedFiles: File[]) => void;
+}
 
-const Uploader = () => {
-    const [files, setFiles] = useState<File[]>([]);
+const Uploader = ({ onFilesAdded }: UploaderProps) => {
     const [isClicked, setIsClicked] = useState(false);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
-
     const webcamRef = useRef<Webcam>(null);
-
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: {
@@ -24,7 +24,7 @@ const Uploader = () => {
         maxSize: 20 * 1024 * 1024,
         multiple: true,
         onDrop: (acceptedFiles) => {
-            setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+            onFilesAdded(acceptedFiles);
         },
     });
 
@@ -37,11 +37,11 @@ const Uploader = () => {
             const screenshot = webcamRef.current.getScreenshot();
             if (screenshot) {
                 const file = dataURLtoFile(screenshot, `camera_${Date.now()}.png`);
-                setFiles((prevFiles) => [...prevFiles, file]);
+                onFilesAdded([file]);
             }
         }
         setIsCameraOpen(false);
-    }, []);
+    }, [onFilesAdded]);
 
     const handleCloseCamera = () => {
         setIsCameraOpen(false);
@@ -71,11 +71,7 @@ const Uploader = () => {
                 </TitleArea>
 
                 <CameraButton onClick={handleOpenCamera}>
-                    <img
-                        src={cameraIcon}
-                        alt="Camera Icon"
-                        style={{ width: "1.5rem", height: "auto" }}
-                    />
+                    <img src={cameraIcon} alt="Camera Icon" style={{ width: "1.5rem", height: "auto" }} />
                     <Text>사진 촬영하기</Text>
                 </CameraButton>
             </HeaderRow>
@@ -89,25 +85,11 @@ const Uploader = () => {
                     onMouseDown={() => setIsClicked(true)}
                 >
                     <input {...getInputProps()} />
-                        <FileUploadButton>
-                            <UploadIcon
-                                src={fileUploadIcon}
-                                alt="File Upload Icon"
-                            />
-                        </FileUploadButton>
-
+                    <FileUploadButton>
+                        <UploadIcon src={fileUploadIcon} alt="File Upload Icon" />
+                    </FileUploadButton>
                     <FileSelectButton>파일 선택</FileSelectButton>
                 </DropZone>
-
-                {files.length > 0 && (
-                    <FileList>
-                        {files.map((file) => (
-                            <FileItem key={file.name}>{file.name}</FileItem>
-                        ))}
-                    </FileList>
-                )}
-                <FileInfo>파일 형식 PNG, PDF, JPG, JPEG</FileInfo>
-                <FileInfo>최대 크기 20MB</FileInfo>
             </DropZoneContainer>
 
             {isCameraOpen && (
@@ -118,7 +100,6 @@ const Uploader = () => {
                             ref={webcamRef}
                             screenshotFormat="image/png"
                             style={{ width: "auto", height: "100%" }}
-
                         />
                         <ButtonRow>
                             <CaptureButton onClick={handleCapture}>촬영하기</CaptureButton>
@@ -133,6 +114,7 @@ const Uploader = () => {
 
 export default Uploader;
 
+/* styled-components 코드는 이전과 동일하게 사용합니다 */
 /* ======= styled-components ======= */
 
 const Container = styled.div`
@@ -182,7 +164,8 @@ const Subtitle = styled.p`
 `;
 
 const CameraButton = styled.div`
-    display: flex;
+    //display: flex;  완전히 빼지 않고 none 으로 안보이게 처리 
+    display: none;
     flex-direction: row;
     align-items: center;
     cursor: pointer;
@@ -285,26 +268,6 @@ const FileSelectButton = styled.button`
         font-size: 0.8rem;
         padding: 0.35rem 0.7rem;
     }
-`;
-
-const FileList = styled.ul`
-    list-style: none;
-    padding: 0;
-    margin-top: 1rem;
-    width: 100%;
-`;
-
-const FileItem = styled.li`
-    font-size: 0.9rem;
-    color: #333;
-    word-break: break-all;
-`;
-
-const FileInfo = styled.p`
-  font-size: 0.8rem;
-  color: #999;
-  margin-top: 0.5rem;
-  align-self: flex-start;
 `;
 
 const ModalOverlay = styled.div`
