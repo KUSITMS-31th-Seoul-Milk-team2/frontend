@@ -7,14 +7,12 @@
 }
 
 .main-container {
-    font-family: 'Lato';
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
 }
 
 .ck-content {
-    font-family: 'Lato';
     line-height: 1.6;
     word-break: break-word;
 }
@@ -25,6 +23,8 @@
 }
 .ck-editor__editable {
     min-height: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     /* 높이가 자동으로 늘어나도록 고정 높이는 지정하지 않습니다. */
 }
 

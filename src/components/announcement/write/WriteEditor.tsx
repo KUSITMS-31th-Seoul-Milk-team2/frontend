@@ -104,7 +104,7 @@ const WriteEditor = () => {
                         }
                     }
                 },
-                placeholder: 'Type or paste your content here!',
+                placeholder: '내용을 입력해주세요.',
                 table: {
                     contentToolbar: [
                         'tableColumn',
