@@ -47,7 +47,7 @@ const HeaderLayout: React.FC = () => {
       </NotificationBar>
       <Header>
         <HeaderContent>
-          <LogoContainer onClick={() => navigate("/")}>
+          <LogoContainer onClick={() => navigate("/home")}>
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
