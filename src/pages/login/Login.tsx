@@ -77,8 +77,8 @@ const Login = () => {
             아이디와 비밀번호를 정확히 입력해주세요.</ErrorMessage>}
           <Button type="submit">로그인</Button>
           <FooterText>
-            *아이디는 사번으로 되어있습니다.<br/>
-            *개인정보 보호를 위해 비밀번호는 정기적으로 변경 요망
+          *초기 비밀번호는 전화번호 뒤 8자리와 동일합니다.<br/>
+            *개인정보 보호를 위해 비밀번호는 정기적으로 변경 요망.
           </FooterText>
         </Form>
 
