@@ -7,7 +7,7 @@ import calendar from "@assets/icons/calendar.svg";
 import resetIcon from "@assets/icons/reset.svg";
 import cancelIcon from "@assets/icons/cancel.svg";
 
-const SearchComponent: React.FC = () => {
+const AdminSearchComponent: React.FC = () => {
   const [filters, setFilters] = useState({
     writer: "",
     supplier: "",
@@ -261,9 +261,6 @@ const handleFilterClick = (filter: string) => {
       </SearchBox>
 
       <ResultContainer>
-        <SearchResult>
-          검색결과 <ResultCount>48</ResultCount>건
-        </SearchResult>
         <SelectedFilters>
           {filterTags.map((tag, index) => (
             <FilterTag key={index} onClick={() => handleRemoveFilterTag(index)}>
@@ -282,7 +279,7 @@ const handleFilterClick = (filter: string) => {
   );
 };
 
-export default SearchComponent;
+export default AdminSearchComponent;
 
 
 const SearchContainer = styled.div`
@@ -449,20 +446,6 @@ const ResultContainer = styled.div`
   border-radius: 8px;
   margin-top: 12px;
   border: 1px solid #009857;
-`;
-
-const SearchResult = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #393C3C;
-  margin-right : 13px;
-`;
-const ResultCount = styled.strong`
-    color: #009857;
-    margin-left: 4px;
 `;
 
 const SelectedFilters = styled.div`

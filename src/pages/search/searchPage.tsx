@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import SearchComponent from "@components/Search/SearchComponent.tsx";
+import AdminSearchComponent from "@components/Search/AdminSearchComponent";
+import EmployeeSearchComponent from "@components/Search/EmployeeSearchComponent";
 import AdminListComponent from "@components/Search/AdminListComponent";
 import EmployeeListComponent from "@components/Search/EmployeeListComponent";
 
@@ -9,7 +10,7 @@ const SearchPage: React.FC = () => {
   return (
     <PageContainer>
       <Title>지급 결의서 조회</Title>
-      <SearchComponent />
+      {role === "ADMIN" ? <AdminSearchComponent /> : <EmployeeSearchComponent />}
       {role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />}
     </PageContainer>
   );
