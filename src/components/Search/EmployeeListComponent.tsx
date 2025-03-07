@@ -23,7 +23,7 @@ const dummyData: ListItem[] = Array.from({ length: 134 }, (_, index) => ({
 
 const itemsPerPage = 10;
 
-const ListComponent: React.FC = () => {
+const EmployeeListComponent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -93,7 +93,6 @@ const ListComponent: React.FC = () => {
             <TableHeader>번호</TableHeader>
             <TableHeader>공급자 사업체명</TableHeader>
             <TableHeader>공급받는자 사업체명</TableHeader>
-            <TableHeader>작성자</TableHeader>
             <TableHeader>작성일자</TableHeader>
           </TableRow>
         </thead>
@@ -103,7 +102,6 @@ const ListComponent: React.FC = () => {
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.supplier}</TableCell>
               <TableCell>{item.recipient}</TableCell>
-              <TableCell>{item.writer}</TableCell>
               <TableCell>{item.date}</TableCell>
             </TableRow>
           ))}
@@ -145,7 +143,7 @@ const ListComponent: React.FC = () => {
   );
 };
 
-export default ListComponent;
+export default EmployeeListComponent;
 
 const Container = styled.div`
   width: 100%;
