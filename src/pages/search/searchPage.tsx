@@ -1,17 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminSearchComponent from "@components/Search/AdminSearchComponent";
 import EmployeeSearchComponent from "@components/Search/EmployeeSearchComponent";
 import AdminListComponent from "@components/Search/AdminListComponent";
 import EmployeeListComponent from "@components/Search/EmployeeListComponent";
-
+interface UserInfo {
+  name: string;
+  role: string;
+  employeeId: string;
+}
 const SearchPage: React.FC = () => {
-  const role = localStorage.getItem("role"); 
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  useEffect(() => {
+      const storedUser = localStorage.getItem("userInfo");
+      if (storedUser) {
+        setUserInfo(JSON.parse(storedUser));
+      }
+    }, []);
+  console.log("User Role:", userInfo?.role);
   return (
     <PageContainer>
       <Title>지급 결의서 조회</Title>
-      {role === "ADMIN" ? <AdminSearchComponent /> : <EmployeeSearchComponent />}
-      {role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />}
+      {userInfo?.role === "ADMIN" ? <AdminSearchComponent /> : <EmployeeSearchComponent />}
+      {userInfo?.role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />}
     </PageContainer>
   );
 };

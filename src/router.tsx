@@ -4,6 +4,7 @@ import HeaderLayout from "@components/layout/HeaderLayout.tsx";
 import HomePage from "@pages/home/home.tsx";
 import SearchPage from "@pages/search/searchPage.tsx";
 import Login from "@pages/login/Login";
+import UserSettingPage from "@pages/userSetting/UserSettingPage";
 import AnnouncementPage from "@pages/announcement/AnnouncementPage.tsx";
 const router = createBrowserRouter([
     {
@@ -21,13 +22,17 @@ const router = createBrowserRouter([
         element: <HeaderLayout />,
         children: [{ path: "", element: <SearchPage /> }]
       },
+      {
+        path: "/user-setting",
+        element: <HeaderLayout />,
+        children: [{ path: "", element: <UserSettingPage /> }]
+      },
       {path:"/login", element : <Login/>},
     {
         path: "/announcement",
         element: <HeaderLayout />,
         children: [{ path: "", element: <AnnouncementPage /> }]
     },
-
 ]);
 
 export default router;
