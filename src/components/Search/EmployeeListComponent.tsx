@@ -5,34 +5,33 @@ import dropdown from "@assets/icons/dropdown.svg";
 import download from "@assets/icons/download.svg"
 import PaginationComponent from "./PaginationComponent";
 
-interface ListItem {
+// interface ListItem {
+//   id: number;
+//   supplier: string;
+//   recipient: string;
+//   writer: string;
+//   date: string;
+// }
+interface ListItem{
   id: number;
-  supplier: string;
-  recipient: string;
-  writer: string;
-  date: string;
+  employeeId: string;
+  suName: string;
+  ipName: string;
+  erdatStart : string;
+  erdatEnd: string;
 }
-
-const dummyData: ListItem[] = Array.from({ length: 134 }, (_, index) => ({
-  id: index + 1,
-  supplier: "공급자 사업체명",
-  recipient: `공급받는자 사업체명 ${index % 2 === 0 ? "가나다" : "하바사"}`,
-  writer: "김혜연",
-  date: `2025.01.${String(20 - (index % 10)).padStart(2, "0")}`,
-}));
-
 const itemsPerPage = 10;
 
-const EmployeeListComponent: React.FC = () => {
+const EmployeeListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const sortedData = [...dummyData].sort((a, b) => {
-    if (sortOrder === "최신순") return b.date.localeCompare(a.date);
-    if (sortOrder === "오래된순") return a.date.localeCompare(b.date);
-    if (sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)") return a.recipient.localeCompare(b.recipient);
-    if (sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)") return b.recipient.localeCompare(a.recipient);
+  const sortedData = [...data].sort((a, b) => {
+    if (sortOrder === "최신순") return b.erdatEnd.localeCompare(a.erdatEnd);
+    if (sortOrder === "오래된순") return a.erdatEnd.localeCompare(b.erdatEnd);
+    if (sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)") return a.ipName.localeCompare(b.ipName);
+    if (sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)") return b.ipName.localeCompare(a.ipName);
     return 0;
   });
 
@@ -100,9 +99,9 @@ const EmployeeListComponent: React.FC = () => {
           {currentItems.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
-              <TableCell>{item.supplier}</TableCell>
-              <TableCell>{item.recipient}</TableCell>
-              <TableCell>{item.date}</TableCell>
+              <TableCell>{item.suName}</TableCell>
+              <TableCell>{item.ipName}</TableCell>
+              <TableCell>{item.erdatEnd}</TableCell>
             </TableRow>
           ))}
         </tbody>

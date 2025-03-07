@@ -22,7 +22,7 @@ const SearchPage: React.FC = () => {
     <PageContainer>
       <Title>지급 결의서 조회</Title>
       {userInfo?.role === "ADMIN" ? <AdminSearchComponent /> : <EmployeeSearchComponent />}
-      {userInfo?.role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />}
+      {/* {userInfo?.role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />} */}
     </PageContainer>
   );
 };
