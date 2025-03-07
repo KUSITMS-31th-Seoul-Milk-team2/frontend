@@ -23,7 +23,7 @@ const SearchComponent: React.FC = () => {
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const filteredValue = value.replace(/\D/g, "").slice(0, 8);
+    const filteredValue = value.slice(0, 8);
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: filteredValue,
