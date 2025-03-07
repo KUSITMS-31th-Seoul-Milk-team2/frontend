@@ -154,6 +154,7 @@ const handleFilterClick = (filter: string) => {
         <DateContainer>
           <DateLabel>기간</DateLabel>
           <DatePickerWrapper>
+          <Icon src={calendar} alt="Calendar Icon" />
             <StyledDatePicker
               selected={filters.startDate}
               onChange={(date: Date) => setFilters({ ...filters, startDate: date })}
@@ -161,10 +162,10 @@ const handleFilterClick = (filter: string) => {
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
             />
-            <Icon src={calendar} alt="Calendar Icon" />
           </DatePickerWrapper>
           <DateCheck> ~ </DateCheck>
           <DatePickerWrapper>
+          <Icon src={calendar} alt="Calendar Icon" />
             <StyledDatePicker
               selected={filters.endDate}
               onChange={(date: Date) => setFilters({ ...filters, endDate: date })}
@@ -172,7 +173,6 @@ const handleFilterClick = (filter: string) => {
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
             />
-            <Icon src={calendar} alt="Calendar Icon" />
           </DatePickerWrapper>
         </DateContainer>
 
@@ -291,30 +291,32 @@ const DatePickerWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin-left : 10px;
-`;
-const DateCheck = styled.span`
-  margin-left : 10px;
-  margin-right : 10px;
+  width: 140px;
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  padding: 8px;
-  padding-right: 36px;
+  width: 100%;
+  padding: 10px 10px 10px 30px;
   border: 1px solid #777;
   border-radius: 4px;
   background: #FFF;
   font-size: 14px;
   cursor: pointer;
-  width: 150px;
+  width : 90px;
 `;
 
 const Icon = styled.img`
   position: absolute;
-  right: 8px;
-  width: 20px;
-  height: 20px;
+  left: 10px; 
+  width: 18px;
+  height: 18px;
   pointer-events: none;
+  z-index: 1001;
+`;
+
+const DateCheck = styled.span`
+  margin-left : 6px;
+  margin-right : 10px;
 `;
 
 const ButtonContainer = styled.div`
@@ -331,7 +333,11 @@ const DateFilterButton = styled.button<{ isSelected: boolean }>`
   background: ${({ isSelected }) => (isSelected ? "#009857" : "#FFF")};
   color: ${({ isSelected }) => (isSelected ? "white" : "#009857")};
   cursor: pointer;
-  font-weight: bold;
+  font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 400;
+line-height: 150%;
   transition: background 0.2s, color 0.2s;
   @media (max-width: 768px) {
     font-size: 12px;
