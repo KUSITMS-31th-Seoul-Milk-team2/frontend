@@ -53,7 +53,7 @@ const HeaderLayout: React.FC = () => {
           <Nav>
             {userInfo && (
               <UserInfo onClick={() => setIsModalOpen(true)}>
-                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "직원"})
+                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "사원"})
                 <UserLogo src={Dropdown} />
               </UserInfo>
             )}
