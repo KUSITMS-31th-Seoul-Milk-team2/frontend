@@ -52,8 +52,13 @@ const ModalContent = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 20px;
-  font-weight: bold;
+  color: var(--gray-1600, #393C3C);
+text-align: center;
+font-family: Pretendard;
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+line-height: 150%; /* 36px */
   margin-bottom: 16px;
 `;
 
@@ -71,23 +76,43 @@ const InfoRow = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 16px;
-  color: #666;
+  color: #000;
+text-align: center;
+font-family: Pretendard;
+font-size: 20px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
 
 const Value = styled.span`
-  font-size: 16px;
-  font-weight: bold;
-  color: #009857;
+  color: var(--primary-main-200, #009857);
+text-align: center;
+font-family: Pretendard;
+font-size: 20px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
 
 const ConfirmButton = styled.button`
   width: 100%;
-  padding: 12px;
-  background: #009857;
-  color: white;
+  display: flex;
+height: 68px;
+padding: 19px 116px;
+justify-content: center;
+align-items: center;
+gap: 10px;
+align-self: stretch;
+  color: var(--gray-100, #F8F8F9);
+text-align: right;
+font-family: Pretendard;
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+line-height: 150%;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+ border-radius: 8px;
+background: var(--primary-main-200, #009857);
   cursor: pointer;
 `;
