@@ -28,7 +28,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ name, employeeId, onClose }) 
             <Icon src={mypageIcon} alt="마이 페이지" />
             마이 페이지
           </MenuItem>
-          <MenuItem onClick={() => navigate("/user-settings")}>
+          <MenuItem onClick={() => navigate("/user-setting")}>
             <Icon src={userSettingIcon} alt="사용자 권한 설정" />
             사용자 권한 설정
           </MenuItem>

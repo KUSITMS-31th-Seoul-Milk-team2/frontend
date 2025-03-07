@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { startOfMonth, startOfQuarter, startOfYear, subWeeks } from "date-fns";
 import calendar from "@assets/icons/calendar.svg";
 import resetIcon from "@assets/icons/reset.svg";
 import cancelIcon from "@assets/icons/cancel.svg";
@@ -60,38 +59,37 @@ const EmployeeSearchComponent: React.FC = () => {
     }
   };
   
-
-const handleFilterClick = (filter: string) => {
+  const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
 
     const today = new Date();
-    let newStartDate: Date | null = null;
-    let newEndDate: Date | null = today;
+    let newStartDate: Date | null = new Date(today); 
 
     switch (filter) {
       case "오늘":
         newStartDate = today;
         break;
       case "1주":
-        newStartDate = subWeeks(today, 1);
+        newStartDate.setDate(today.getDate() - 7); 
         break;
       case "1개월":
-        newStartDate = startOfMonth(today);
+        newStartDate.setMonth(today.getMonth() - 1); 
         break;
       case "3개월":
-        newStartDate = startOfQuarter(today);
+        newStartDate.setMonth(today.getMonth() - 3); 
         break;
       case "1년":
-        newStartDate = startOfYear(today);
+        newStartDate.setFullYear(today.getFullYear() - 1); 
         break;
     }
 
     setFilters((prev) => ({
       ...prev,
       startDate: newStartDate,
-      endDate: newEndDate,
+      endDate: today, 
     }));
-  };
+};
+
   const handleRemoveFilterTag = (index: number) => {
     setFilterTags(filterTags.filter((_, i) => i !== index));
   };
@@ -230,7 +228,7 @@ const handleFilterClick = (filter: string) => {
         </DateContainer>
 
         <ButtonContainer>
-      {["전체", "오늘", "1주 이내", "이번 달", "이번 분기", "올해"].map((filter) => (
+      {["오늘","1주","1개월","1년"].map((filter) => (
         <DateFilterButton
         key={filter}
         onClick={() => handleFilterClick(filter)}
@@ -401,17 +399,18 @@ const ButtonContainer = styled.div`
 `;
 
 const DateFilterButton = styled.button<{ isSelected: boolean }>`
-  padding: 8px 12px;
+  padding: 10px 16px;
+  width : 60px;
   border-radius: 8px;
   border: 1px solid #009857;
   background: ${({ isSelected }) => (isSelected ? "#009857" : "#FFF")};
   color: ${({ isSelected }) => (isSelected ? "white" : "#009857")};
   cursor: pointer;
   font-family: Pretendard;
-font-size: 16px;
-font-style: normal;
-font-weight: 400;
-line-height: 150%;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
   transition: background 0.2s, color 0.2s;
   @media (max-width: 768px) {
     font-size: 12px;
