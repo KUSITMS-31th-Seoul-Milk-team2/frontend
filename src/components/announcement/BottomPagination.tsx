@@ -51,7 +51,7 @@ const Container = styled.div`
     justify-content: center;  
     width: 100%;
     margin-top: 20px;
-    gap: 8px; 
+ 
 `;
 
 
@@ -59,9 +59,10 @@ const NavButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 10px;
-    border: 1px solid ${({ theme }) => theme.colors.gray400};
+    padding: 12px 8px;
+    border: 1px solid ${({ theme }) => theme.colors.gray600};
     border-radius: 4px;
+    background-color: white;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
 
@@ -72,25 +73,25 @@ const NavButton = styled.button`
 
 
 const ArrowLeftIcon = styled(LeftArrowIcon)`
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 `;
 
 const DoubleArrowLeftIcon = styled(DoubleLeftArrowIcon)`
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
 `;
 
 const DoubleArrowRightIcon = styled(DoubleRightArrowIcon)`
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
 `;
 
 const ArrowRightIcon = styled(RightArrowIcon)`
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 `;
 
 const StyledPaginate = styled(ReactPaginate).attrs({
@@ -133,12 +134,12 @@ const StyledPaginate = styled(ReactPaginate).attrs({
         align-items: center;
         justify-content: center;
         padding: 6px 10px;
-        border: 1px solid ${({ theme }) => theme.colors.gray400}; 
+        border: 1px solid ${({ theme }) => theme.colors.gray600}; 
         border-radius: 4px;
         transition: background-color 0.2s ease-in-out;
 
         &:hover {
-            background-color: ${({ theme }) => theme.colors.gray200};
+            background-color: ${({ theme }) => theme.colors.gray400};
         }
     }
 
