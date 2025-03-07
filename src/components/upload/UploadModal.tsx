@@ -8,6 +8,7 @@ import refreshIcon from "@assets/icons/refreshIcon.svg";
 import trashIcon from "@assets/icons/trashIcon.svg";
 
 interface UploadModalProps {
+    files: File[];
     onFilesAdded: (addedFiles: File[]) => void;
     onClose: () => void;
 }
