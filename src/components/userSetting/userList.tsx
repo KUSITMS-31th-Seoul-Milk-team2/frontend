@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PaginationComponent from "@components/Search/PaginationComponent";
+import UserCreate from "@components/userSetting/userCreate";
+import UserSuccess from "@components/userSetting/userSuccess";
 
 interface User {
   id: number;
@@ -20,6 +22,9 @@ const itemsPerPage = 10;
 
 const UserList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [newUser, setNewUser] = useState<{ name: string; employeeId: string } | null>(null);
 
   const offset = currentPage * itemsPerPage;
   const currentItems = dummyUsers.slice(offset, offset + itemsPerPage);
@@ -27,6 +32,12 @@ const UserList: React.FC = () => {
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
+  };
+
+  const handleCreateSuccess = (name: string, employeeId: string) => {
+    setNewUser({ name, employeeId });
+    setIsCreateOpen(false);
+    setIsSuccessOpen(true);
   };
 
   return (
@@ -51,12 +62,13 @@ const UserList: React.FC = () => {
           ))}
         </tbody>
       </Table>
-      <PaginationContainer>
       <PaginationComponent currentPage={currentPage} pageCount={pageCount} onPageChange={handlePageClick} />
-      </PaginationContainer>
       <ButtonContainer>
-        <CreateButton>+ 생성하기</CreateButton>
+        <CreateButton onClick={() => setIsCreateOpen(true)}>+ 생성하기</CreateButton>
       </ButtonContainer>
+
+      {isCreateOpen && <UserCreate onClose={() => setIsCreateOpen(false)} onCreateSuccess={handleCreateSuccess} />}
+      {isSuccessOpen && newUser && <UserSuccess user={newUser} onClose={() => setIsSuccessOpen(false)} />}
     </Container>
   );
 };
@@ -65,7 +77,7 @@ export default UserList;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 1050px;
+  max-width: 900px;
   margin-top: 30px;
   position: relative;
 `;
@@ -93,13 +105,9 @@ const TableCell = styled.td`
 
 const ButtonContainer = styled.div`
   position: absolute;
-  bottom: 12%;
+  bottom: 9px;
   right: 20px;
 `;
-const PaginationContainer = styled.div`
-margin-top : 68px;
-`;
-
 const CreateButton = styled.button`
   display: flex;
   align-items: center;
