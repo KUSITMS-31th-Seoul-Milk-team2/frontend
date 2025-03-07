@@ -1,46 +1,27 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios, { CancelTokenSource } from "axios";
-import Uploader from "@components/upload/Uploader";
 import cancelIcon from "@assets/icons/cancelIcon.svg";
 import fileInfo from "@assets/icons/fileInfoIcon.svg";
 import refreshIcon from "@assets/icons/refreshIcon.svg";
 import trashIcon from "@assets/icons/trashIcon.svg";
+import { FileUploadState } from "@pages/upload/UploadPage";
 
 interface UploadModalProps {
-    files: File[];
-    onFilesAdded: (addedFiles: File[]) => void;
+    uploadStates: FileUploadState[];
+    onCancel: (fileState: FileUploadState) => void;
+    onRetry: (fileState: FileUploadState) => void;
+    onRemove: (fileState: FileUploadState) => void;
+    onComplete: () => void;
     onClose: () => void;
 }
 
-interface FileUploadState {
-    file: File;
-    progress: number;
-    status: "pending" | "uploading" | "success" | "error";
-    cancelToken?: CancelTokenSource;
-}
-
-const UploadModal = ({ onClose }: UploadModalProps) => {
-    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
-    const [uploadStates, setUploadStates] = useState<FileUploadState[]>([]);
-
-    useEffect(() => {
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.body.style.overflow = "auto";
-        };
-    }, []);
-
-    const handleFilesAdded = (addedFiles: File[]) => {
-        const newStates = addedFiles.map((file) => ({
-            file,
-            progress: 0,
-            status: "pending" as const,
-        }));
-        setUploadStates((prev) => [...prev, ...newStates]);
-        newStates.forEach(uploadFile);
-    };
-
+const UploadModal = ({
+                         uploadStates,
+                         onCancel,
+                         onRetry,
+                         onRemove,
+                         onComplete,
+                         onClose,
+                     }: UploadModalProps) => {
     const formatFileSize = (bytes: number): string => {
         if (bytes < 1024) return `${bytes} B`;
         const units = ["KB", "MB", "GB", "TB"];
@@ -49,85 +30,9 @@ const UploadModal = ({ onClose }: UploadModalProps) => {
         return `${size} ${units[i]}`;
     };
 
-    const uploadFile = async (fileState: FileUploadState) => {
-        const formData = new FormData();
-        formData.append("file", fileState.file);
-
-        const source = axios.CancelToken.source();
-
-        setUploadStates((prev) =>
-            prev.map((fs) =>
-                fs.file === fileState.file
-                    ? { ...fs, status: "uploading", cancelToken: source }
-                    : fs
-            )
-        );
-
-        try {
-            const response = await axios.post(`${BaseUrl}/v1/invoice`, formData, {
-                onUploadProgress: (progressEvent) => {
-                    const percent = Math.round(
-                        (progressEvent.loaded * 100) /
-                        (progressEvent.total || fileState.file.size)
-                    );
-                    setUploadStates((prev) =>
-                        prev.map((fs) =>
-                            fs.file === fileState.file ? { ...fs, progress: percent } : fs
-                        )
-                    );
-                },
-                cancelToken: source.token,
-            });
-
-            setUploadStates((prev) =>
-                prev.map((fs) =>
-                    fs.file === fileState.file
-                        ? {
-                            ...fs,
-                            status: response.status === 200 ? "success" : "error",
-                        }
-                        : fs
-                )
-            );
-        } catch (error: unknown) {
-            if (axios.isCancel(error)) {
-                console.log("업로드가 취소되었습니다.");
-            } else {
-                console.log("업로드 중 에러 발생", error);
-            }
-            setUploadStates((prev) =>
-                prev.map((fs) =>
-                    fs.file === fileState.file ? { ...fs, status: "error" } : fs
-                )
-            );
-        }
-    };
-
-    const handleCancel = (fileState: FileUploadState) => {
-        fileState.cancelToken?.cancel("User canceled upload");
-        setUploadStates((prev) => prev.filter((fs) => fs.file !== fileState.file));
-    };
-
-    const handleRetry = (fileState: FileUploadState) => {
-        setUploadStates((prev) =>
-            prev.map((fs) =>
-                fs.file === fileState.file ? { ...fs, status: "pending", progress: 0 } : fs
-            )
-        );
-        uploadFile({ ...fileState, status: "pending", progress: 0 });
-    };
-
-    const handleRemove = (fileState: FileUploadState) => {
-        setUploadStates((prev) => prev.filter((fs) => fs.file !== fileState.file));
-    };
-
-    const isAllSuccess = uploadStates.length > 0 && uploadStates.every((fs) => fs.status === "success");
-
-    const handleComplete = () => {
-        if (!isAllSuccess) return;
-        // TODO: 완료 시 처리할 로직 (예: 서버에 최종 확인 요청, 페이지 이동, etc.)
-        onClose();
-    };
+    const isAllSuccess =
+        uploadStates.length > 0 &&
+        uploadStates.every((fs) => fs.status === "success");
 
     return (
         <ModalOverlay>
@@ -136,14 +41,12 @@ const UploadModal = ({ onClose }: UploadModalProps) => {
                     <img src={cancelIcon} alt="닫기" />
                 </CloseButton>
 
-                <Uploader onFilesAdded={handleFilesAdded} />
-
                 <Title>업로드 상태</Title>
                 <FileList>
                     {uploadStates.map((state) => {
                         const { file, progress, status } = state;
-                        // 정상 업로드 시 파일 크기, 실패 시 "업로드 실패"
-                        const fileSize = status === "error" ? "업로드 실패" : formatFileSize(file.size);
+                        const fileSize =
+                            status === "error" ? "업로드 실패" : formatFileSize(file.size);
 
                         return (
                             <FileItem key={file.name}>
@@ -161,23 +64,23 @@ const UploadModal = ({ onClose }: UploadModalProps) => {
                                     </LeftInfo>
 
                                     {status === "uploading" && (
-                                        <CancelButtonSmall onClick={() => handleCancel(state)}>
+                                        <CancelButtonSmall onClick={() => onCancel(state)}>
                                             <img src={cancelIcon} alt="취소" />
                                         </CancelButtonSmall>
                                     )}
                                     {status === "error" && (
                                         <ActionButtons>
-                                            <IconButton onClick={() => handleRetry(state)}>
+                                            <IconButton onClick={() => onRetry(state)}>
                                                 <img src={refreshIcon} alt="재시도" />
                                             </IconButton>
-                                            <IconButton onClick={() => handleRemove(state)}>
+                                            <IconButton onClick={() => onRemove(state)}>
                                                 <img src={trashIcon} alt="삭제" />
                                             </IconButton>
                                         </ActionButtons>
                                     )}
                                     {status === "success" && (
                                         <ActionButtons>
-                                            <IconButton onClick={() => handleRemove(state)}>
+                                            <IconButton onClick={() => onRemove(state)}>
                                                 <img src={trashIcon} alt="삭제" />
                                             </IconButton>
                                         </ActionButtons>
@@ -192,9 +95,8 @@ const UploadModal = ({ onClose }: UploadModalProps) => {
                     })}
                 </FileList>
 
-                {/* 하단 우측 '완료' 버튼 */}
                 <ButtonRow>
-                    <CompleteButton disabled={!isAllSuccess} onClick={handleComplete}>
+                    <CompleteButton disabled={!isAllSuccess} onClick={onComplete}>
                         완료
                     </CompleteButton>
                 </ButtonRow>
@@ -205,7 +107,7 @@ const UploadModal = ({ onClose }: UploadModalProps) => {
 
 export default UploadModal;
 
-/* ======= styled-components ======= */
+/* ===== styled-components ===== */
 const ModalOverlay = styled.div`
     position: fixed;
     top: 0;
@@ -259,6 +161,7 @@ const FileList = styled.ul`
     max-height: 250px;
     overflow-y: auto;
     overscroll-behavior: contain;
+
     &::-webkit-scrollbar {
         width: 8px;
     }
@@ -306,7 +209,8 @@ const FileTextWrapper = styled.div`
 const FileName = styled.span<{ $isError?: boolean }>`
     font-size: 1rem;
     font-weight: 500;
-    color: ${({ theme, $isError }) => ($isError ? theme.colors.gray200 : theme.colors.gray600)};
+    color: ${({ theme, $isError }) =>
+            $isError ? theme.colors.gray200 : theme.colors.gray600};
 `;
 
 const FileSize = styled.span<{ $isError?: boolean }>`
@@ -377,7 +281,8 @@ const ButtonRow = styled.div`
 `;
 
 const CompleteButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ theme, disabled }) => (disabled ? theme.colors.gray300 : theme.colors.main200)};
+    background-color: ${({ theme, disabled }) =>
+            disabled ? theme.colors.gray300 : theme.colors.main200};
     color: #fff;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -388,6 +293,6 @@ const CompleteButton = styled.button<{ disabled?: boolean }>`
 
     &:hover {
         background-color: ${({ theme, disabled }) =>
-    disabled ? theme.colors.gray300 : theme.colors.main300};
+                disabled ? theme.colors.gray300 : theme.colors.main300};
     }
 `;
