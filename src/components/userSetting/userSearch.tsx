@@ -37,7 +37,7 @@ const SearchContainer = styled.div`
   border-radius: 5px;
   padding: 8px;
   width: 100%;
-  max-width: 600px;
+  max-width: 950px;
 `;
 
 const SearchInput = styled.input`
