@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+import type { EventInfo } from "@ckeditor/ckeditor5-utils";
+import type { Editor } from "@ckeditor/ckeditor5-core";
 import {
     ClassicEditor,
     AutoLink,
@@ -32,7 +34,12 @@ import './WriteEditor.css';
 
 const LICENSE_KEY = 'GPL';
 
-const WriteEditor = () => {
+interface WriteEditorProps {
+    content: string;
+    setContent: (value: string) => void;
+}
+
+const WriteEditor: React.FC<WriteEditorProps> = ({ content, setContent }) => {
     const editorContainerRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<HTMLDivElement>(null);
     const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -88,7 +95,8 @@ const WriteEditor = () => {
                     ImageResize
                 ],
                 blockToolbar: ['bold', 'italic', '|', 'link', 'insertTable'],
-                initialData: `<p></p>`,
+                // 여기서 initialData를 부모로부터 전달받은 content로 변경합니다.
+                initialData: content,
                 language: 'ko',
                 licenseKey: LICENSE_KEY,
                 link: {
@@ -115,7 +123,6 @@ const WriteEditor = () => {
                     ]
                 },
                 translations: [translations],
-
                 // 이미지 리사이즈 관련 설정
                 image: {
                     resizeUnit: '%' as const,
@@ -158,7 +165,12 @@ const WriteEditor = () => {
                 }
             }
         };
-    }, [isLayoutReady]);
+    }, [isLayoutReady, content]);
+
+    const handleEditorChange = (_event: EventInfo, editor: Editor) => {
+        const data = editor.getData();
+        setContent(data);
+    };
 
     return (
         <div className="main-container">
@@ -169,7 +181,12 @@ const WriteEditor = () => {
                 <div className="editor-container__editor">
                     <div ref={editorRef}>
                         {editorConfig && (
-                            <CKEditor editor={ClassicEditor} config={editorConfig} />
+                            <CKEditor
+                                editor={ClassicEditor}
+                                config={editorConfig}
+                                data={content}
+                                onChange={handleEditorChange}
+                            />
                         )}
                     </div>
                 </div>

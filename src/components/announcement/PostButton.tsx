@@ -31,8 +31,8 @@ const StyledWriteButton = styled.button`
     align-items: center;
     justify-content: center;
     gap: 6px;
-    width: 120px;
-    height: 45px;
+    width: 110px;
+    height: 38px;
     padding: 12px 20px;
     border-radius: 8px;
     background-color: ${({ theme }) =>
@@ -40,8 +40,9 @@ const StyledWriteButton = styled.button`
 };
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
+    line-height: 150%;
+    font-size: ${theme.typography.buttonL.fontSize};
+    font-weight: ${theme.typography.buttonL.fontWeight};
     color: ${theme.colors.main200};;
 
     &:hover {
