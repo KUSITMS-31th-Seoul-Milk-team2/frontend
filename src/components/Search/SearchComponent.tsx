@@ -133,6 +133,22 @@ const handleFilterClick = (filter: string) => {
             onChange={handleChange}
             onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
           />
+          <Input
+            type="text"
+            name="approvalNumber"
+            placeholder="입력"
+            value={filters.approvalNumber}
+            onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
+          />
+          <Input
+            type="text"
+            name="approvalNumber"
+            placeholder="입력"
+            value={filters.approvalNumber}
+            onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, "approvalNumber")}
+          />
         </InputContainer>
 
         <DateContainer>
@@ -224,6 +240,7 @@ const InputContainer = styled.div`
   align-items: center;
   margin-top: 10px;
   margin-bottom: 12px;
+  gap : 12px;
 `;
 
 const Label = styled.label`
