@@ -72,21 +72,17 @@ const handleFilterClick = (filter: string) => {
       case "오늘":
         newStartDate = today;
         break;
-      case "1주 이내":
+      case "1주":
         newStartDate = subWeeks(today, 1);
         break;
-      case "이번 달":
+      case "1개월":
         newStartDate = startOfMonth(today);
         break;
-      case "이번 분기":
+      case "3개월":
         newStartDate = startOfQuarter(today);
         break;
-      case "올해":
+      case "1년":
         newStartDate = startOfYear(today);
-        break;
-      case "전체":
-        newStartDate = null;
-        newEndDate = null;
         break;
     }
 
@@ -121,7 +117,7 @@ const handleFilterClick = (filter: string) => {
     }));
   };
   const getFullApprovalNumber = () => {
-    return `${filters.approvalNumber1}-${filters.approvalNumber2}-${filters.approvalNumber3}`;
+    return `${filters.approvalNumber1}${filters.approvalNumber2}${filters.approvalNumber3}`;
   };
   
   
