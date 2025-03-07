@@ -1,14 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import SearchComponent from "@components/Search/SearchComponent.tsx";
-import ListComponent from "@components/Search/ListComponent.tsx";
+import AdminListComponent from "@components/Search/AdminListComponent";
+import EmployeeListComponent from "@components/Search/EmployeeListComponent";
 
 const SearchPage: React.FC = () => {
+  const role = localStorage.getItem("role"); 
   return (
     <PageContainer>
       <Title>지급 결의서 조회</Title>
       <SearchComponent />
-      <ListComponent/>
+      {role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />}
     </PageContainer>
   );
 };

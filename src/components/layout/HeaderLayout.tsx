@@ -15,7 +15,7 @@ const HeaderLayout: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null); // 모달 감지용 ref
+  const modalRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
     const storedUser = localStorage.getItem("userInfo");
