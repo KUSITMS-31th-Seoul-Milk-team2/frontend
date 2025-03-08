@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,14 +9,40 @@ import token from "@utils/token";
 import EmployeeListComponent from "@components/Search/EmployeeListComponent";
 interface ListItem {
   id: number;
-  employeeId: string;
+  employeeName: string;
   suName: string;
   ipName: string;
   erdatStart : string;
   erdatEnd: string;
 }
+interface UserInfo {
+  name: string;
+  role: string;
+  employeeId: string;
+}
 
 const EmployeeSearchComponent: React.FC = () => {
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userInfo");
+
+    if (storedUser) {
+        try {
+            const parsedUser: UserInfo = JSON.parse(storedUser);
+            setUserInfo(parsedUser);
+        } catch (error) {
+            console.error("JSON 파싱 오류:", error);
+        }
+    }
+}, []);
+
+useEffect(() => {
+    if (userInfo) {
+        console.log("userInfo 업데이트됨, fetchSearchResults 실행", userInfo);
+        fetchSearchResults(userInfo);
+    }
+}, [userInfo]); 
+
   const [filters, setFilters] = useState({
     writer: "",
     supplier: "",
@@ -27,10 +53,11 @@ const EmployeeSearchComponent: React.FC = () => {
     startDate: null as Date | null,
     endDate: null as Date | null,
   });
+  console.log("API 요청 URL:", import.meta.env.VITE_BACKEND_URL + "/v1/receipt/search");
   const [searchResults, setSearchResults] = useState<ListItem[]>([]);
-  const fetchSearchResults = async () => {
+  const fetchSearchResults = async (userInfo) => {
     const requestBody = {
-      employeeId: filters.writer ? [filters.writer] : [],
+      employeeName: filters.writer ? [filters.writer] : [userInfo.name],
       suNames: filters.supplier ? [filters.supplier] : null,
       ipNames: filters.recipient ? [filters.recipient] : null,
       erdatStart: filters.startDate ? filters.startDate.toISOString().split("T")[0] : null,
@@ -47,7 +74,6 @@ const EmployeeSearchComponent: React.FC = () => {
       console.error("검색 중 오류 발생:", error);
     }
   };
-
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>("전체");
   const [filterTags, setFilterTags] = useState<string[]>([]);
@@ -278,7 +304,7 @@ const EmployeeSearchComponent: React.FC = () => {
               <ResetIcon src={resetIcon} alt="초기화 아이콘" />
                 초기화
           </ResetButton>
-          <SearchButton onClick={fetchSearchResults}>검색</SearchButton>
+          <SearchButton onClick={() => userInfo && fetchSearchResults(userInfo)}>검색</SearchButton>
        </CheckButtonContainer>
        <ListContainer>
     <EmployeeListComponent data={searchResults} /></ListContainer>

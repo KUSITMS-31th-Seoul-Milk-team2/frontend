@@ -14,7 +14,7 @@ import PaginationComponent from "./PaginationComponent";
 // }
 interface ListItem{
   id: number;
-  employeeId: string;
+  employeeName: string;
   suName: string;
   ipName: string;
   erdatStart : string;
