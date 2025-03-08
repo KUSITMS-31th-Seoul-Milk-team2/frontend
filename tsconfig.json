@@ -15,7 +15,10 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
       "@icons/*": ["public/icons/*"],
-      "@styles/*": ["src/styles/*"]
+      "@styles/*": ["src/styles/*"],
+      "@recoil/*": ["src/recoil/*"],
+      "@recoil/state/*": ["src/recoil/state/*"],
+      "@store/*": ["src/store/*"],
     }
   }
 }

@@ -5,6 +5,7 @@ import SearchBar from "@components/announcement/SearchBar.tsx";
 import NoticeList from "@components/announcement/NoticeList.tsx";
 import BottomPagination from "@components/announcement/BottomPagination.tsx";
 import WriteButton from "@components/announcement/WriteButton.tsx";
+import {useNavigate} from "react-router-dom";
 
 
 const dummyNotices = [
@@ -22,6 +23,8 @@ const AnnouncementPage = () => {
     const [sortOption, setSortOption] = useState("최신순");
     const [currentPage, setCurrentPage] = useState(1);
     const totalPageCount = 12;
+
+    const navigate = useNavigate();
 
     const handlePageChange = ({ selected }: { selected: number }) => {
         setCurrentPage(selected + 1);
@@ -50,7 +53,7 @@ const AnnouncementPage = () => {
                 onChangeSortOption={changeSortOption}
             />
             <NoticeList notices={notices} />
-            <WriteButton onClick={() => console.log("글쓰기 버튼 클릭됨!")} />
+            <WriteButton onClick={() => navigate("/announcement/write")} />
             <BottomPagination  pageCount={totalPageCount}
                                currentPage={currentPage}
                                onPageChange={handlePageChange} />
