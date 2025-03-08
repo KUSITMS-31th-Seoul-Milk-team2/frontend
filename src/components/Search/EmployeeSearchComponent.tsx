@@ -1,12 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import calendar from "@assets/icons/calendar.svg";
 import resetIcon from "@assets/icons/reset.svg";
 import cancelIcon from "@assets/icons/cancel.svg";
+import token from "@utils/token";
+import EmployeeListComponent from "@components/Search/EmployeeListComponent";
+interface ListItem {
+  id: number;
+  employeeName: string;
+  suName: string;
+  ipName: string;
+  erdatStart : string;
+  erdatEnd: string;
+}
+interface UserInfo {
+  name: string;
+  role: string;
+  employeeId: string;
+}
 
 const EmployeeSearchComponent: React.FC = () => {
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userInfo");
+
+    if (storedUser) {
+        try {
+            const parsedUser: UserInfo = JSON.parse(storedUser);
+            setUserInfo(parsedUser);
+        } catch (error) {
+            console.error("JSON 파싱 오류:", error);
+        }
+    }
+}, []);
+
+useEffect(() => {
+    if (userInfo) {
+        console.log("userInfo 업데이트됨, fetchSearchResults 실행", userInfo);
+        fetchSearchResults(userInfo);
+    }
+}, [userInfo]); 
+
   const [filters, setFilters] = useState({
     writer: "",
     supplier: "",
@@ -17,7 +53,28 @@ const EmployeeSearchComponent: React.FC = () => {
     startDate: null as Date | null,
     endDate: null as Date | null,
   });
+  console.log("API 요청 URL:", import.meta.env.VITE_BACKEND_URL + "/v1/receipt/search");
+  const [searchResults, setSearchResults] = useState<ListItem[]>([]);
+  const fetchSearchResults = async (userInfo) => {
+    const requestBody = {
+      employeeName: filters.writer ? [filters.writer] : [userInfo.name],
+      suNames: filters.supplier ? [filters.supplier] : null,
+      ipNames: filters.recipient ? [filters.recipient] : null,
+      erdatStart: filters.startDate ? filters.startDate.toISOString().split("T")[0] : null,
+      erdatEnd: filters.endDate ? filters.endDate.toISOString().split("T")[0] : null,
+    };
   
+    console.log("전송할 requestBody:", requestBody);
+  
+    try {
+      const response = await token.post("/v1/receipt/search", requestBody);
+      console.log("검색 결과:", response.data);
+      setSearchResults(response.data.data);
+    } catch (error) {
+      console.error("검색 중 오류 발생:", error);
+    }
+  };
+
   const [selectedFilter, setSelectedFilter] = useState<string | null>("전체");
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,16 +88,23 @@ const EmployeeSearchComponent: React.FC = () => {
   
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: string) => {
-    const value = filters[field as keyof typeof filters];
     if (e.nativeEvent.isComposing) return;
-
-    if (e.key === "Enter" && typeof value === "string" && value.trim() !== "") {
-      if (!filterTags.includes(value.trim())) {
-        setFilterTags((prevTags) => [...prevTags, value.trim()]);
-      }
-      setFilters({ ...filters, [field]: "" });
+  
+    if (e.key === "Enter") {
+      setFilters((prevFilters) => {
+        const value = prevFilters[field as keyof typeof prevFilters] as string;
+        
+        if (value.trim() !== "") {
+          return {
+            ...prevFilters,
+            [field]: "", 
+          };
+        }
+        return prevFilters;
+      });
     }
   };
+  
   const handleApprovalKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter") {
@@ -89,10 +153,6 @@ const EmployeeSearchComponent: React.FC = () => {
       endDate: today, 
     }));
 };
-
-  const handleRemoveFilterTag = (index: number) => {
-    setFilterTags(filterTags.filter((_, i) => i !== index));
-  };
 
   const handleReset = () => {
     setFilters({
@@ -239,22 +299,15 @@ const EmployeeSearchComponent: React.FC = () => {
       ))}
     </ButtonContainer>
       </SearchBox>
-
-      <ResultContainer>
-        <SelectedFilters>
-          {filterTags.map((tag, index) => (
-            <FilterTag key={index} onClick={() => handleRemoveFilterTag(index)}>
-              {tag} ⨉
-            </FilterTag>
-          ))}
-            
-        </SelectedFilters>
-        <ResetButton onClick={handleReset}>
+      <CheckButtonContainer>
+      <ResetButton onClick={handleReset}>
               <ResetIcon src={resetIcon} alt="초기화 아이콘" />
                 초기화
           </ResetButton>
-        <SearchButton>검색</SearchButton>
-      </ResultContainer>
+          <SearchButton onClick={() => userInfo && fetchSearchResults(userInfo)}>검색</SearchButton>
+       </CheckButtonContainer>
+       <ListContainer>
+    <EmployeeListComponent data={searchResults} /></ListContainer>
     </SearchContainer>
   );
 };
@@ -397,10 +450,20 @@ const ButtonContainer = styled.div`
   margin-bottom: 12px;
   margin-top :5px;
 `;
+const CheckButtonContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  margin-top :5px;
+  position :absolute;
+  top : 600px;
+  left : 670px;
+  z-index : 1001;
+`;
 
 const DateFilterButton = styled.button<{ isSelected: boolean }>`
-  padding: 10px 16px;
-  width : 60px;
+  padding: 10px 18px 30px 18px;
+  height: 39px;
   border-radius: 8px;
   border: 1px solid #009857;
   background: ${({ isSelected }) => (isSelected ? "#009857" : "#FFF")};
@@ -416,39 +479,6 @@ const DateFilterButton = styled.button<{ isSelected: boolean }>`
     font-size: 12px;
     padding: 6px 10px;
   }
-`;
-
-const ResultContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 8px;
-  margin-top: 12px;
-  border: 1px solid #009857;
-`;
-
-const SelectedFilters = styled.div`
-  display: flex;
-  gap: 8px;
-  flex-grow: 1;
-  background: #F7F7F7;
-  border-radius: 8px;
-  padding: 10px;
-  min-height: 44px; 
-  align-items: center; 
-`;
-
-const FilterTag = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #6A6A6A;
-  background: #FFF;
-  font-size: 14px;
-  color: #6A6A6A;
 `;
 
 const SearchButton = styled.button`
@@ -512,6 +542,7 @@ const ResetButton = styled.button`
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
+  margin -left : 200px;
 `;
 
 const ResetIcon = styled.img`
@@ -540,3 +571,7 @@ const InputWrapper = styled.div`
   align-items: center;
   margin-right: 5px;
 `;
+
+const ListContainer = styled.div`
+ margin-top : 100px;
+`

@@ -11,7 +11,6 @@ const Login = () => {
     const [isFocused, setIsFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     console.log("로그인 에러 : ",error);
-
   
     const handleLogin = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -38,7 +37,7 @@ const Login = () => {
         console.log("로그인 성공:", data);
         localStorage.setItem("userInfo", JSON.stringify(data.data.userInfo));
   
-        navigate("/");
+        navigate("/home");
       } catch (err: any) {
         console.error("로그인 요청 중 오류 발생:", err);
         setError(err.message || "로그인 중 문제가 발생했습니다.");
@@ -156,7 +155,7 @@ const FloatingLabel = styled.span`
 const Input = styled.input`
   width: 100%;
   height: 44px;
-  padding: 10px 12px;
+  padding: 10px;
   border-radius: 8px;
   border: 2px solid var(--gray-600, #A6A5A5);
   font-size: 14px;
