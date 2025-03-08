@@ -30,7 +30,7 @@ const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ name, employeeId, onClo
           <MenuItem
             onClick={() => {
               localStorage.removeItem("userInfo");
-              navigate("/login");
+              navigate("/");
             }}
           >
             <Icon src={logoutIcon} alt="로그아웃" />
