@@ -22,28 +22,44 @@ const SelectionPopup = ({
                             secondaryButton,
                         }: SelectionPopupProps) => {
     return (
-        <ModalContainer>
-            {IconImg && <Icon src={IconImg} alt="icon" />}
-            <ModalContent>{Content}</ModalContent>
-            {SubContent &&  <SubModalContent>{SubContent}</SubModalContent>}
-            <ButtonContainer>
-                {secondaryButton && (
-                    <SecondaryButton onClick={secondaryButton.onClick}>
-                        {secondaryButton.label}
-                    </SecondaryButton>
-                )}
-                <PrimaryButton onClick={primaryButton.onClick}>
-                    {primaryButton.label}
-                </PrimaryButton>
-            </ButtonContainer>
-        </ModalContainer>
+        <Overlay>
+            <ModalContainer>
+                {IconImg && <Icon src={IconImg} alt="icon" />}
+                <ModalContent>{Content}</ModalContent>
+                {SubContent && <SubModalContent>{SubContent}</SubModalContent>}
+                <ButtonContainer>
+                    {secondaryButton && (
+                        <SecondaryButton onClick={secondaryButton.onClick}>
+                            {secondaryButton.label}
+                        </SecondaryButton>
+                    )}
+                    <PrimaryButton onClick={primaryButton.onClick}>
+                        {primaryButton.label}
+                    </PrimaryButton>
+                </ButtonContainer>
+            </ModalContainer>
+        </Overlay>
     );
 };
 
 export default SelectionPopup;
 
+const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 회색 반투명 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+`;
+
 const ModalContainer = styled.div`
-    border: 1px solid ${({theme})=>theme.colors.gray300};
+    border: 1px solid ${({ theme }) => theme.colors.gray300};
+    background: #fff;
     display: flex;
     width: 380px;
     height: 180px;
@@ -52,18 +68,19 @@ const ModalContainer = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10px;
+    border-radius: 8px;
+    z-index: 10000;
 `;
 
 const ModalContent = styled.p`
     font-size: 16px;
     text-align: center;
-    gap: 1px;
     white-space: pre-line;
 `;
+
 const SubModalContent = styled.p`
     font-size: 16px;
     text-align: center;
-
 `;
 
 const Icon = styled.img`
@@ -79,8 +96,8 @@ const ButtonContainer = styled.div`
 `;
 
 const PrimaryButton = styled.button`
-    background-color: ${({theme})=>theme.colors.main200};
-    color: ${({theme})=>theme.colors.gray100};
+    background-color: ${({ theme }) => theme.colors.main200};
+    color: ${({ theme }) => theme.colors.gray100};
     width: 160px;
     height: 40px;
     border: none;
@@ -90,11 +107,11 @@ const PrimaryButton = styled.button`
 `;
 
 const SecondaryButton = styled.button`
-    width: 160px;
-    height: 40px;
-  background-color: ${({theme})=>theme.colors.gray200};
-  color: ${({theme})=>theme.colors.gray1600};
-  border: 1px solid ${({theme})=>theme.colors.gray200};;
+  width: 160px;
+  height: 40px;
+  background-color: ${({ theme }) => theme.colors.gray200};
+  color: ${({ theme }) => theme.colors.gray1600};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
   padding: 8px 16px;
   border-radius: 1rem;
   cursor: pointer;
