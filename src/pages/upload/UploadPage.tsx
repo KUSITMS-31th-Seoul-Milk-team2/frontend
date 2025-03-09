@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import axios, { CancelTokenSource } from "axios";
 import Uploader from "@components/upload/Uploader";
 import UploadModal from "@components/upload/UploadModal";
-
+import SelectionPopup from "@components/modal/SelectionPopup";
+import {useNavigate} from "react-router-dom";
 
 export interface FileUploadState {
     file: File;
@@ -16,8 +17,9 @@ const UploadPage = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [uploadStates, setUploadStates] = useState<FileUploadState[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [showSelectionPopup, setShowSelectionPopup] = useState(false);
     const closeModal = () => setIsModalOpen(false);
+    const navigate = useNavigate();
 
     const handleFilesAdded = (newFiles: File[]) => {
         setFiles((prev) => [...prev, ...newFiles]);
@@ -51,7 +53,6 @@ const UploadPage = () => {
         formData.append("files", fileState.file);
         const source = axios.CancelToken.source();
 
-        // 업데이트: 각 상태(state)를 명확하게 표현합니다.
         setUploadStates((prev) =>
             prev.map((state) =>
                 state.file === fileState.file
@@ -129,6 +130,15 @@ const UploadPage = () => {
     const isAllSuccess =
         uploadStates.length > 0 &&
         uploadStates.every((state) => state.status === "success");
+    const handleComplete = () => {
+        // 만약 모든 파일이 성공적으로 업로드되었다면
+        if (isAllSuccess) {
+            // 업로드 모달 닫기
+            closeModal();
+            // 다음 팝업 띄우기
+            setShowSelectionPopup(true);
+        }
+    };
 
     return (
         <>
@@ -139,12 +149,21 @@ const UploadPage = () => {
                     onCancel={handleCancel}
                     onRetry={handleRetry}
                     onRemove={handleRemove}
-                    onComplete={() => {
-                        if (isAllSuccess) {
-                            closeModal();
-                        }
-                    }}
+                    onComplete={handleComplete}
                     onClose={closeModal}
+                />
+            )}
+            {showSelectionPopup && (
+                <SelectionPopup
+                    Content="간편인증이 완료되면\n 확인 버튼을 눌러주세요"
+                    primaryButton={{
+                        label: "확인",
+                        onClick: () => navigate("/"),
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: () => console.log("취소 클릭!"),
+                    }}
                 />
             )}
         </>
