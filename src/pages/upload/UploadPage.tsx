@@ -3,6 +3,7 @@ import axios, { CancelTokenSource } from "axios";
 import Uploader from "@components/upload/Uploader";
 import UploadModal from "@components/upload/UploadModal";
 
+
 export interface FileUploadState {
     file: File;
     progress: number;
@@ -25,7 +26,7 @@ const UploadPage = () => {
 
     useEffect(() => {
         const newFiles = files.filter(
-            (file) => !uploadStates.some((u) => u.file === file)
+            (file) => !uploadStates.some((state) => state.file === file)
         );
         if (newFiles.length > 0) {
             const newUploadStates = newFiles.map((file) => ({
@@ -38,38 +39,43 @@ const UploadPage = () => {
     }, [files, uploadStates]);
 
     useEffect(() => {
-        uploadStates.forEach((fs) => {
-            if (fs.status === "pending") {
-                uploadFile(fs);
+        uploadStates.forEach((state) => {
+            if (state.status === "pending") {
+                uploadFile(state);
             }
         });
-
     }, [uploadStates]);
 
     const uploadFile = async (fileState: FileUploadState) => {
         const formData = new FormData();
-        formData.append("file", fileState.file);
+        formData.append("files", fileState.file);
         const source = axios.CancelToken.source();
 
-
+        // 업데이트: 각 상태(state)를 명확하게 표현합니다.
         setUploadStates((prev) =>
-            prev.map((fs) =>
-                fs.file === fileState.file
-                    ? { ...fs, status: "uploading", cancelToken: source }
-                    : fs
+            prev.map((state) =>
+                state.file === fileState.file
+                    ? { ...state, status: "uploading", cancelToken: source }
+                    : state
             )
         );
 
         try {
             const response = await axios.post(`${BaseUrl}/v1/invoice`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization:
+                        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDI1IiwiaXNzIjoic2VvdWxtaWxrIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc0MTQwNTM2OSwiZXhwIjoxNzQxNDkxNzY5fQ.Ret4jmw5E_wwcQ_6eQfe6ZK5cBS4LBPKwPa5tze4niYUILBGHqhsJKo3ybYJXb0cJO81SNHrmdgNiNz_sK1e4Q",
+
+                },
                 onUploadProgress: (progressEvent) => {
                     const percent = Math.round(
                         (progressEvent.loaded * 100) /
                         (progressEvent.total || fileState.file.size)
                     );
                     setUploadStates((prev) =>
-                        prev.map((fs) =>
-                            fs.file === fileState.file ? { ...fs, progress: percent } : fs
+                        prev.map((state) =>
+                            state.file === fileState.file ? { ...state, progress: percent } : state
                         )
                     );
                 },
@@ -77,10 +83,10 @@ const UploadPage = () => {
             });
 
             setUploadStates((prev) =>
-                prev.map((fs) =>
-                    fs.file === fileState.file
-                        ? { ...fs, status: response.status === 200 ? "success" : "error" }
-                        : fs
+                prev.map((state) =>
+                    state.file === fileState.file
+                        ? { ...state, status: response.status === 200 ? "success" : "error" }
+                        : state
                 )
             );
         } catch (error: unknown) {
@@ -90,8 +96,8 @@ const UploadPage = () => {
                 console.log("업로드 중 에러 발생", error);
             }
             setUploadStates((prev) =>
-                prev.map((fs) =>
-                    fs.file === fileState.file ? { ...fs, status: "error" } : fs
+                prev.map((state) =>
+                    state.file === fileState.file ? { ...state, status: "error" } : state
                 )
             );
         }
@@ -99,29 +105,34 @@ const UploadPage = () => {
 
     const handleCancel = (fileState: FileUploadState) => {
         fileState.cancelToken?.cancel("User canceled upload");
-        setUploadStates((prev) => prev.filter((fs) => fs.file !== fileState.file));
+        setUploadStates((prev) =>
+            prev.filter((state) => state.file !== fileState.file)
+        );
     };
 
     const handleRetry = (fileState: FileUploadState) => {
         setUploadStates((prev) =>
-            prev.map((fs) =>
-                fs.file === fileState.file ? { ...fs, status: "pending", progress: 0 } : fs
+            prev.map((state) =>
+                state.file === fileState.file
+                    ? { ...state, status: "pending", progress: 0 }
+                    : state
             )
         );
     };
 
     const handleRemove = (fileState: FileUploadState) => {
-        setUploadStates((prev) => prev.filter((fs) => fs.file !== fileState.file));
+        setUploadStates((prev) =>
+            prev.filter((state) => state.file !== fileState.file)
+        );
     };
 
     const isAllSuccess =
         uploadStates.length > 0 &&
-        uploadStates.every((fs) => fs.status === "success");
+        uploadStates.every((state) => state.status === "success");
 
     return (
         <>
             <Uploader onFilesAdded={handleFilesAdded} />
-
             {isModalOpen && (
                 <UploadModal
                     uploadStates={uploadStates}
