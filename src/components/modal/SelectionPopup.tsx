@@ -4,16 +4,22 @@ interface SelectionPopupProps {
     IconImg?: string;
     Content: string;
     SubContent?: string;
-    PrimaryBtnContent: string;
-    SecondaryBtnContent: string;
+    primaryButton: {
+        label: string;
+        onClick: () => void;
+    };
+    secondaryButton?: {
+        label: string;
+        onClick: () => void;
+    };
 }
 
 const SelectionPopup = ({
                             IconImg,
                             Content,
                             SubContent,
-                            PrimaryBtnContent,
-                            SecondaryBtnContent,
+                            primaryButton,
+                            secondaryButton,
                         }: SelectionPopupProps) => {
     return (
         <ModalContainer>
@@ -21,9 +27,13 @@ const SelectionPopup = ({
             <ModalContent>{Content}</ModalContent>
             {SubContent &&  <SubModalContent>{SubContent}</SubModalContent>}
             <ButtonContainer>
-                <SecondaryButton>{SecondaryBtnContent}</SecondaryButton>
-                <PrimaryButton >
-                    {PrimaryBtnContent}
+                {secondaryButton && (
+                    <SecondaryButton onClick={secondaryButton.onClick}>
+                        {secondaryButton.label}
+                    </SecondaryButton>
+                )}
+                <PrimaryButton onClick={primaryButton.onClick}>
+                    {primaryButton.label}
                 </PrimaryButton>
             </ButtonContainer>
         </ModalContainer>
