@@ -1,51 +1,45 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import TopSection from "@components/announcement/TopSection";
 import SearchBar from "@components/announcement/SearchBar.tsx";
+import TopSection from "@components/announcement/TopSection";
 import NoticeList from "@components/announcement/NoticeList.tsx";
-import { useCookies } from "react-cookie";
 import BottomPagination from "@components/announcement/BottomPagination.tsx";
 import WriteButton from "@components/announcement/WriteButton.tsx";
 import { useNavigate } from "react-router-dom";
-import useNoticeStore from "@store/noticeStore.ts";
+import { useCookies } from "react-cookie";
 import axios from "axios";
+import useNoticeStore from "@store/noticeStore";
 
 const AnnouncementPage = () => {
     const navigate = useNavigate();
-    const [isMyPostsOnly, setIsMyPostsOnly] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const [cookies] = useCookies(["accessToken"]);
     const TOKEN = import.meta.env.VITE_TOKEN;
+    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const { notices, totalPages, setNotices, setPagination } = useNoticeStore();
+    // Zustand에서 관리하는 상태 사용
+    const { notices, totalPages, setNotices, setPagination, isMyPostsOnly, setMyPostsOnly } =
+        useNoticeStore();
 
-    // 체크된 게시글 ID 목록
+    // 개별 체크 상태는 로컬 state로 관리 (필요하다면 store로도 옮길 수 있음)
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
     const handleGetList = () => {
+        console.log(cookies)
         const endpoint = isMyPostsOnly
             ? `${BaseUrl}/v1/notice/my-notices`
             : `${BaseUrl}/v1/notice/list`;
 
         axios
             .get(endpoint, {
-                headers: {
-                    Authorization: `Bearer ${TOKEN}`,
-                },
+                headers: { Authorization: `Bearer ${TOKEN}` },
             })
             .then((res) => {
                 if (res.status === 200) {
                     const data = res.data.data;
                     console.log(data);
                     setNotices(data.content);
-                    setPagination(
-                        data.pageNo,
-                        data.pageSize,
-                        data.totalElements,
-                        data.totalPages
-                    );
-                    setSelectedIds([]);
+                    setPagination(data.pageNo, data.pageSize, data.totalElements, data.totalPages);
+                    setSelectedIds([]); // 목록 갱신 시 선택 초기화
                 }
             })
             .catch((err) => {
@@ -70,14 +64,13 @@ const AnnouncementPage = () => {
         );
     };
 
-    // 전체 삭제 (NoticeList 헤더의 삭제 버튼에서만 호출)
+    // 전체 삭제 (헤더의 삭제 버튼)
     const handleDeleteSelected = async () => {
-        console.log(cookies)
         if (selectedIds.length === 0) return;
         if (!confirm("선택한 게시글을 삭제하시겠습니까?")) return;
         try {
             await axios.delete(`${BaseUrl}/v1/notice`, {
-                data: { id: selectedIds },
+                data: { ids: selectedIds },
                 headers: { Authorization: `Bearer ${TOKEN}` },
             });
             alert("삭제 성공");
@@ -89,11 +82,12 @@ const AnnouncementPage = () => {
     };
 
     const handlePageChange = ({ selected }: { selected: number }) => {
-        setCurrentPage(selected + 1);
+        console.log(selected)
+        // 페이지 변경 관련 로직 필요 시 추가
     };
 
     const toggleMyPosts = () => {
-        setIsMyPostsOnly((prev) => !prev);
+        setMyPostsOnly(!isMyPostsOnly);
     };
 
     useEffect(() => {
@@ -120,7 +114,7 @@ const AnnouncementPage = () => {
 
             <BottomPagination
                 pageCount={totalPages}
-                currentPage={currentPage}
+                currentPage={1} // 페이지 로직에 맞게 수정 가능
                 onPageChange={handlePageChange}
             />
 
