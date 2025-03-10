@@ -495,7 +495,7 @@ const ClearIcon = styled.img`
 `;
 
 const ListContainer = styled.div`
- margin-top : 100px;
+ margin-top : 40px;
 `
 const DateComponent =styled.div`
   display: flex;
