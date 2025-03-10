@@ -1,5 +1,17 @@
 import axios from "axios";
 
+const getCookie = (name: string): string | null => {
+  const cookies = document.cookie.split("; ");
+  for (let cookie of cookies) {
+    const [key, value] = cookie.split("=");
+    if (key === name) {
+      return decodeURIComponent(value);
+    }
+  }
+  return null;
+};
+
+console.log("원래 쿠키 : ",document.cookie);
 const token = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
@@ -7,9 +19,11 @@ const token = axios.create({
     "ngrok-skip-browser-warning": "true",
   },
 });
+
 token.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken"); 
+    const token = getCookie("accessToken");
+    console.log("토큰 : ",token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,14 +36,22 @@ token.interceptors.request.use(
 
 export default token;
 // import axios from "axios";
-
 // const token = axios.create({
 //   baseURL: import.meta.env.VITE_BACKEND_URL,
-//   withCredentials: true,
 //   headers: {
 //     "ngrok-skip-browser-warning": "true",
-//     "Authorization": `Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiNyIsImlzcyI6InNlb3VsbWlsayIsImlhdCI6MTc0MTM3Mzc1MiwiZXhwIjoxNzcyOTA5NzUyfQ.Mh4ktKIwq3Dp27YXQI6E3DQU-_TtrzdbiSBHODfBzs0ELJio7LS20Q3kjjjIO9gyTIFIfuWDlNQ_76vqWnLobw`
 //   },
 // });
+// token.interceptors.request.use((config) => {
+//   const token = localStorage.getItem("accessToken");
+//   console.log("Access Token:", token);
+//   console.log("Authorization Header:", `Bearer ${token}`);
+
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });
+
 
 // export default token;
