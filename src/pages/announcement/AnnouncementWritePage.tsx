@@ -41,8 +41,7 @@ const AnnouncementWritePage = () => {
             const response = await axios.post(`${BaseUrl}/v1/notice`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization:
-                        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzZW91bG1pbGsiLCJzdWIiOiIxMDEwIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc0MTM3OTY0NywiZXhwIjoxNzQxNDY2MDQ3fQ.m9R3tKsZfvmU68iCymz7oW2JBhFCNwS2OcdB9aBClon95m7jvTbr82k6I7UbqqYv5W-QLVQDa6Y3RqIMw4ZY1A",
+                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiMTAyNiIsImlzcyI6InNlb3VsbWlsayIsImlhdCI6MTc0MTUyMjA4NSwiZXhwIjoxNzQxNjA4NDg1fQ.uzjooL7tihVt2IHVOpxl40o84ucVVJ_ZGHd-eQJAJVlP7GZJMBX2w7a_nndtXnatGOnkzBcpBUyuBMkgSPID1Q`,
                 },
             });
 
