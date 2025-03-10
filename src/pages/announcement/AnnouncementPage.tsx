@@ -1,64 +1,62 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import TopSection from "@components/announcement/TopSection";
 import SearchBar from "@components/announcement/SearchBar.tsx";
 import NoticeList from "@components/announcement/NoticeList.tsx";
-import {useCookies} from "react-cookie";
+import { useCookies } from "react-cookie";
 import BottomPagination from "@components/announcement/BottomPagination.tsx";
 import WriteButton from "@components/announcement/WriteButton.tsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useNoticeStore from "@store/noticeStore.ts";
 import axios from "axios";
 
-
-
 const AnnouncementPage = () => {
-
     const navigate = useNavigate();
     const [isMyPostsOnly, setIsMyPostsOnly] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const [cookies] = useCookies(["accessToken"]);
     const TOKEN = import.meta.env.VITE_TOKEN;
-    const {
-        notices,
+    const { notices, totalPages, setNotices, setPagination } = useNoticeStore();
 
-        totalPages,
-        setNotices,
-        setPagination,
-    } = useNoticeStore();
-
-    const handleGetList = () =>{
+    const handleGetList = () => {
+        // 토글 상태에 따라 엔드포인트 결정
         console.log(cookies)
-        axios.get(`${BaseUrl}/v1/notice/list`,{
+        const endpoint = isMyPostsOnly
+            ? `${BaseUrl}/v1/notice/my-notices`
+            : `${BaseUrl}/v1/notice/list`;
+
+        axios.get(endpoint, {
             headers: {
-                Authorization:  `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${TOKEN}`,
             },
         })
-            .then((res)=>{
-
-               if(res.status===200){
-                   const data = res.data.data;
-                   console.log(data)
-                   setNotices(data.content);
-                   setPagination(data.pageNo, data.pageSize, data.totalElements, data.totalPages);
-               }
+            .then((res) => {
+                if (res.status === 200) {
+                    const data = res.data.data;
+                    console.log(data);
+                    setNotices(data.content);
+                    setPagination(data.pageNo, data.pageSize, data.totalElements, data.totalPages);
+                }
             })
-    }
-
+            .catch((err) => {
+                console.error(err);
+            });
+    };
 
     const handlePageChange = ({ selected }: { selected: number }) => {
         setCurrentPage(selected + 1);
-
+        // 페이지 변경 시, 필요하면 추가 API 호출 처리 (ex: 서버에 page 번호 전달)
     };
+
     const toggleMyPosts = () => {
         setIsMyPostsOnly((prev) => !prev);
     };
+
+    // 초기 데이터 호출 및 토글 상태 변경 시 재호출
     useEffect(() => {
         handleGetList();
-    }, []);
-
-
+    }, [isMyPostsOnly]);
 
     return (
         <Container>
