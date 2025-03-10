@@ -36,7 +36,7 @@ const Login = () => {
         const data = await response.json();
         console.log("로그인 성공:", data);
         localStorage.setItem("userInfo", JSON.stringify(data.data.userInfo));
-        localStorage.setItem("token", data.token); 
+        localStorage.setItem("token", data.data.accessToken);
   
         navigate("/home");
       } catch (err: any) {
