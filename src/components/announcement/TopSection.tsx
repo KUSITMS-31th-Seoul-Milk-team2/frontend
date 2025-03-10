@@ -1,20 +1,14 @@
-import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "@styles/theme.ts";
-import downArrowIcon from "@assets/icons/bottomArrowIcon.svg";
+
 
 interface TopSectionProps {
     totalCount: number;
     onToggleMyPosts: () => void;
     isMyPostsOnly: boolean;
-    sortOption: string;
-    onChangeSortOption: (option: string) => void;
 }
 
-const TopSection = ({ totalCount, onToggleMyPosts, isMyPostsOnly, sortOption, onChangeSortOption }: TopSectionProps) => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    const sortOptions = ["최신순", "오래된순"];
+const TopSection = ({ totalCount, onToggleMyPosts, isMyPostsOnly }: TopSectionProps) => {
 
     return (
         <Container>
@@ -26,20 +20,6 @@ const TopSection = ({ totalCount, onToggleMyPosts, isMyPostsOnly, sortOption, on
                     <FilterLabel>내가 쓴 글</FilterLabel>
                     <ToggleSwitch onClick={onToggleMyPosts} $isActive={isMyPostsOnly} />
                 </FilterSection>
-                <SortWrapper>
-                    <SortButton onClick={() => setIsDropdownOpen((prev) => !prev)}>
-                        {sortOption} <SortIcon src={downArrowIcon} alt="정렬 아이콘" />
-                    </SortButton>
-                    {isDropdownOpen && (
-                        <DropdownMenu>
-                            {sortOptions.map(option => (
-                                <DropdownItem key={option} onClick={() => { onChangeSortOption(option); setIsDropdownOpen(false); }}>
-                                    {option}
-                                </DropdownItem>
-                            ))}
-                        </DropdownMenu>
-                    )}
-                </SortWrapper>
             </SortFilterContainer>
         </Container>
     );
@@ -108,49 +88,5 @@ const ToggleSwitch = styled.button<{ $isActive: boolean }>`
         left: ${({ $isActive }) => ($isActive ? "calc(100% - 18px)" : "2px")};
         transform: translateY(-50%);
         transition: left 0.3s ease;
-    }
-`;
-const SortWrapper = styled.div`
-    position: relative;
-`;
-
-const SortButton = styled.button`
-    display: flex;
-    align-items: center;
-    background: none;
-    border: 1px solid ${theme.colors.gray300};
-    border-radius: 32px;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    color: ${theme.colors.gray800};
-`;
-
-const SortIcon = styled.img`
-    width: 1rem;
-    height: auto;
-    margin-left: 0.5rem;
-`;
-
-const DropdownMenu = styled.div`
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 120px;
-    background:  ${theme.colors.white};
-    border: 1px solid ${theme.colors.gray300};
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    z-index: 1000;
-`;
-
-const DropdownItem = styled.div`
-    padding: 0.5rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    color: ${theme.colors.gray800};
-
-    &:hover {
-        background-color: ${theme.colors.gray100};
     }
 `;
