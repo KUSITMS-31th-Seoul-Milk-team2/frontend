@@ -5,13 +5,6 @@ import dropdown from "@assets/icons/dropdown.svg";
 import download from "@assets/icons/download.svg"
 import PaginationComponent from "./PaginationComponent";
 
-// interface ListItem {
-//   id: number;
-//   supplier: string;
-//   recipient: string;
-//   writer: string;
-//   date: string;
-// }
 interface ListItem{
   id: number;
   employeeName: string;
@@ -120,8 +113,8 @@ export default EmployeeListComponent;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 800px;
-  margin-top: 30px;
+  max-width: 1040px;
+  margin-top: 10px;
 `;
 
 const ExcelButton = styled.button`

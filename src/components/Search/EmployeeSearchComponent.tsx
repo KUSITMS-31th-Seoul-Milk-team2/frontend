@@ -47,15 +47,11 @@ useEffect(() => {
     writer: "",
     supplier: "",
     recipient: "",
-    approvalNumber1: "",
-    approvalNumber2: "",
-    approvalNumber3: "",
     startDate: null as Date | null,
     endDate: null as Date | null,
   });
-  console.log("API 요청 URL:", import.meta.env.VITE_BACKEND_URL + "/v1/receipt/search");
   const [searchResults, setSearchResults] = useState<ListItem[]>([]);
-  const fetchSearchResults = async (userInfo) => {
+  const fetchSearchResults = async (userInfo : any) => {
     const requestBody = {
       employeeName: filters.writer ? [filters.writer] : [userInfo.name],
       suNames: filters.supplier ? [filters.supplier] : null,
@@ -77,6 +73,7 @@ useEffect(() => {
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>("전체");
   const [filterTags, setFilterTags] = useState<string[]>([]);
+  console.log(filterTags);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const filteredValue = value.slice(0, 8);
@@ -84,43 +81,6 @@ useEffect(() => {
       ...prevFilters,
       [name]: filteredValue,
     }));
-  };
-  
-  
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: string) => {
-    if (e.nativeEvent.isComposing) return;
-  
-    if (e.key === "Enter") {
-      setFilters((prevFilters) => {
-        const value = prevFilters[field as keyof typeof prevFilters] as string;
-        
-        if (value.trim() !== "") {
-          return {
-            ...prevFilters,
-            [field]: "", 
-          };
-        }
-        return prevFilters;
-      });
-    }
-  };
-  
-  const handleApprovalKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.nativeEvent.isComposing) return;
-    if (e.key === "Enter") {
-      const fullApprovalNumber = getFullApprovalNumber();
-      if (fullApprovalNumber.replace(/-/g, "").length === 24) {
-        if (!filterTags.includes(fullApprovalNumber)) {
-          setFilterTags((prevTags) => [...prevTags, fullApprovalNumber]);
-        }
-        setFilters({
-          ...filters,
-          approvalNumber1: "",
-          approvalNumber2: "",
-          approvalNumber3: "",
-        });
-      }
-    }
   };
   
   const handleFilterClick = (filter: string) => {
@@ -159,9 +119,6 @@ useEffect(() => {
       writer: "",
       supplier: "",
       recipient: "",
-      approvalNumber1: "", 
-      approvalNumber2: "", 
-      approvalNumber3: "", 
       startDate: null,
       endDate: null,
     });
@@ -174,96 +131,15 @@ useEffect(() => {
       [field]: "", 
     }));
   };
-  const getFullApprovalNumber = () => {
-    return `${filters.approvalNumber1}${filters.approvalNumber2}${filters.approvalNumber3}`;
-  };
-  
   
   
   return (
     <SearchContainer>
       <GlobalStyles />
       <SearchBox>
-    <InputContainer>
-  <Label>공급자 사업체명</Label>
-  <Input
-    type="text"
-    name="supplier"
-    placeholder="지점명을 입력하세요."
-    value={filters.supplier}
-    onChange={handleChange}
-    onKeyDown={(e) => handleKeyDown(e, "supplier")}
-  />
-  {filters.supplier && (
-    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("supplier")} />
-  )}
-</InputContainer>
-<InputContainer>
-  <Label>공급받는자 사업체명</Label>
-  <Input
-    type="text"
-    name="recipient"
-    placeholder="대리점명 입력하세요."
-    value={filters.recipient}
-    onChange={handleChange}
-    onKeyDown={(e) => handleKeyDown(e, "recipient")}
-  />
-  {filters.recipient && (
-    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("recipient")} />
-  )}
-</InputContainer>
-<InputContainer>
-  <Label>승인번호</Label>
-
-  <InputWrapper>
-    <InputApproval
-      type="text"
-      name="approvalNumber1"
-      placeholder="12345678"
-      value={filters.approvalNumber1}
-      onChange={handleChange}
-      onKeyDown={handleApprovalKeyDown}
-      maxLength={8}
-    />
-  </InputWrapper>
-
-  <InputWrapper>
-    <InputApproval
-      type="text"
-      name="approvalNumber2"
-      placeholder="12345678"
-      value={filters.approvalNumber2}
-      onChange={handleChange}
-      onKeyDown={handleApprovalKeyDown}
-      maxLength={8}
-    />
-  </InputWrapper>
-
-  <InputWrapper>
-    <InputApproval
-      type="text"
-      name="approvalNumber3"
-      placeholder="12345678"
-      value={filters.approvalNumber3}
-      onChange={handleChange}
-      onKeyDown={handleApprovalKeyDown}
-      maxLength={8}
-    />
-  </InputWrapper>
-
-  {(filters.approvalNumber1 || filters.approvalNumber2 || filters.approvalNumber3) && (
-    <ClearIconApproval src={cancelIcon} alt="Clear" onClick={() => {
-      setFilters({
-        ...filters,
-        approvalNumber1: "",
-        approvalNumber2: "",
-        approvalNumber3: "",
-      });
-    }} />
-  )}
-</InputContainer>
-        <DateContainer>
-          <DateLabel>기간</DateLabel>
+      <DateComponent>
+      <DateLabel>기간</DateLabel> 
+      <DateContainer>
           <DatePickerWrapper>
           <Icon src={calendar} alt="Calendar Icon" />
             <StyledDatePicker
@@ -285,9 +161,7 @@ useEffect(() => {
               calendarClassName="custom-calendar"
             />
           </DatePickerWrapper>
-        </DateContainer>
-
-        <ButtonContainer>
+          <ButtonContainer>
       {["오늘","1주","1개월","1년"].map((filter) => (
         <DateFilterButton
         key={filter}
@@ -297,17 +171,47 @@ useEffect(() => {
         {filter}
       </DateFilterButton>
       ))}
-    </ButtonContainer>
-      </SearchBox>
-      <CheckButtonContainer>
+    </ButtonContainer> 
+        </DateContainer>
+    </DateComponent>
+<InputComponent>
+    <InputContainer>
+  <Label>공급자 사업체명</Label>
+  <Input
+    type="text"
+    name="supplier"
+    placeholder="지점명을 입력하세요."
+    value={filters.supplier}
+    onChange={handleChange}
+  />
+  {filters.supplier && (
+    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("supplier")} />
+  )}
+</InputContainer>
+<InputContainer>
+  <Label>공급받는자 사업체명</Label>
+  <Input
+    type="text"
+    name="recipient"
+    placeholder="대리점명 입력하세요."
+    value={filters.recipient}
+    onChange={handleChange}
+  />
+  {filters.recipient && (
+    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("recipient")} />
+  )}
+</InputContainer>
+<CheckButtonContainer>
       <ResetButton onClick={handleReset}>
-              <ResetIcon src={resetIcon} alt="초기화 아이콘" />
-                초기화
+      <ResetIcon src={resetIcon} alt="초기화 아이콘" />
           </ResetButton>
           <SearchButton onClick={() => userInfo && fetchSearchResults(userInfo)}>검색</SearchButton>
-       </CheckButtonContainer>
-       <ListContainer>
-    <EmployeeListComponent data={searchResults} /></ListContainer>
+      </CheckButtonContainer>
+  </InputComponent>
+      </SearchBox>
+      <ListContainer>
+    <EmployeeListComponent data={searchResults} />
+    </ListContainer>
     </SearchContainer>
   );
 };
@@ -319,17 +223,16 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 800px;
+  max-width: 1040px;
   margin: 0 auto;
 `;
 
 const SearchBox = styled.div`
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: #F8F8F9;
   padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
   @media (max-width: 1104px) {
     padding: 12px;
   }
@@ -337,56 +240,44 @@ const SearchBox = styled.div`
 
 const InputContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 12px;
-  gap : 12px;
+  gap : 10px;
+  width: 406px;
 `;
 
 const Label = styled.label`
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 30px;
-  width: 158px;
+  display: flex;
+width : 400px;
+height: 19px;
+flex-direction: column;
+justify-content: center;
+color: var(--gray-1600, #393C3C);
+font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 `;
 
+
 const DateLabel = styled(Label)`
-  margin-right: 30px;
+  margin-right: 10px;
+  width : 632px;
 `;
 
 const Input = styled.input`
-  flex: 1;
-  padding: 10.5px;
-  border-radius: 4px;
-  border: 1px solid #777;
-  background: #FFF;
-  font-size: 14px;
-  min-width: 150px;
-  &::placeholder {
-    color: #777;
-  }
-
-  @media (max-width: 768px) {
-    width: 30%; 
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  @media (max-width: 480px) {
-    width: 20%;
-    font-size: 12px;
-    padding: 6px;
-  }
-`;
-const InputApproval = styled.input`
-  flex: 1;
-  padding: 10.5px;
-  border-radius: 4px;
-  border: 1px solid #777;
-  background: #FFF;
-  font-size: 14px;
-  max-width: 98px;
+  display: flex;
+  width : 390px;
+  height: 20px;
+  padding: 10.5px 27.41px 10.5px 9px;
+align-items: center;
+border-radius: 4px;
+border: 1px solid var(--gray-600, #A6A5A5);
+background: var(--white, #FFF);
+box-shadow: 0px 0px 0px 1px #FFF inset;
   &::placeholder {
     color: #777;
   }
@@ -408,15 +299,16 @@ const InputApproval = styled.input`
 const DateContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
   margin-bottom: 12px;
-  margin-top : 12px;
+  width : 632px;
 `;
 
 const DatePickerWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 140px;
+  width: 150px;
 `;
 
 const StyledDatePicker = styled(DatePicker)`
@@ -448,26 +340,29 @@ const ButtonContainer = styled.div`
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
-  margin-top :5px;
+  margin-top :10px;
 `;
 const CheckButtonContainer = styled.div`
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
-  margin-top :5px;
-  position :absolute;
-  top : 600px;
-  left : 670px;
+  margin-top :40px;
   z-index : 1001;
+  margin-left : -10px;
 `;
 
 const DateFilterButton = styled.button<{ isSelected: boolean }>`
-  padding: 10px 18px 30px 18px;
+  display: flex;
   height: 39px;
-  border-radius: 8px;
-  border: 1px solid #009857;
-  background: ${({ isSelected }) => (isSelected ? "#009857" : "#FFF")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "#009857")};
+  padding: 10px 12px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 4px;
+  border: 1px solid ${({ isSelected }) => (isSelected ? "#009857" : "#A6A5A5")};
+  background: ${({ isSelected }) => (isSelected ? "rgba(0, 152, 87, 0.10)" : "#FFF")};
+  color: ${({ isSelected }) => (isSelected ? "#009857" : "#A6A5A5")};
   cursor: pointer;
   font-family: Pretendard;
   font-size: 16px;
@@ -482,15 +377,24 @@ const DateFilterButton = styled.button<{ isSelected: boolean }>`
 `;
 
 const SearchButton = styled.button`
-  padding: 12px 32px;
-  background: #009857;
-  color: white;
-  width: 112px;
- padding: 34px 40px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  display: flex;
+width: 72px;
+height: 39px;
+padding: 10px 16px;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 10px;
+border-radius: 4px;
+background: #009857;
+border : none;
+color: #FFF;
+text-align: center;
+font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
   @media (max-width: 768px) {
     font-size: 14px;
   }
@@ -528,26 +432,19 @@ export const GlobalStyles = createGlobalStyle`
 `;
 const ResetButton = styled.button`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 76px;
-  height : 90px;
-  margin-right : 5px;
-  margin-left : 5px;
-  border-radius: 8px;
-  border: 1px solid #009857;
-  background: #FFF;
-  color: #009857;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  margin -left : 200px;
+height: 39px;
+padding: 10px 12px;
+justify-content: center;
+align-items: center;
+gap: 10px;
+border-radius: 4px;
+background: var(--gray-200, #F1F1F1);
+border : none;
 `;
 
 const ResetIcon = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   margin-bottom: 4px;
 `;
 
@@ -558,20 +455,26 @@ const ClearIcon = styled.img`
   height: 14px;
   cursor: pointer;
 `;
-const ClearIconApproval = styled.img`
-  position: absolute;
-  right: 485px;
-  width: 14px;
-  height: 14px;
-  cursor: pointer;
-`;
-const InputWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-right: 5px;
-`;
 
 const ListContainer = styled.div`
- margin-top : 100px;
+ margin-top : 40px;
+`
+const DateComponent =styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: left;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom : 20px;
+  height : 60px;
+`
+const InputComponent =styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-left : 8px;
 `

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminSearchComponent from "@components/Search/AdminSearchComponent";
 import EmployeeSearchComponent from "@components/Search/EmployeeSearchComponent";
-import AdminListComponent from "@components/Search/AdminListComponent";
-import EmployeeListComponent from "@components/Search/EmployeeListComponent";
 interface UserInfo {
   name: string;
   role: string;
@@ -20,9 +18,8 @@ const SearchPage: React.FC = () => {
   console.log("User Role:", userInfo?.role);
   return (
     <PageContainer>
-      <Title>지급 결의서 조회</Title>
+      <Title>세금 계산서 조회</Title>
       {userInfo?.role === "ADMIN" ? <AdminSearchComponent /> : <EmployeeSearchComponent />}
-      {/* {userInfo?.role === "ADMIN" ? <AdminListComponent /> : <EmployeeListComponent />} */}
     </PageContainer>
   );
 };
@@ -48,4 +45,5 @@ const Title = styled.h1`
   margin-bottom: 16px;
   text-align: left;  
   align-items: center;
+  width : 1044px;
 `;
