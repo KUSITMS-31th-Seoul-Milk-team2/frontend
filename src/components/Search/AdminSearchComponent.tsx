@@ -6,7 +6,7 @@ import calendar from "@assets/icons/calendar.svg";
 import resetIcon from "@assets/icons/reset.svg";
 import cancelIcon from "@assets/icons/cancel.svg";
 import token from "@utils/token";
-import EmployeeListComponent from "@components/Search/EmployeeListComponent";
+import AdminListComponent from "@components/Search/AdminListComponent";
 interface ListItem {
   id: number;
   employeeName: string;
@@ -200,7 +200,7 @@ const AdminSearchComponent: React.FC = () => {
   </InputComponent>
       </SearchBox>
       <ListContainer>
-    <EmployeeListComponent data={searchResults} />
+    <AdminListComponent data={searchResults} />
     </ListContainer>
     </SearchContainer>
   );

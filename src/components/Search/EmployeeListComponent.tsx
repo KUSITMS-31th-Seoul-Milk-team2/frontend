@@ -5,13 +5,6 @@ import dropdown from "@assets/icons/dropdown.svg";
 import download from "@assets/icons/download.svg"
 import PaginationComponent from "./PaginationComponent";
 
-// interface ListItem {
-//   id: number;
-//   supplier: string;
-//   recipient: string;
-//   writer: string;
-//   date: string;
-// }
 interface ListItem{
   id: number;
   employeeName: string;
