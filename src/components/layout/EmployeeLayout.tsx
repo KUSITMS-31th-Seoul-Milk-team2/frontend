@@ -17,7 +17,7 @@ const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ name, employeeId, onClo
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
       <UserInfo>
-        <RoleTitle>직원 계정</RoleTitle>
+        <RoleTitle>사원 계정</RoleTitle>
         <UserName>
           {name} <EmployeeId>{employeeId}</EmployeeId>
         </UserName>
@@ -29,7 +29,7 @@ const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ name, employeeId, onClo
           </MenuItem>
           <MenuItem
             onClick={() => {
-              localStorage.removeItem("userInfo");
+              localStorage.clear();
               navigate("/");
             }}
           >
@@ -47,7 +47,7 @@ export default EmployeeLayout;
 const ModalOverlay = styled.div`
   position: absolute;
   top: 11%;
-  right: 10%;
+  right: 9%;
   padding: 8px;
   z-index: 10;
   min-width: 200px;
