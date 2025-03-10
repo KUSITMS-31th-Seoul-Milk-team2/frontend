@@ -21,6 +21,8 @@ interface NoticeStoreState {
         totalElements: number,
         totalPages: number
     ) => void;
+    isMyPostsOnly: boolean;
+    setMyPostsOnly: (value: boolean) => void;
 }
 
 const useNoticeStore = create<NoticeStoreState>((set) => ({
@@ -34,6 +36,8 @@ const useNoticeStore = create<NoticeStoreState>((set) => ({
 
     setPagination: (pageNo, pageSize, totalElements, totalPages) =>
         set({ pageNo, pageSize, totalElements, totalPages }),
+    isMyPostsOnly: false,
+    setMyPostsOnly: (value) => set({ isMyPostsOnly: value }),
 }));
 
 export default useNoticeStore;

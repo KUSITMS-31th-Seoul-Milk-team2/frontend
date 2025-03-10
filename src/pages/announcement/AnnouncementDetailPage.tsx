@@ -18,18 +18,19 @@ interface NoticeDetail {
 const AnnouncementDetailPage = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { notices } = useNoticeStore();
+    const { notices, isMyPostsOnly } = useNoticeStore(); // 전역 Store에서 isMyPostsOnly 가져오기
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const TOKEN = import.meta.env.VITE_TOKEN;
+
     const [noticeDetail, setNoticeDetail] = useState<NoticeDetail | null>(null);
 
     useEffect(() => {
+        console.log(isMyPostsOnly)
         if (id) {
             axios
                 .get(`${BaseUrl}/v1/notice`, {
                     headers: {
-                        Authorization:
-                            `Bearer ${TOKEN}`,
+                        Authorization: `Bearer ${TOKEN}`,
                     },
                     params: { id: id },
                 })
@@ -53,10 +54,23 @@ const AnnouncementDetailPage = () => {
         currentIndex >= 0 && currentIndex < notices.length - 1
             ? notices[currentIndex + 1]
             : null;
+
     const getFileName = (url: string) => {
         return url.split("/").pop() || "첨부파일.pdf";
     };
+
     if (!noticeDetail) return <div>Loading...</div>;
+
+    // 수정 / 삭제 버튼 클릭 시
+    const handleEdit = () => {
+        alert("수정 기능은 구현 필요");
+        // 예: navigate(`/announcement/edit/${noticeDetail.id}`)
+    };
+    const handleDelete = () => {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+        // 예: axios.delete(...)
+        alert("삭제 기능은 구현 필요");
+    };
 
     return (
         <DetailContainer>
@@ -70,35 +84,38 @@ const AnnouncementDetailPage = () => {
                     </DetailDate>
                 </DetailHeader>
                 <Content>{noticeDetail.content}</Content>
+
+                {/* 첨부파일 영역 */}
                 {noticeDetail.fileUrl && (
                     <AttachmentContainer>
                         <FileInfo>
                             <FileIcon src="/icons/fileIcon.svg" alt="file icon" />
                             <FileName>{getFileName(noticeDetail.fileUrl)}</FileName>
                         </FileInfo>
-                        {/* 방법 A) a 태그 + download 속성 */}
                         <DownloadLink href={noticeDetail.fileUrl} download>
                             <DownloadIcon src="/icons/download.svg" alt="download icon" />
                         </DownloadLink>
-
-
                     </AttachmentContainer>
                 )}
             </ContentContainer>
 
             <ControlButtonContainer>
+                {/* 내가 쓴 글 모드일 때만 수정 / 삭제 버튼 표시 */}
+                {isMyPostsOnly && (
+                    <>
+                        <EditButton onClick={handleEdit}>수정</EditButton>
+                        <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                    </>
+                )}
+
                 <PrevButton
-                    onClick={() =>
-                        prevNotice && navigate(`/announcement/${prevNotice.id}`)
-                    }
+                    onClick={() => prevNotice && navigate(`/announcement/${prevNotice.id}`)}
                     disabled={!prevNotice}
                 >
                     이전
                 </PrevButton>
                 <NextButton
-                    onClick={() =>
-                        nextNotice && navigate(`/announcement/${nextNotice.id}`)
-                    }
+                    onClick={() => nextNotice && navigate(`/announcement/${nextNotice.id}`)}
                     disabled={!nextNotice}
                 >
                     다음
@@ -178,12 +195,77 @@ const Content = styled.div`
     white-space: pre-line;
 `;
 
+const AttachmentContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid ${theme.colors.gray300};
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    background: #fff;
+`;
+
+const FileInfo = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
+
+const FileIcon = styled.img`
+    width: 24px;
+    height: 24px;
+`;
+
+const FileName = styled.span`
+    font-size: 0.95rem;
+    color: ${theme.colors.gray1600};
+`;
+
+const DownloadLink = styled.a`
+    display: flex;
+    align-items: center;
+`;
+const DownloadIcon = styled.img`
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+`;
+
 const ControlButtonContainer = styled.div`
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
     margin-top: 2rem;
     margin-right: 2rem;
+`;
+
+const EditButton = styled.button`
+    background-color: ${theme.colors.gray200};
+    color: ${theme.colors.gray1600};
+    border: 1px solid ${theme.colors.gray300};
+    padding: 0.75rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+        opacity: 0.8;
+    }
+`;
+
+const DeleteButton = styled.button`
+    background-color: ${theme.colors.gray200};
+    color: ${theme.colors.gray1600};
+    border: 1px solid ${theme.colors.gray300};
+    padding: 0.75rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+        opacity: 0.8;
+    }
 `;
 
 const PrevButton = styled.button`
@@ -220,7 +302,6 @@ const NextButton = styled.button`
     }
 `;
 
-/* 공지사항 목록 섹션 헤더 */
 const NoticeListHeader = styled.div`
     display: flex;
     justify-content: space-between;
@@ -246,42 +327,4 @@ const ViewAllButton = styled.button`
     &:hover {
         opacity: 0.8;
     }
-`;
-/* 첨부파일 영역 */
-const AttachmentContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid ${theme.colors.gray300};
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-top: 1rem;
-  background: #fff;
-`;
-
-const FileInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const FileIcon = styled.img`
-  width: 24px;
-  height: 24px;
-`;
-
-const FileName = styled.span`
-  font-size: 0.95rem;
-  color: ${theme.colors.gray1600};
-`;
-
-/* a 태그를 이용한 다운로드 링크 */
-const DownloadLink = styled.a`
-  display: flex;
-  align-items: center;
-`;
-const DownloadIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
 `;
