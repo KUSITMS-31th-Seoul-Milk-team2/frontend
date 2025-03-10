@@ -17,26 +17,35 @@ const AnnouncementPage = () => {
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const [cookies] = useCookies(["accessToken"]);
     const TOKEN = import.meta.env.VITE_TOKEN;
+
     const { notices, totalPages, setNotices, setPagination } = useNoticeStore();
 
+    // 체크된 게시글 ID 목록
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
     const handleGetList = () => {
-        // 토글 상태에 따라 엔드포인트 결정
-        console.log(cookies)
         const endpoint = isMyPostsOnly
             ? `${BaseUrl}/v1/notice/my-notices`
             : `${BaseUrl}/v1/notice/list`;
 
-        axios.get(endpoint, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-            },
-        })
+        axios
+            .get(endpoint, {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                },
+            })
             .then((res) => {
                 if (res.status === 200) {
                     const data = res.data.data;
                     console.log(data);
                     setNotices(data.content);
-                    setPagination(data.pageNo, data.pageSize, data.totalElements, data.totalPages);
+                    setPagination(
+                        data.pageNo,
+                        data.pageSize,
+                        data.totalElements,
+                        data.totalPages
+                    );
+                    setSelectedIds([]);
                 }
             })
             .catch((err) => {
@@ -44,16 +53,49 @@ const AnnouncementPage = () => {
             });
     };
 
+    // 전체 선택/해제
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            const allIds = notices.map((n) => n.id);
+            setSelectedIds(allIds);
+        } else {
+            setSelectedIds([]);
+        }
+    };
+
+    // 개별 체크박스 선택/해제
+    const handleSelect = (noticeId: number, checked: boolean) => {
+        setSelectedIds((prev) =>
+            checked ? [...prev, noticeId] : prev.filter((id) => id !== noticeId)
+        );
+    };
+
+    // 전체 삭제 (NoticeList 헤더의 삭제 버튼에서만 호출)
+    const handleDeleteSelected = async () => {
+        console.log(cookies)
+        if (selectedIds.length === 0) return;
+        if (!confirm("선택한 게시글을 삭제하시겠습니까?")) return;
+        try {
+            await axios.delete(`${BaseUrl}/v1/notice`, {
+                data: { id: selectedIds },
+                headers: { Authorization: `Bearer ${TOKEN}` },
+            });
+            alert("삭제 성공");
+            handleGetList();
+        } catch (err) {
+            console.error(err);
+            alert("삭제 실패");
+        }
+    };
+
     const handlePageChange = ({ selected }: { selected: number }) => {
         setCurrentPage(selected + 1);
-        // 페이지 변경 시, 필요하면 추가 API 호출 처리 (ex: 서버에 page 번호 전달)
     };
 
     const toggleMyPosts = () => {
         setIsMyPostsOnly((prev) => !prev);
     };
 
-    // 초기 데이터 호출 및 토글 상태 변경 시 재호출
     useEffect(() => {
         handleGetList();
     }, [isMyPostsOnly]);
@@ -66,22 +108,32 @@ const AnnouncementPage = () => {
                 onToggleMyPosts={toggleMyPosts}
                 isMyPostsOnly={isMyPostsOnly}
             />
-            <NoticeList notices={notices} />
-            <WriteButton onClick={() => navigate("/announcement/write")} />
+
+            <NoticeList
+                notices={notices}
+                isMyPostsOnly={isMyPostsOnly}
+                selectedIds={selectedIds}
+                onSelect={handleSelect}
+                onSelectAll={handleSelectAll}
+                onDeleteSelected={handleDeleteSelected}
+            />
+
             <BottomPagination
                 pageCount={totalPages}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
             />
+
+            <WriteButton onClick={() => navigate("/announcement/write")} />
         </Container>
     );
 };
 
 export default AnnouncementPage;
 
-/* ======= styled-components ======= */
 const Container = styled.div`
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding-bottom: 2rem;
 `;
