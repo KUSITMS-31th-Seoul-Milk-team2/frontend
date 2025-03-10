@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { theme } from "@styles/theme.ts";
+import {useNavigate} from "react-router-dom";
 
 interface Notice {
     id: number;
@@ -14,6 +15,7 @@ interface NoticeListProps {
 }
 
 const NoticeList = ({ notices = [], showHeader = true }: NoticeListProps) => {
+    const navigate = useNavigate();
     return (
         <>
             {showHeader && (
@@ -29,7 +31,9 @@ const NoticeList = ({ notices = [], showHeader = true }: NoticeListProps) => {
                 {notices.map((notice) => (
                     <NoticeItem key={notice.id}>
                         <NoticeNumber>{notice.id}</NoticeNumber>
-                        <NoticeTitle>{notice.title}</NoticeTitle>
+                        <NoticeTitle
+                            onClick={() => navigate(`/announcement/${notice.id}`)}
+                        >{notice.title}</NoticeTitle>
                         <NoticeAuthor>{notice.author}</NoticeAuthor>
                         <NoticeDate>{notice.date}</NoticeDate>
                     </NoticeItem>
