@@ -182,7 +182,7 @@ const UserLogo = styled.img`
 const LogoContainer = styled.button`
   width: 200px;
   height: 43.456px;
-  margin-top: 10px;
+  margin-top: 5px;
   margin-left: 50px;
   border: none;
   background: none;
