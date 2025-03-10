@@ -144,7 +144,7 @@ useEffect(() => {
           <Icon src={calendar} alt="Calendar Icon" />
             <StyledDatePicker
               selected={filters.startDate}
-              onChange={(date: Date) => setFilters({ ...filters, startDate: date })}
+              onChange={(date: Date | null) => setFilters({ ...filters, startDate: date })}
               dateFormat="yyyy-MM-dd"
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
@@ -155,7 +155,7 @@ useEffect(() => {
           <Icon src={calendar} alt="Calendar Icon" />
             <StyledDatePicker
               selected={filters.endDate}
-              onChange={(date: Date) => setFilters({ ...filters, endDate: date })}
+              onChange={(date: Date | null) => setFilters({ ...filters, startDate: date })}
               dateFormat="yyyy-MM-dd"
               placeholderText="YYYY-MM-DD"
               calendarClassName="custom-calendar"
