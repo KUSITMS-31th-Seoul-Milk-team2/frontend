@@ -34,7 +34,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ name, employeeId, onClose }) 
           </MenuItem>
           <MenuItem
             onClick={() => {
-              localStorage.removeItem("userInfo");
+              localStorage.clear();
               navigate("/");
             }}
           >
