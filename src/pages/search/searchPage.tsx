@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminSearchComponent from "@components/Search/AdminSearchComponent";
 import EmployeeSearchComponent from "@components/Search/EmployeeSearchComponent";
-import AdminListComponent from "@components/Search/AdminListComponent";
-import EmployeeListComponent from "@components/Search/EmployeeListComponent";
+// import AdminListComponent from "@components/Search/AdminListComponent";
+// import EmployeeListComponent from "@components/Search/EmployeeListComponent";
 interface UserInfo {
   name: string;
   role: string;
