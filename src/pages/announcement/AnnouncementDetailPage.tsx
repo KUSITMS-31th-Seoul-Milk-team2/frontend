@@ -1,57 +1,115 @@
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { theme } from "@styles/theme.ts";
 import NoticeList from "@components/announcement/NoticeList.tsx";
+import useNoticeStore from "@store/noticeStore";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-interface Notice {
+interface NoticeDetail {
     id: number;
     title: string;
     author: string;
-    date: string;
+    content: string;
+    fileUrl?: string;
+    createdAt: string;
 }
 
 const AnnouncementDetailPage = () => {
-    // 예시 데이터 (API에서 받아온다고 가정)
-    const notices: Notice[] = [
-        { id: 28, title: "공지사항 제목입니다.", author: "김범연", date: "2025.01.20" },
-        { id: 27, title: "두 번째 공지사항입니다.", author: "김범연", date: "2025.01.18" },
-        { id: 26, title: "세 번째 공지사항입니다.", author: "김범연", date: "2025.01.10" },
-        { id: 25, title: "네 번째 공지사항입니다.", author: "김범연", date: "2025.01.05" },
-    ];
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const { notices } = useNoticeStore();
+    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
+    const TOKEN = import.meta.env.VITE_TOKEN;
+    const [noticeDetail, setNoticeDetail] = useState<NoticeDetail | null>(null);
+
+    useEffect(() => {
+        if (id) {
+            axios
+                .get(`${BaseUrl}/v1/notice`, {
+                    headers: {
+                        Authorization:
+                            `Bearer ${TOKEN}`,
+                    },
+                    params: { id: id },
+                })
+                .then((res) => {
+                    if (res.status === 200 && res.data.success) {
+                        setNoticeDetail(res.data.data);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+    }, [id, BaseUrl]);
+
+    // 공지사항 배열에서 현재 id에 해당하는 인덱스 찾기
+    const currentIndex = notices.findIndex(
+        (notice) => notice.id === Number(id)
+    );
+    const prevNotice = currentIndex > 0 ? notices[currentIndex - 1] : null;
+    const nextNotice =
+        currentIndex >= 0 && currentIndex < notices.length - 1
+            ? notices[currentIndex + 1]
+            : null;
+    const getFileName = (url: string) => {
+        return url.split("/").pop() || "첨부파일.pdf";
+    };
+    if (!noticeDetail) return <div>Loading...</div>;
 
     return (
         <DetailContainer>
             <PageTitle>공지사항</PageTitle>
             <ContentContainer>
-                <AnnouncementTitle>[중요] 세금계산서 제출 기한 및 유의사항 안내</AnnouncementTitle>
-
+                <AnnouncementTitle>{noticeDetail.title}</AnnouncementTitle>
                 <DetailHeader>
-                    <Author>박범진</Author>
-                    <DetailDate>2025.02.13</DetailDate>
+                    <Author>{noticeDetail.author}</Author>
+                    <DetailDate>
+                        {new Date(noticeDetail.createdAt).toLocaleDateString()}
+                    </DetailDate>
                 </DetailHeader>
+                <Content>{noticeDetail.content}</Content>
+                {noticeDetail.fileUrl && (
+                    <AttachmentContainer>
+                        <FileInfo>
+                            <FileIcon src="/icons/fileIcon.svg" alt="file icon" />
+                            <FileName>{getFileName(noticeDetail.fileUrl)}</FileName>
+                        </FileInfo>
+                        {/* 방법 A) a 태그 + download 속성 */}
+                        <DownloadLink href={noticeDetail.fileUrl} download>
+                            <DownloadIcon src="/icons/download.svg" alt="download icon" />
+                        </DownloadLink>
 
-                <Content>
-                    안녕하세요. 세금계산서 제출을 안내드립니다.
-                    <br />
-                    <br />
-                    세금계산서 발행 시 유의사항을 꼭 확인해주세요. <br />
-                    발행 기한: YYYY.MM.DD까지<br />
-                    제출 방법: [내용 작성] <br />
-                    <br />
-                    자세한 내용은 아래 첨부파일 혹은 홈페이지 공지사항을 참고해주시기 바랍니다.
-                    <br />
-                    <br />
-                    문의: tax@seoulmilk.co.kr
-                </Content>
+
+                    </AttachmentContainer>
+                )}
             </ContentContainer>
 
             <ControlButtonContainer>
-                <PrevButton>이전</PrevButton>
-                <NextButton>다음</NextButton>
+                <PrevButton
+                    onClick={() =>
+                        prevNotice && navigate(`/announcement/${prevNotice.id}`)
+                    }
+                    disabled={!prevNotice}
+                >
+                    이전
+                </PrevButton>
+                <NextButton
+                    onClick={() =>
+                        nextNotice && navigate(`/announcement/${nextNotice.id}`)
+                    }
+                    disabled={!nextNotice}
+                >
+                    다음
+                </NextButton>
             </ControlButtonContainer>
 
             <NoticeListHeader>
                 <NoticeListHeaderTitle>공지사항 목록</NoticeListHeaderTitle>
-                <ViewAllButton>전체보기</ViewAllButton>
+                <ViewAllButton onClick={() => navigate("/announcement")}>
+                    전체보기
+                </ViewAllButton>
             </NoticeListHeader>
 
             <NoticeList notices={notices} showHeader={false} />
@@ -129,58 +187,101 @@ const ControlButtonContainer = styled.div`
 `;
 
 const PrevButton = styled.button`
-  background-color: ${theme.colors.gray200};
-  color: ${theme.colors.gray1600};
-  border: 1px solid ${theme.colors.gray300};
-  padding: 0.75rem 3rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-
-  &:hover {
-    opacity: 0.8;
-  }
+    background-color: ${theme.colors.gray200};
+    color: ${theme.colors.gray1600};
+    border: 1px solid ${theme.colors.gray300};
+    padding: 0.75rem 3rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    &:hover:enabled {
+        opacity: 0.8;
+    }
 `;
 
 const NextButton = styled.button`
-  background-color: ${theme.colors.main200};
-  color: #fff;
-  border: 1px solid ${theme.colors.main200};
-  padding: 0.75rem 3rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-
-  &:hover {
-    opacity: 0.8;
-  }
+    background-color: ${theme.colors.main200};
+    color: #fff;
+    border: 1px solid ${theme.colors.main200};
+    padding: 0.75rem 3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    &:hover:enabled {
+        opacity: 0.8;
+    }
 `;
 
-/* 추가: 공지사항 목록 섹션 헤더 */
+/* 공지사항 목록 섹션 헤더 */
 const NoticeListHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 3rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid ${theme.colors.gray300};
-  padding: 0.5rem 2rem 0.75rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid ${theme.colors.gray300};
+    padding: 0.5rem 2rem 0.75rem 2rem;
 `;
 
 const NoticeListHeaderTitle = styled.h2`
-  font-size: 1.25rem;
-  color: ${theme.colors.gray1600};
-  margin: 0;
+    font-size: 1.25rem;
+    color: ${theme.colors.gray1600};
+    margin: 0;
 `;
 
 const ViewAllButton = styled.button`
-  background: none;
-  border: none;
-  color: ${theme.colors.gray600};
-  cursor: pointer;
-  font-size: 0.95rem;
+    background: none;
+    border: none;
+    color: ${theme.colors.gray600};
+    cursor: pointer;
+    font-size: 0.95rem;
+    &:hover {
+        opacity: 0.8;
+    }
+`;
+/* 첨부파일 영역 */
+const AttachmentContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid ${theme.colors.gray300};
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  background: #fff;
+`;
 
-  &:hover {
-    opacity: 0.8;
-  }
+const FileInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const FileIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+const FileName = styled.span`
+  font-size: 0.95rem;
+  color: ${theme.colors.gray1600};
+`;
+
+/* a 태그를 이용한 다운로드 링크 */
+const DownloadLink = styled.a`
+  display: flex;
+  align-items: center;
+`;
+const DownloadIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 `;

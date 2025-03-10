@@ -5,6 +5,7 @@ interface Notice {
     title: string;
     author: string;
     date: string;
+    content:string;
 }
 
 interface NoticeStoreState {
