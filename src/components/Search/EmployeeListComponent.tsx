@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import * as XLSX from "xlsx";
 import dropdown from "@assets/icons/dropdown.svg";
 import download from "@assets/icons/download.svg"
 import PaginationComponent from "./PaginationComponent";
+import token from "@utils/token";
 
 interface ListItem{
   id: number;
@@ -42,12 +42,27 @@ const EmployeeListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
     setCurrentPage(0);
   };
 
-  const handleExcelDownload = () => {
-    const worksheet = XLSX.utils.json_to_sheet(sortedData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "리스트");
-    XLSX.writeFile(workbook, "지급결의서.xlsx");
+  const handleExcelDownload = async () => {
+    try {
+      const response = await token.get("/v1/receipt/download", {
+        responseType: "blob",
+      });
+  
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "세금계산서_리스트.xlsx"; 
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("엑셀 다운로드 오류:", error);
+      alert("엑셀 다운로드 중 오류가 발생했습니다.");
+    }
   };
+  
 
   return (
     <Container>
