@@ -9,18 +9,21 @@ interface Notice {
 }
 
 interface NoticeListProps {
-    notices: Notice[];
+    notices?: Notice[];
+    showHeader?: boolean; // 헤더 표시 여부 (기본값 true)
 }
 
-const NoticeList = ({ notices }: NoticeListProps) => {
+const NoticeList = ({ notices = [], showHeader = true }: NoticeListProps) => {
     return (
         <>
-            <NoticeHeader>
-                <HeaderItem>번호</HeaderItem>
-                <HeaderItem>공지사항 제목</HeaderItem>
-                <HeaderItem>작성자</HeaderItem>
-                <HeaderItem>작성일자</HeaderItem>
-            </NoticeHeader>
+            {showHeader && (
+                <NoticeHeader>
+                    <HeaderItem>번호</HeaderItem>
+                    <HeaderItem>공지사항 제목</HeaderItem>
+                    <HeaderItem>작성자</HeaderItem>
+                    <HeaderItem>작성일자</HeaderItem>
+                </NoticeHeader>
+            )}
 
             <NoticeContainer>
                 {notices.map((notice) => (
@@ -45,18 +48,17 @@ const NoticeHeader = styled.div`
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background-color:  ${theme.colors.gray100};
+    background-color: ${theme.colors.gray100};
     font-size: ${theme.typography.titleM};
-    font-weight:${theme.typography.titleM}; ;
-    border :  2px solid  ${theme.colors.gray300};
+    font-weight: ${theme.typography.titleM};
+    border: 2px solid ${theme.colors.gray300};
     border-radius: 10px;
-    color:  ${theme.colors.gray1600};
+    color: ${theme.colors.gray1600};
     width: 100%;
     height: auto;
 `;
 
 const HeaderItem = styled.div`
-    //text-align: left;
     font-size: 1rem;
 `;
 
