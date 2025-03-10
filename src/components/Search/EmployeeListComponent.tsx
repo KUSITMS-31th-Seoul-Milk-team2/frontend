@@ -120,7 +120,7 @@ export default EmployeeListComponent;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 800px;
+  max-width: 1040px;
   margin-top: 30px;
 `;
 
