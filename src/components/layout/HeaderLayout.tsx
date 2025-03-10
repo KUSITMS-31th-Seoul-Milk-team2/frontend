@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import EmployeeLayout from "./EmployeeLayout";
 import Dropdown from "@assets/icons/LayoutLogo.svg";
@@ -11,8 +11,11 @@ interface UserInfo {
   employeeId: string;
 }
 
+
 const HeaderLayout: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation(); 
+
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null); 
@@ -43,7 +46,7 @@ const HeaderLayout: React.FC = () => {
   return (
     <Container>
       <NotificationBar>
-        <NotificationText>세금계산서 확인 및 지급결의서 웹사이트</NotificationText>
+        <NotificationText>세금계산서 진위 확인 및 조회 웹사이트</NotificationText>
       </NotificationBar>
       <Header>
         <HeaderContent>
@@ -51,13 +54,24 @@ const HeaderLayout: React.FC = () => {
             <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
-            {userInfo && (
-              <UserInfo onClick={() => setIsModalOpen(true)}>
-                {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "사원"})
-                <UserLogo src={Dropdown} />
-              </UserInfo>
-            )}
+            <NavItem onClick={() => navigate("/upload")} active={location.pathname === "/upload"}>
+              세금계산서 업로드
+            </NavItem>
+            <NavItem onClick={() => navigate("/search")} active={location.pathname === "/search"}>
+              세금계산서 조회
+            </NavItem>
+            <NavItem onClick={() => navigate("/announcement")} active={location.pathname === "/announcement"}>
+              공지사항
+            </NavItem>
           </Nav>
+          <UserInfoContainer>
+          {userInfo && (
+            <UserInfo onClick={() => setIsModalOpen(true)}>
+              {userInfo.name}님 ({userInfo.role === "ADMIN" ? "관리자" : "사원"})
+              <UserLogo src={Dropdown} />
+            </UserInfo>
+          )}
+          </UserInfoContainer>
         </HeaderContent>
       </Header>
       <Main>
@@ -86,6 +100,7 @@ const HeaderLayout: React.FC = () => {
 };
 
 export default HeaderLayout;
+
 
 const Container = styled.div`
   display: flex;
@@ -122,7 +137,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
- margin-right: clamp(200px, 50vw, 840px);
+ margin-right: 1000px;
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
@@ -147,7 +162,7 @@ const HeaderContent = styled.div`
   min-width: 1104px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: left;
   padding: 0 40px;
 
   @media screen and (max-width: 1280px) {
@@ -168,7 +183,7 @@ const LogoContainer = styled.button`
   width: 200px;
   height: 43.456px;
   margin-top: 10px;
-  margin-left: 180px;
+  margin-left: 50px;
   border: none;
   background: none;
   cursor: pointer;
@@ -208,7 +223,9 @@ const Nav = styled.nav`
   font-size: 16px;
   font-weight: 700;
   line-height: normal;
-  margin-right: 80px;
+  margin-right: 580px;
+  margin-top : 5px;
+  gap : 16px;
   @media screen and (max-width: 1000px) {
     margin-right : 95px;
   }
@@ -269,3 +286,20 @@ const Main = styled.main`
 const ModalContainer = styled.div`
 `;
 
+const NavItem = styled.span<{ active: boolean }>`
+  cursor: pointer;
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+  color: ${({ active }) => (active ? "#393C3C" : "#898989")};
+  font-weight: ${({ active }) => (active ? "700" : "500")};
+`;
+const UserInfoContainer = styled.div`
+color: var(--gray-1600, #393C3C);
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-top : 5px;
+`
