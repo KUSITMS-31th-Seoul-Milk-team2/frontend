@@ -33,19 +33,12 @@ const router = createBrowserRouter([
     {
         path: "/announcement",
         element: <HeaderLayout />,
-        children: [{ path: "", element: <AnnouncementPage /> }]
+        children: [
+            { path: "", element: <AnnouncementPage /> },
+            { path: "write", element: <AnnouncementWritePage /> },
+            { path: ":id", element: <AnnouncementDetailPage /> },
+        ],
     },
-    {
-        path: "/announcement/write",
-        element: <HeaderLayout />,
-        children: [{ path: "", element: <AnnouncementWritePage /> }]
-    },
-    {
-        path: "/announcement/detail",
-        element: <HeaderLayout />,
-        children: [{ path: "", element: <AnnouncementDetailPage /> }]
-    },
-
 ]);
 
 export default router;
