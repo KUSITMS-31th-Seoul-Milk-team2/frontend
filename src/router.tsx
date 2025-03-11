@@ -11,6 +11,7 @@ import MyPage from "@pages/mypage/Mypage";
 import AnnouncementDetailPage from "@pages/announcement/AnnouncementDetailPage.tsx";
 import AnnouncementEditPage from "@pages/announcement/AnnouncementEditPage.tsx";
 import ReconciliationPage from "@pages/reconciliation/ReconciliationPage.tsx";
+import PwSettingPage from "@pages/pwSetting/PwSettingPage";
 
 const router = createBrowserRouter([
     {
@@ -58,6 +59,11 @@ const router = createBrowserRouter([
         element: <HeaderLayout />,
         children: [{ path: "", element: <ReconciliationPage /> }]
     },
+  {
+    path: "/mypage/pw-setting",
+    element: <HeaderLayout />,
+    children: [{ path: "", element: <PwSettingPage /> }]
+},
 ]);
 
 export default router;
