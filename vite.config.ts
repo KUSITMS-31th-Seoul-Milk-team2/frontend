@@ -7,10 +7,18 @@ export default defineConfig({
   plugins: [
     svgr({
       svgrOptions: {
-        native: false, // ✅ exportAsDefault 옵션 대신 사용
+        native: false,
       },
     }),
     react(),
     tsconfigPaths(),
   ],
+  server: {
+    host: '0.0.0.0',
+    hmr: {
+      protocol: 'ws', 
+      host: '34.47.109.128', 
+      port: 5173,
+    }
+  }
 });
