@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import userImage from "@assets/icons/userImgae.svg";
+import { useNavigate } from "react-router-dom";
 
 interface UserInfo {
   name: string;
@@ -12,6 +13,7 @@ interface UserInfo {
 
 const MypageBasic: React.FC = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUserInfo = localStorage.getItem("userInfo");
@@ -30,7 +32,7 @@ const MypageBasic: React.FC = () => {
           </EmployeeType>
           <UserName>{userInfo?.name || "사용자"}님 안녕하세요.</UserName>
         </ProfileInfo>
-        <ChangePasswordButton>비밀번호 변경</ChangePasswordButton>
+        <ChangePasswordButton onClick={() =>navigate("/mypage/pw-setting")}>비밀번호 변경</ChangePasswordButton>
       </ProfileBox>
 
       <InfoContainer>
