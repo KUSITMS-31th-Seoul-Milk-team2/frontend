@@ -4,28 +4,77 @@ import { theme } from "@styles/theme.ts";
 import searchButtonIcon from "@assets/icons/searchButtonIcon.svg";
 import bottomArrowColorIcon from "@assets/icons/bottomArrowColorIcon.svg";
 
-const SearchBar = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [selectedFilter, setSelectedFilter] = useState("전체");
+import useNoticeStore from "@store/noticeStore"; // zustand store import
+import { useCookies } from "react-cookie";
 
-    const options = ["전체", "제목 + 내용", "작성자"].filter(option => option !== selectedFilter);
+const SearchBar = () => {
+    const [cookies] = useCookies(["accessToken"]);
+    const TOKEN = import.meta.env.VITE_TOKEN;
+    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
+
+    const {
+        searchType,
+        keyword,
+        setSearchType,
+        setKeyword,
+        fetchNoticesBySearch,
+    } = useNoticeStore();
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const displayFilter = (type: string) => {
+        switch (type) {
+            case "all":
+                return "전체";
+            case "title_and_content":
+                return "제목 + 내용";
+            case "author":
+                return "작성자";
+            default:
+                return "전체";
+        }
+    };
+
+    const toSearchType = (display: string) => {
+        switch (display) {
+            case "전체":
+                return "all";
+            case "제목 + 내용":
+                return "title_and_content";
+            case "작성자":
+                return "author";
+            default:
+                return "all";
+        }
+    };
+
+    const selectedFilter = displayFilter(searchType);
+
+    const allFilters = ["전체", "제목 + 내용", "작성자"];
+    const options = allFilters.filter((option) => option !== selectedFilter);
 
     const handleSelectFilter = (filter: string) => {
-        setSelectedFilter(filter);
+        setSearchType(toSearchType(filter)); // zustand에 반영
         setIsDropdownOpen(false);
+    };
+
+    const handleSearch = async () => {
+        await fetchNoticesBySearch(TOKEN, BaseUrl);
+        console.log(cookies)
     };
 
     return (
         <Container>
             <SearchBarContainer>
                 <FilterWrapper>
-                    <FilterButton onClick={() => setIsDropdownOpen(prev => !prev)}>
-                        {selectedFilter} <DropdownIcon src={bottomArrowColorIcon} alt="Dropdown Icon" />
+                    <FilterButton onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                        {selectedFilter}{" "}
+                        <DropdownIcon src={bottomArrowColorIcon} alt="Dropdown Icon" />
                     </FilterButton>
 
                     {isDropdownOpen && (
                         <FilterDropdown>
-                            {options.map(option => (
+                            {options.map((option) => (
                                 <DropdownItem key={option} onClick={() => handleSelectFilter(option)}>
                                     {option}
                                 </DropdownItem>
@@ -33,8 +82,15 @@ const SearchBar = () => {
                         </FilterDropdown>
                     )}
                 </FilterWrapper>
-                <SearchInput type="text" placeholder="검색 조건을 입력해주세요" />
-                <SearchButton>
+
+                <SearchInput
+                    type="text"
+                    placeholder="검색 조건을 입력해주세요"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                />
+
+                <SearchButton onClick={handleSearch}>
                     <SearchIcon src={searchButtonIcon} alt="Search Icon" />
                 </SearchButton>
             </SearchBarContainer>
@@ -45,7 +101,6 @@ const SearchBar = () => {
 export default SearchBar;
 
 /* ======= styled-components ======= */
-
 const Container = styled.div`
     width: 100%;
     display: flex;
@@ -62,19 +117,18 @@ const SearchBarContainer = styled.div`
     border: 2px solid ${theme.colors.main200};
     border-radius: 0.5rem;
     padding: 0 1rem;
-    background-color:${theme.colors.white};
+    background-color: ${theme.colors.white};
     transition: width 0.3s ease-in-out;
     position: relative;
     opacity: 0.6;
+
     @media (max-width: 1024px) {
         width: 100%;
     }
-
     @media (max-width: 768px) {
         grid-template-columns: 1fr auto;
         padding: 0 0.5rem;
     }
-
     @media (max-width: 480px) {
         width: 95%;
         height: 2.8rem;
@@ -109,7 +163,7 @@ const FilterDropdown = styled.div`
     top: 100%;
     left: 0;
     width: 200px;
-    background-color:  ${theme.colors.white};;
+    background-color: ${theme.colors.white};
     border: 2px solid ${theme.colors.main200};
     border-radius: 0.5rem;
     margin-top: 1rem;
@@ -144,17 +198,17 @@ const SearchInput = styled.input`
 `;
 
 const SearchButton = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.5rem;
 `;
 
 const SearchIcon = styled.img`
-    width: 1.5rem;
-    height: auto;
+  width: 1.5rem;
+  height: auto;
 `;
