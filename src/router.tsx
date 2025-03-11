@@ -10,8 +10,8 @@ import AnnouncementWritePage from "@pages/announcement/AnnouncementWritePage.tsx
 import MyPage from "@pages/mypage/Mypage";
 import AnnouncementDetailPage from "@pages/announcement/AnnouncementDetailPage.tsx";
 import AnnouncementEditPage from "@pages/announcement/AnnouncementEditPage.tsx";
-import ReconciliationPage from "@pages/reconciliation/ReconciliationPage.tsx";
 import PwSettingPage from "@pages/pwSetting/PwSettingPage";
+import ReconciliationPage from "@pages/reconciliation/ReconciliationPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -54,7 +54,12 @@ const router = createBrowserRouter([
       path: "/mypage",
       element: <HeaderLayout />,
       children: [{ path: "", element: <MyPage /> }]
-    },
+  },
+  {
+    path: "/mypage/pw-setting",
+    element: <HeaderLayout />,
+    children: [{ path: "", element: <PwSettingPage /> }]
+},
     {
         path: "/reconciliation",
         element: <HeaderLayout />,
