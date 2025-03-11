@@ -114,7 +114,7 @@ const AnnouncementPage = () => {
 
             <BottomPagination
                 pageCount={totalPages}
-                currentPage={1} // 페이지 로직에 맞게 수정 가능
+                currentPage={1}
                 onPageChange={handlePageChange}
             />
 

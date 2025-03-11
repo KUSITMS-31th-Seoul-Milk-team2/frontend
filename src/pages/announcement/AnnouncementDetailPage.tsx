@@ -261,7 +261,7 @@ const EditButton = styled.button`
 background-color: ${theme.colors.gray200};
 color: ${theme.colors.gray1600};
 border: 1px solid ${theme.colors.gray300};
-padding: 0.75rem 3rem;
+padding: 0.75rem 1.75rem;
 border-radius: 4px;
 cursor: pointer;
 font-weight: 500;
@@ -274,7 +274,7 @@ const DeleteButton = styled.button`
 background-color: ${theme.colors.gray200};
 color: ${theme.colors.gray1600};
 border: 1px solid ${theme.colors.gray300};
-padding: 0.75rem 3rem;
+padding: 0.75rem 1.75rem;
 border-radius: 4px;
 cursor: pointer;
 font-weight: 500;
