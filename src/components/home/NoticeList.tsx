@@ -1,9 +1,10 @@
 import  { useState, useEffect } from "react";
-import axios from "axios";
 import Notice from "@components/home/Notice";
 import styled from "styled-components";
+import token from "@utils/token.tsx";
 
 interface NoticeType {
+    id:number;
     title: string;
     createdAt: string;
 }
@@ -11,10 +12,9 @@ interface NoticeType {
 const NoticeList = () => {
     const [notices, setNotices] = useState<NoticeType[]>([]);
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
-    const token = import.meta.env.VITE_TOKEN;
 
     useEffect(() => {
-        axios
+        token
             .get(`${BaseUrl}/v1/notice/list`,{headers: {
                     Authorization: `Bearer ${token}`,
                 },})

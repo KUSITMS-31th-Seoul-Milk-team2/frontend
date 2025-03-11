@@ -3,14 +3,13 @@ import WriteEditor from "@components/announcement/write/WriteEditor";
 import styled from "styled-components";
 import { theme } from "@styles/theme";
 import PostButton from "@components/announcement/PostButton";
-import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import token from "@utils/token.tsx";
 
 
 const AnnouncementWritePage = () => {
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const navigate = useNavigate();
-    const TOKEN = import.meta.env.VITE_TOKEN;
     const { title, content, setTitle, setContent } = useAnnouncementStore();
 
     const handlePost = async () => {
@@ -29,10 +28,10 @@ const AnnouncementWritePage = () => {
                 })
             );
 
-           await axios.post(`${BaseUrl}/v1/notice`, formData, {
+           await token.post(`${BaseUrl}/v1/notice`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${token}`,
                 },
             }).then((res)=>{
                 if(res.status===200){

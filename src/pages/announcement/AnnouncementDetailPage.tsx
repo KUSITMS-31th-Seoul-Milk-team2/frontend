@@ -4,7 +4,7 @@ import { theme } from "@styles/theme.ts";
 import NoticeList from "@components/announcement/NoticeList.tsx";
 import useNoticeStore from "@store/noticeStore";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import token from "@utils/token.tsx";
 
 interface NoticeDetail {
     id: number;
@@ -20,17 +20,16 @@ const AnnouncementDetailPage = () => {
     const { id } = useParams();
     const { notices, isMyPostsOnly } = useNoticeStore(); // 전역 Store에서 isMyPostsOnly 가져오기
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
-    const TOKEN = import.meta.env.VITE_TOKEN;
 
     const [noticeDetail, setNoticeDetail] = useState<NoticeDetail | null>(null);
 
     useEffect(() => {
         console.log(isMyPostsOnly)
         if (id) {
-            axios
+            token
                 .get(`${BaseUrl}/v1/notice`, {
                     headers: {
-                        Authorization: `Bearer ${TOKEN}`,
+                        Authorization: `Bearer ${token}`,
                     },
                     params: { id: id },
                 })
@@ -69,9 +68,9 @@ const AnnouncementDetailPage = () => {
         if (!confirm("정말 삭제하시겠습니까?")) return;
         // 예: axios.delete(...)
         try {
-            await axios.delete(`${BaseUrl}/v1/notice`, {
+            await token.delete(`${BaseUrl}/v1/notice`, {
                 data: { id: noticeDetail.id },
-                headers: { Authorization: `Bearer ${TOKEN}` },
+                headers: { Authorization: `Bearer ${token}` },
             });
             alert("삭제 성공");
            navigate("/announcement")

@@ -7,13 +7,12 @@ import BottomPagination from "@components/announcement/BottomPagination.tsx";
 import WriteButton from "@components/announcement/WriteButton.tsx";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import axios from "axios";
 import useNoticeStore from "@store/noticeStore";
+import token from "@utils/token.tsx";
 
 const AnnouncementPage = () => {
     const navigate = useNavigate();
     const [cookies] = useCookies(["accessToken"]);
-    const TOKEN = import.meta.env.VITE_TOKEN;
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
 
     // Zustand에서 관리하는 상태 사용
@@ -29,9 +28,9 @@ const AnnouncementPage = () => {
             ? `${BaseUrl}/v1/notice/my-notices`
             : `${BaseUrl}/v1/notice/list`;
 
-        axios
+        token
             .get(endpoint, {
-                headers: { Authorization: `Bearer ${TOKEN}` },
+                headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
                 if (res.status === 200) {
@@ -69,9 +68,9 @@ const AnnouncementPage = () => {
         if (selectedIds.length === 0) return;
         if (!confirm("선택한 게시글을 삭제하시겠습니까?")) return;
         try {
-            await axios.delete(`${BaseUrl}/v1/notice`, {
+            await token.delete(`${BaseUrl}/v1/notice`, {
                 data: { ids: selectedIds },
-                headers: { Authorization: `Bearer ${TOKEN}` },
+                headers: { Authorization: `Bearer ${token}` },
             });
             alert("삭제 성공");
             handleGetList();

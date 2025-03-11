@@ -3,13 +3,9 @@ import styled from "styled-components";
 import { theme } from "@styles/theme.ts";
 import searchButtonIcon from "@assets/icons/searchButtonIcon.svg";
 import bottomArrowColorIcon from "@assets/icons/bottomArrowColorIcon.svg";
-
-import useNoticeStore from "@store/noticeStore"; // zustand store import
-import { useCookies } from "react-cookie";
+import useNoticeStore from "@store/noticeStore";
 
 const SearchBar = () => {
-    const [cookies] = useCookies(["accessToken"]);
-    const TOKEN = import.meta.env.VITE_TOKEN;
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
 
     const {
@@ -54,13 +50,23 @@ const SearchBar = () => {
     const options = allFilters.filter((option) => option !== selectedFilter);
 
     const handleSelectFilter = (filter: string) => {
-        setSearchType(toSearchType(filter)); // zustand에 반영
+        setSearchType(toSearchType(filter));
         setIsDropdownOpen(false);
     };
 
     const handleSearch = async () => {
-        await fetchNoticesBySearch(TOKEN, BaseUrl);
-        console.log(cookies)
+        const storedToken = localStorage.getItem("token");
+        if (!storedToken) {
+            console.error("토큰이 없습니다.");
+            return;
+        }
+        await fetchNoticesBySearch(storedToken, BaseUrl);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
     };
 
     return (
@@ -71,7 +77,6 @@ const SearchBar = () => {
                         {selectedFilter}{" "}
                         <DropdownIcon src={bottomArrowColorIcon} alt="Dropdown Icon" />
                     </FilterButton>
-
                     {isDropdownOpen && (
                         <FilterDropdown>
                             {options.map((option) => (
@@ -82,14 +87,13 @@ const SearchBar = () => {
                         </FilterDropdown>
                     )}
                 </FilterWrapper>
-
                 <SearchInput
                     type="text"
                     placeholder="검색 조건을 입력해주세요"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
-
                 <SearchButton onClick={handleSearch}>
                     <SearchIcon src={searchButtonIcon} alt="Search Icon" />
                 </SearchButton>
@@ -198,17 +202,17 @@ const SearchInput = styled.input`
 `;
 
 const SearchButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
 `;
 
 const SearchIcon = styled.img`
-  width: 1.5rem;
-  height: auto;
+    width: 1.5rem;
+    height: auto;
 `;

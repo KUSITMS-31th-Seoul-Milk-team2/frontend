@@ -3,15 +3,14 @@ import styled from "styled-components";
 import WriteEditor from "@components/announcement/write/WriteEditor";
 import { theme } from "@styles/theme";
 import PostButton from "@components/announcement/PostButton";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAnnouncementStore } from "@store/announcementStore"; // zustand로 관리하는 경우
+import { useAnnouncementStore } from "@store/announcementStore";
+import token from "@utils/token.tsx"; // zustand로 관리하는 경우
 
 const AnnouncementEditPage = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // 수정할 게시글 id
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
-    const TOKEN = import.meta.env.VITE_TOKEN;
 
     // zustand나 로컬 state에 저장된 제목, 내용을 사용
     const { title, content, setTitle, setContent } = useAnnouncementStore();
@@ -19,10 +18,10 @@ const AnnouncementEditPage = () => {
     // 페이지가 로드되면 기존 데이터를 가져와서 입력창에 채움
     useEffect(() => {
         if (id) {
-            axios
+            token
                 .get(`${BaseUrl}/v1/notice`, {
                     headers: {
-                        Authorization: `Bearer ${TOKEN}`,
+                        Authorization: `Bearer ${token}`,
                     },
                     params: { id: id },
                 })
@@ -38,7 +37,7 @@ const AnnouncementEditPage = () => {
                     alert("게시글 데이터를 불러오는 데 실패했습니다.");
                 });
         }
-    }, [id, BaseUrl, TOKEN, setTitle, setContent]);
+    }, [id, BaseUrl, token, setTitle, setContent]);
 
     const handleEdit = async () => {
         try {
@@ -56,10 +55,10 @@ const AnnouncementEditPage = () => {
             );
 
             // PUT 메소드로 게시글 수정 (URL은 id를 포함하거나 query parameter로 전달)
-            await axios.put(`${BaseUrl}/v1/notice/${id}`, formData, {
+            await token.put(`${BaseUrl}/v1/notice/${id}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${TOKEN}`
+                    Authorization: `Bearer ${token}`
 
                 },
                 params: { id: id },
