@@ -10,6 +10,7 @@ import AnnouncementWritePage from "@pages/announcement/AnnouncementWritePage.tsx
 import MyPage from "@pages/mypage/Mypage";
 import AnnouncementDetailPage from "@pages/announcement/AnnouncementDetailPage.tsx";
 import AnnouncementEditPage from "@pages/announcement/AnnouncementEditPage.tsx";
+import ReconciliationPage from "@pages/reconciliation/ReconciliationPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -51,7 +52,12 @@ const router = createBrowserRouter([
       path: "/mypage",
       element: <HeaderLayout />,
       children: [{ path: "", element: <MyPage /> }]
-  },
+    },
+    {
+        path: "/reconciliation",
+        element: <HeaderLayout />,
+        children: [{ path: "", element: <ReconciliationPage /> }]
+    },
 ]);
 
 export default router;
