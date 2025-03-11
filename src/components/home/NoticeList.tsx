@@ -6,7 +6,6 @@ import styled from "styled-components";
 interface NoticeType {
     title: string;
     createdAt: string;
-    isNew: boolean;
 }
 
 const NoticeList = () => {
@@ -43,5 +42,5 @@ const NoticeList = () => {
 export default NoticeList;
 
 const ListContainer = styled.div`
-   
+    width: 100%;
 `;

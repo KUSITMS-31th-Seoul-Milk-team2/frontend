@@ -30,8 +30,8 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-content: center;
-    flex-direction:row;
-    width: 100%;
+    flex-direction:column;
+    width: 70%;
     @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;
@@ -46,6 +46,10 @@ const NoticeContainer = styled.div`
 `
 
 const CardContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
     @media (max-width: 768px) {
         display: flex;
         justify-content: center;
@@ -59,6 +63,7 @@ const TopContainer = styled.div`
     align-items: center; 
     width: 100%; 
     white-space: nowrap;
+
 `;
 
 const Title = styled.h1`
