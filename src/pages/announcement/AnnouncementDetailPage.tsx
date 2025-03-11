@@ -84,8 +84,6 @@ const AnnouncementDetailPage = () => {
                     </DetailDate>
                 </DetailHeader>
                 <Content>{noticeDetail.content}</Content>
-
-                {/* 첨부파일 영역 */}
                 {noticeDetail.fileUrl && (
                     <AttachmentContainer>
                         <FileInfo>
@@ -100,26 +98,32 @@ const AnnouncementDetailPage = () => {
             </ContentContainer>
 
             <ControlButtonContainer>
-                {/* 내가 쓴 글 모드일 때만 수정 / 삭제 버튼 표시 */}
-                {isMyPostsOnly && (
-                    <>
-                        <EditButton onClick={handleEdit}>수정</EditButton>
-                        <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
-                    </>
-                )}
-
-                <PrevButton
-                    onClick={() => prevNotice && navigate(`/announcement/${prevNotice.id}`)}
-                    disabled={!prevNotice}
-                >
-                    이전
-                </PrevButton>
-                <NextButton
-                    onClick={() => nextNotice && navigate(`/announcement/${nextNotice.id}`)}
-                    disabled={!nextNotice}
-                >
-                    다음
-                </NextButton>
+                <LeftButtons>
+                    {isMyPostsOnly && (
+                        <>
+                            <EditButton onClick={handleEdit}>수정</EditButton>
+                            <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                        </>
+                    )}
+                </LeftButtons>
+                <RightButtons>
+                    <PrevButton
+                        onClick={() =>
+                            prevNotice && navigate(`/announcement/${prevNotice.id}`)
+                        }
+                        disabled={!prevNotice}
+                    >
+                        이전
+                    </PrevButton>
+                    <NextButton
+                        onClick={() =>
+                            nextNotice && navigate(`/announcement/${nextNotice.id}`)
+                        }
+                        disabled={!nextNotice}
+                    >
+                        다음
+                    </NextButton>
+                </RightButtons>
             </ControlButtonContainer>
 
             <NoticeListHeader>
@@ -136,195 +140,207 @@ const AnnouncementDetailPage = () => {
 
 export default AnnouncementDetailPage;
 
-/* ===== Styled-Components ===== */
 const DetailContainer = styled.div`
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+width: 100%;
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem;
 `;
 
 const PageTitle = styled.h1`
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: ${theme.colors.gray1600};
-    margin-left: 2rem;
+font-size: 1.75rem;
+font-weight: 600;
+color: ${theme.colors.gray1600};
+margin-left: 2rem;
 `;
 
 const ContentContainer = styled.div`
-    padding: 1rem 2rem 0 2rem;
+padding: 1rem 2rem 0 2rem;
 `;
 
 const AnnouncementTitle = styled.h2`
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: ${theme.colors.gray1600};
-    margin-bottom: 1rem;
+font-size: 1.5rem;
+font-weight: 600;
+color: ${theme.colors.gray1600};
+margin-bottom: 1rem;
 `;
 
 const DetailHeader = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid ${theme.colors.gray300};
-    padding-bottom: 0.75rem;
+display: flex;
+align-items: center;
+gap: 30px;
+margin-bottom: 1rem;
+border-bottom: 1px solid ${theme.colors.gray300};
+padding-bottom: 0.75rem;
 `;
 
 const Author = styled.h3`
-    font-size: 1rem;
-    font-weight: 500;
-    color: ${theme.colors.gray1200};
-    margin: 0;
+font-size: 1rem;
+font-weight: 500;
+color: ${theme.colors.gray1200};
+margin: 0;
 `;
 
 const DetailDate = styled.h3`
-    font-size: 1rem;
-    font-weight: 400;
-    color: ${theme.colors.gray800};
-    margin: 0;
+font-size: 1rem;
+font-weight: 400;
+color: ${theme.colors.gray800};
+margin: 0;
 `;
 
 const Content = styled.div`
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
-    line-height: 1.5;
-    color: ${theme.colors.gray900};
-    background-color: ${theme.colors.gray100};
-    padding: 1rem;
-    white-space: pre-line;
+margin-top: 1.5rem;
+margin-bottom: 2rem;
+line-height: 1.5;
+color: ${theme.colors.gray900};
+background-color: ${theme.colors.gray100};
+padding: 1rem;
+white-space: pre-line;
 `;
 
 const AttachmentContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid ${theme.colors.gray300};
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    margin-top: 1rem;
-    background: #fff;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border: 1px solid ${theme.colors.gray300};
+border-radius: 8px;
+padding: 0.75rem 1rem;
+margin-top: 1rem;
+background: #fff;
 `;
 
 const FileInfo = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
 `;
 
 const FileIcon = styled.img`
-    width: 24px;
-    height: 24px;
+width: 24px;
+height: 24px;
 `;
 
 const FileName = styled.span`
-    font-size: 0.95rem;
-    color: ${theme.colors.gray1600};
+font-size: 0.95rem;
+color: ${theme.colors.gray1600};
 `;
 
 const DownloadLink = styled.a`
-    display: flex;
-    align-items: center;
-`;
-const DownloadIcon = styled.img`
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
+display: flex;
+align-items: center;
 `;
 
+const DownloadIcon = styled.img`
+width: 24px;
+height: 24px;
+cursor: pointer;
+`;
+
+/* Control Button 영역 */
 const ControlButtonContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    margin-right: 2rem;
+display: flex;
+justify-content: space-between;
+margin-top: 2rem;
+margin-right: 2rem;
+`;
+
+const LeftButtons = styled.div`
+display: flex;
+gap: 0.5rem;
+justify-content: flex-start;
+    margin-left: 2rem;
+`;
+
+const RightButtons = styled.div`
+display: flex;
+gap: 0.5rem;
+justify-content: flex-end;
 `;
 
 const EditButton = styled.button`
-    background-color: ${theme.colors.gray200};
-    color: ${theme.colors.gray1600};
-    border: 1px solid ${theme.colors.gray300};
-    padding: 0.75rem 2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-
-    &:hover {
-        opacity: 0.8;
-    }
+background-color: ${theme.colors.gray200};
+color: ${theme.colors.gray1600};
+border: 1px solid ${theme.colors.gray300};
+padding: 0.75rem 3rem;
+border-radius: 4px;
+cursor: pointer;
+font-weight: 500;
+&:hover {
+    opacity: 0.8;
+}
 `;
 
 const DeleteButton = styled.button`
-    background-color: ${theme.colors.gray200};
-    color: ${theme.colors.gray1600};
-    border: 1px solid ${theme.colors.gray300};
-    padding: 0.75rem 2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-
-    &:hover {
-        opacity: 0.8;
-    }
+background-color: ${theme.colors.gray200};
+color: ${theme.colors.gray1600};
+border: 1px solid ${theme.colors.gray300};
+padding: 0.75rem 3rem;
+border-radius: 4px;
+cursor: pointer;
+font-weight: 500;
+&:hover {
+    opacity: 0.8;
+}
 `;
 
 const PrevButton = styled.button`
-    background-color: ${theme.colors.gray200};
-    color: ${theme.colors.gray1600};
-    border: 1px solid ${theme.colors.gray300};
-    padding: 0.75rem 3rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    &:hover:enabled {
-        opacity: 0.8;
-    }
+background-color: ${theme.colors.gray200};
+color: ${theme.colors.gray1600};
+border: 1px solid ${theme.colors.gray300};
+padding: 0.75rem 3rem;
+border-radius: 4px;
+cursor: pointer;
+font-weight: 500;
+&:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+&:hover:enabled {
+    opacity: 0.8;
+}
 `;
 
 const NextButton = styled.button`
-    background-color: ${theme.colors.main200};
-    color: #fff;
-    border: 1px solid ${theme.colors.main200};
-    padding: 0.75rem 3rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    &:hover:enabled {
-        opacity: 0.8;
-    }
+background-color: ${theme.colors.main200};
+color: #fff;
+border: 1px solid ${theme.colors.main200};
+padding: 0.75rem 3rem;
+border-radius: 8px;
+cursor: pointer;
+font-weight: 500;
+&:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+&:hover:enabled {
+    opacity: 0.8;
+}
 `;
 
 const NoticeListHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 3rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid ${theme.colors.gray300};
-    padding: 0.5rem 2rem 0.75rem 2rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 3rem;
+margin-bottom: 1rem;
+border-bottom: 1px solid ${theme.colors.gray300};
+padding: 0.5rem 2rem 0.75rem 2rem;
 `;
 
 const NoticeListHeaderTitle = styled.h2`
-    font-size: 1.25rem;
-    color: ${theme.colors.gray1600};
-    margin: 0;
+font-size: 1.25rem;
+color: ${theme.colors.gray1600};
+margin: 0;
 `;
 
 const ViewAllButton = styled.button`
-    background: none;
-    border: none;
-    color: ${theme.colors.gray600};
-    cursor: pointer;
-    font-size: 0.95rem;
-    &:hover {
-        opacity: 0.8;
-    }
+background: none;
+border: none;
+color: ${theme.colors.gray600};
+cursor: pointer;
+font-size: 0.95rem;
+&:hover {
+    opacity: 0.8;
+}
 `;
+
