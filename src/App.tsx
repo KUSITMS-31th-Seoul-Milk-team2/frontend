@@ -23,10 +23,10 @@ function App() {
   }
   }`;
 
-  <>
+  return(<>
       <GlobalStyles />
-        <RouterProvider router={router} />
-    </>
+      <RouterProvider router={router} />
+  </>)
 }
 
 export default App
