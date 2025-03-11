@@ -10,6 +10,7 @@ import AnnouncementWritePage from "@pages/announcement/AnnouncementWritePage.tsx
 import MyPage from "@pages/mypage/Mypage";
 import AnnouncementDetailPage from "@pages/announcement/AnnouncementDetailPage.tsx";
 import AnnouncementEditPage from "@pages/announcement/AnnouncementEditPage.tsx";
+
 const router = createBrowserRouter([
     {
         path: "/upload",
