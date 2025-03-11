@@ -91,7 +91,7 @@ const AnnouncementDetailPage = () => {
                         {new Date(noticeDetail.createdAt).toLocaleDateString()}
                     </DetailDate>
                 </DetailHeader>
-                <Content>{noticeDetail.content}</Content>
+                <Content  dangerouslySetInnerHTML={{ __html: noticeDetail.content }}/>
                 {noticeDetail.fileUrl && (
                     <AttachmentContainer>
                         <FileInfo>
@@ -203,7 +203,6 @@ line-height: 1.5;
 color: ${theme.colors.gray900};
 background-color: ${theme.colors.gray100};
 padding: 1rem;
-white-space: pre-line;
 `;
 
 const AttachmentContainer = styled.div`
