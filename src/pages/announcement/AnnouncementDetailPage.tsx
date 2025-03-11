@@ -63,13 +63,22 @@ const AnnouncementDetailPage = () => {
 
     // 수정 / 삭제 버튼 클릭 시
     const handleEdit = () => {
-        alert("수정 기능은 구현 필요");
-        // 예: navigate(`/announcement/edit/${noticeDetail.id}`)
+        navigate(`/announcement/edit/${noticeDetail.id}`);
     };
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (!confirm("정말 삭제하시겠습니까?")) return;
         // 예: axios.delete(...)
-        alert("삭제 기능은 구현 필요");
+        try {
+            await axios.delete(`${BaseUrl}/v1/notice`, {
+                data: { id: noticeDetail.id },
+                headers: { Authorization: `Bearer ${TOKEN}` },
+            });
+            alert("삭제 성공");
+           navigate("/announcement")
+        } catch (err) {
+            console.error(err);
+            alert("삭제 실패");
+        }
     };
 
     return (

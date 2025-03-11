@@ -8,6 +8,7 @@ import UserSettingPage from "@pages/userSetting/UserSettingPage";
 import AnnouncementPage from "@pages/announcement/AnnouncementPage.tsx";
 import AnnouncementWritePage from "@pages/announcement/AnnouncementWritePage.tsx";
 import AnnouncementDetailPage from "@pages/announcement/AnnouncementDetailPage.tsx";
+import AnnouncementEditPage from "@pages/announcement/AnnouncementEditPage.tsx";
 const router = createBrowserRouter([
     {
         path: "/upload",
@@ -38,6 +39,11 @@ const router = createBrowserRouter([
             { path: "write", element: <AnnouncementWritePage /> },
             { path: ":id", element: <AnnouncementDetailPage /> },
         ],
+    },
+    {
+        path: "/announcement/edit/:id",
+        element: <HeaderLayout />,
+        children: [{ path: "", element: <AnnouncementEditPage /> }]
     },
 ]);
 

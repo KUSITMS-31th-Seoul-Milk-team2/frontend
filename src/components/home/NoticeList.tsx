@@ -1,14 +1,36 @@
-import Notice from "@components/home/Notice.tsx";
+import  { useState, useEffect } from "react";
+import axios from "axios";
+import Notice from "@components/home/Notice";
 import styled from "styled-components";
 
-const notices = [
-    { title: "[CEO/인사담당자] 공정채용 누리집 이용은 이렇게!", date: "2024.12.10", isNew: true },
-    { title: "[CEO/인사담당자] 공정채용 누리집 이용은 이렇게!", date: "2024.12.10", isNew: true },
-    { title: "[CEO/인사담당자] 공정채용 누리집 이용은 이렇게!", date: "2024.12.10", isNew: false },
-    { title: "[CEO/인사담당자] 공정채용 누리집 이용은 이렇게!", date: "2024.12.10", isNew: false },
-];
+interface NoticeType {
+    title: string;
+    createdAt: string;
+    isNew: boolean;
+}
 
 const NoticeList = () => {
+    const [notices, setNotices] = useState<NoticeType[]>([]);
+    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
+    const token = import.meta.env.VITE_TOKEN;
+
+    useEffect(() => {
+        axios
+            .get(`${BaseUrl}/v1/notice/list`,{headers: {
+                    Authorization: `Bearer ${token}`,
+                },})
+            .then((res) => {
+                if (res.status === 200 && res.data.success) {
+                    const allNotices: NoticeType[] = res.data.data.content;
+                    const recentNotices = allNotices.slice(0, 4);
+                    setNotices(recentNotices);
+                }
+            })
+            .catch((err) => {
+                console.error("공지사항 불러오기 실패:", err);
+            });
+    }, [BaseUrl]);
+
     return (
         <ListContainer>
             {notices.map((notice, index) => (
@@ -17,8 +39,9 @@ const NoticeList = () => {
         </ListContainer>
     );
 };
-export default NoticeList
+
+export default NoticeList;
 
 const ListContainer = styled.div`
-    
-`
+   
+`;
