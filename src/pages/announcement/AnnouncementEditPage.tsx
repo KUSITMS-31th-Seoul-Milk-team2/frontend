@@ -42,26 +42,24 @@ const AnnouncementEditPage = () => {
     const handleEdit = async () => {
         try {
             const editNoticeRequest = {
+                id: Number(id),
                 title,
                 content,
             };
 
             const formData = new FormData();
             formData.append(
-                "editNoticeRequest",
+                "updateNoticeRequest",
                 new Blob([JSON.stringify(editNoticeRequest)], {
                     type: "application/json",
                 })
             );
 
-            // PUT 메소드로 게시글 수정 (URL은 id를 포함하거나 query parameter로 전달)
-            await token.put(`${BaseUrl}/v1/notice/${id}`, formData, {
+            await token.put(`${BaseUrl}/v1/notice`, formData, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token}`
-
                 },
-                params: { id: id },
+
             }).then((res) => {
                 if (res.status === 200) {
                     alert("수정에 성공했습니다.");
