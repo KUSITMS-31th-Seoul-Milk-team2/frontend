@@ -77,7 +77,7 @@ const ModalContent = styled.div`
   gap: 10px;
   border-radius: 16px;
   background: #fff;
-  width: 470px;
+  width: 400px;
   position: relative;
 `;
 
@@ -116,7 +116,7 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-  width: 458px;
+  width: 380px;
   height: 28px;
   display: flex;
   padding: 10px 20px;
