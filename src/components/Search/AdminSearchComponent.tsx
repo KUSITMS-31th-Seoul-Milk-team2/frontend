@@ -57,6 +57,19 @@ const AdminSearchComponent: React.FC = () => {
       [name]: filteredValue,
     }));
   };
+  const handleDateChange = (date: Date | null, field: "startDate" | "endDate") => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [field]: date,
+    }));
+  };
+  
+const handleClearField = (field: keyof typeof filters) => {
+  setFilters((prevFilters) => ({
+    ...prevFilters,
+    [field]: field === "startDate" || field === "endDate" ? null : "",
+  }));
+};  
   
   const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
@@ -100,13 +113,6 @@ const AdminSearchComponent: React.FC = () => {
     setFilterTags([]); 
     setSelectedFilter("전체");
   };
-  const handleClearField = (field: keyof typeof filters) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [field]: "", 
-    }));
-  };
-  
   
   return (
     <SearchContainer>
@@ -131,23 +137,23 @@ const AdminSearchComponent: React.FC = () => {
       <DateContainer>
           <DatePickerWrapper>
           <Icon src={calendar} alt="Calendar Icon" />
-            <StyledDatePicker
-              selected={filters.startDate}
-              onChange={(date: Date) => setFilters({ ...filters, startDate: date })}
-              dateFormat="yyyy-MM-dd"
-              placeholderText="YYYY-MM-DD"
-              calendarClassName="custom-calendar"
-            />
+          <DatePicker
+            selected={filters.startDate !== null ? filters.startDate : null}
+            onChange={(date : any) => handleDateChange(date, "startDate")}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="YYYY-MM-DD"
+            className="custom-datepicker"
+          />
           </DatePickerWrapper>
           <DateCheck> ~ </DateCheck>
           <DatePickerWrapper>
           <Icon src={calendar} alt="Calendar Icon" />
-            <StyledDatePicker
-              selected={filters.endDate}
-              onChange={(date: Date) => setFilters({ ...filters, endDate: date })}
-              dateFormat="yyyy-MM-dd"
-              placeholderText="YYYY-MM-DD"
-              calendarClassName="custom-calendar"
+          <DatePicker
+          selected={filters.startDate !== null ? filters.startDate : null}
+          onChange={(date : any) => handleDateChange(date, "startDate")}
+           dateFormat="yyyy-MM-dd"
+            placeholderText="YYYY-MM-DD"
+            className="custom-datepicker"
             />
           </DatePickerWrapper>
           <ButtonContainer>
@@ -349,17 +355,6 @@ const DatePickerWrapper = styled.div`
   width: 150px;
 `;
 
-const StyledDatePicker = styled(DatePicker)`
-  width: 100%;
-  padding: 10px 10px 10px 30px;
-  border: 1px solid #777;
-  border-radius: 4px;
-  background: #FFF;
-  font-size: 14px;
-  cursor: pointer;
-  width : 90px;
-`;
-
 const Icon = styled.img`
   position: absolute;
   left: 10px; 
@@ -448,7 +443,16 @@ export const GlobalStyles = createGlobalStyle`
     border-radius: 50%;
     font-weight: bold !important;
   }
-
+  .custom-datepicker {
+  width: 100%;
+  padding: 10px 10px 10px 30px;
+  border: 1px solid #777;
+  border-radius: 4px;
+  background: #FFF;
+  font-size: 14px;
+  cursor: pointer;
+  width: 90px; 
+}
 
   .react-datepicker__day--today {
     color: #009857 !important;

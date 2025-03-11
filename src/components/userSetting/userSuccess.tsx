@@ -11,7 +11,7 @@ const UserSuccess: React.FC<UserSuccessProps> = ({ user, onClose }) => {
   
   const handleGrantPrivilege = async () => {
     try {
-      const response = await token.post("/v1/admin/grant-privilege", {
+      const response = await token.post("/v1/admin", {
         name: user.name,
         employeeId: user.employeeId,
       });
@@ -115,18 +115,24 @@ const Value = styled.span`
 
 const ConfirmButton = styled.button`
   width: 100%;
+  display: flex;
   height: 68px;
-  padding: 19px 116px;
+  padding: 10px 20px;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: var(--gray-100, #F8F8F9);
-  text-align: right;
-  font-family: Pretendard;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 150%;
-  border: none;
+  align-self: stretch;
   border-radius: 8px;
+  border: none;
   background: var(--primary-main-200, #009857);
-  cursor: pointer;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+  color: var(--white, #fff);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 80px;
+  cursor : pointer;
 `;

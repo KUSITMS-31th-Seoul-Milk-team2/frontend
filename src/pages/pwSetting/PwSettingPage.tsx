@@ -17,8 +17,8 @@ const PageContainer = styled.div`
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  margin: 40px auto;
   padding: 16px;
+  margin-top : -40px;
 `;
 const Title = styled.h1`
   font-family: Pretendard;
@@ -26,9 +26,9 @@ const Title = styled.h1`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  margin-bottom: 16px;
+  margin-bottom: 48px;
   text-align: left;  
   align-items: center;
-  width : 500px;
+  width : 530px;
 `;
 
