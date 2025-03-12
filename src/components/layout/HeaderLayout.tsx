@@ -18,7 +18,7 @@ const HeaderLayout: React.FC = () => {
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null); 
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("userInfo");

@@ -11,16 +11,16 @@ const Login = () => {
     const [isFocused, setIsFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     console.log("로그인 에러 : ",error);
-  
+
     const handleLogin = async (e: React.FormEvent) => {
       e.preventDefault();
       setError("");
-  
+
       if (!employeeId || !password) {
         setError("아이디와 비밀번호를 입력하세요.");
         return;
       }
-  
+
       try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/v1/auth/login`, {
           method: "POST",
@@ -28,16 +28,16 @@ const Login = () => {
           body: JSON.stringify({ employeeId, password }),
           credentials: "include",
         });
-  
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         const data = await response.json();
         console.log("로그인 성공:", data);
         localStorage.setItem("userInfo", JSON.stringify(data.data.userInfo));
         localStorage.setItem("token", data.data.accessToken);
-  
+
         navigate("/home");
       } catch (err: any) {
         console.error("로그인 요청 중 오류 발생:", err);
