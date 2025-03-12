@@ -75,7 +75,8 @@ const handleClearField = (field: keyof typeof filters) => {
     setSelectedFilter(filter);
 
     const today = new Date();
-    let newStartDate: Date | null = new Date(today); 
+    let newStartDate: Date | null = new Date(today);
+    let newEndDate: Date | null = new Date(today);
 
     switch (filter) {
       case "오늘":
@@ -98,7 +99,7 @@ const handleClearField = (field: keyof typeof filters) => {
     setFilters((prev) => ({
       ...prev,
       startDate: newStartDate,
-      endDate: today, 
+      endDate: newEndDate, 
     }));
 };
 
@@ -149,8 +150,8 @@ const handleClearField = (field: keyof typeof filters) => {
           <DatePickerWrapper>
           <Icon src={calendar} alt="Calendar Icon" />
           <DatePicker
-          selected={filters.startDate !== null ? filters.startDate : null}
-          onChange={(date : any) => handleDateChange(date, "startDate")}
+          selected={filters.endDate !== null ? filters.endDate: null}
+          onChange={(date : any) => handleDateChange(date, "endDate")}
            dateFormat="yyyy-MM-dd"
             placeholderText="YYYY-MM-DD"
             className="custom-datepicker"

@@ -9,6 +9,7 @@ interface UserInfo {
   email: string;
   phoneNumber: string;
   role: string; 
+  birthday:string;
 }
 
 const MypageBasic: React.FC = () => {
@@ -39,6 +40,10 @@ const MypageBasic: React.FC = () => {
         <InfoRow>
           <InfoLabel>사번</InfoLabel>
           <InfoValue>{userInfo?.employeeId || "-"}</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>생년월일</InfoLabel>
+          <InfoValue>{userInfo?.birthday || "-"}</InfoValue>
         </InfoRow>
         <InfoRow>
           <InfoLabel>전화번호</InfoLabel>
@@ -140,8 +145,8 @@ margin-top : 0px;
 const InfoRow = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
-  gap : 20px;
+  margin-bottom: 8px;
+  gap : 10px;
 `;
 
 const InfoLabel = styled.div`
@@ -160,5 +165,5 @@ font-size: 16px;
 font-style: normal;
 font-weight: 500;
 line-height: normal;
-  width: 200px;
+  width: 180px;
 `;
