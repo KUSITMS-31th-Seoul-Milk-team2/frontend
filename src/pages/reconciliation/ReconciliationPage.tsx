@@ -12,6 +12,23 @@ const dummyList: InvoiceItem[] = [
     { id: 1, title: "세금계산서 사업체명 A", imageUrl: "/red_image.png" },
     { id: 2, title: "세금계산서 사업체명 B", imageUrl: "/sample2.png" },
     { id: 3, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 4, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 5, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 6, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 7, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 8, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 9, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 10, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+    { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
+
 ];
 
 const ReconciliationPage: React.FC = () => {
@@ -109,89 +126,91 @@ const ReconciliationPage: React.FC = () => {
 
                    {/* 오른쪽 패널 */}
                    <RightPanel>
-                       <NoticeContainer>
-                           <NoticeTitle>발급여부가 확인되지 않았어요</NoticeTitle>
-                           <NoticeSubtitle>
-                               인식된 세금계산서 서류가 잘못되지 않았는지 확인해보세요.
-                           </NoticeSubtitle>
-                       </NoticeContainer>
+                      <RightContentContainer>
+                          <NoticeContainer>
+                              <NoticeTitle>발급여부가 확인되지 않았어요</NoticeTitle>
+                              <NoticeSubtitle>
+                                  인식된 세금계산서 서류가 잘못되지 않았는지 확인해보세요.
+                              </NoticeSubtitle>
+                          </NoticeContainer>
 
-                       <FilePreviewContainer>
-                           {selectedItem ? (
-                               <TransformWrapper initialScale={1} wheel={{ step: 0.2 }}>
-                                   {({ zoomIn, zoomOut }) => (
-                                       <>
-                                           <PreviewWrapper>
-                                               <TransformComponent>
-                                                   <PreviewImage
-                                                       src={selectedItem.imageUrl}
-                                                       alt={selectedItem.title}
-                                                   />
-                                               </TransformComponent>
-                                           </PreviewWrapper>
-                                           <BottomBar>
-                                               <ZoomButtons>
-                                                   <button onClick={() => zoomIn()}>+</button>
-                                                   <button onClick={() => zoomOut()}>-</button>
-                                               </ZoomButtons>
-                                               <ReuploadButton>첨부파일 재업로드</ReuploadButton>
-                                           </BottomBar>
-                                       </>
-                                   )}
-                               </TransformWrapper>
-                           ) : (
-                               <EmptyState>왼쪽에서 파일을 선택해주세요</EmptyState>
-                           )}
-                       </FilePreviewContainer>
-                       <SubTitle>인식된 세금계산서</SubTitle>
-                       <FormDescription>
-                           계속 일치하지 않을 경우 "첨부파일 재업로드" 혹은 "삭제"를 눌러주세요.
-                       </FormDescription>
-                       <DetailForm>
+                          <FilePreviewContainer>
+                              {selectedItem ? (
+                                  <TransformWrapper initialScale={1} wheel={{ step: 0.2 }}>
+                                      {({ zoomIn, zoomOut }) => (
+                                          <>
+                                              <PreviewWrapper>
+                                                  <TransformComponent>
+                                                      <PreviewImage
+                                                          src={selectedItem.imageUrl}
+                                                          alt={selectedItem.title}
+                                                      />
+                                                  </TransformComponent>
+                                              </PreviewWrapper>
+                                              <BottomBar>
+                                                  <ZoomButtons>
+                                                      <button onClick={() => zoomIn()}>+</button>
+                                                      <button onClick={() => zoomOut()}>-</button>
+                                                  </ZoomButtons>
+                                                  <ReuploadButton>첨부파일 재업로드</ReuploadButton>
+                                              </BottomBar>
+                                          </>
+                                      )}
+                                  </TransformWrapper>
+                              ) : (
+                                  <EmptyState>왼쪽에서 파일을 선택해주세요</EmptyState>
+                              )}
+                          </FilePreviewContainer>
+                          <SubTitle>인식된 세금계산서</SubTitle>
+                          <FormDescription>
+                              계속 일치하지 않을 경우 "첨부파일 재업로드" 혹은 "삭제"를 눌러주세요.
+                          </FormDescription>
+                          <DetailForm>
 
 
-                           {/* 예시 항목 */}
-                           <InputRow>
-                               <label>공급자 등록번호</label>
-                               <InputWrapper>
-                                   <input placeholder="000-00-00000" />
-                                   <RemoveButton>×</RemoveButton>
-                               </InputWrapper>
-                           </InputRow>
-                           <InputRow>
-                               <label>공급받는자 등록번호</label>
-                               <InputWrapper>
-                                   <input placeholder="000-00-00000" />
-                                   <RemoveButton>×</RemoveButton>
-                               </InputWrapper>
-                           </InputRow>
-                           <InputRow>
-                               <label>승인번호</label>
-                               <InputWrapper>
-                                   <input placeholder="000-00-00000" />
-                                   <RemoveButton>×</RemoveButton>
-                               </InputWrapper>
-                           </InputRow>
-                           <InputRow>
-                               <label>작성일자</label>
-                               <InputWrapper>
-                                   <input placeholder="YYYY-MM-DD" />
-                                   <RemoveButton>×</RemoveButton>
-                               </InputWrapper>
-                           </InputRow>
-                           <InputRow>
-                               <label>공급가액</label>
-                               <InputWrapper>
-                                   <input placeholder="금액" />
-                                   <RemoveButton>×</RemoveButton>
-                               </InputWrapper>
-                           </InputRow>
+                              {/* 예시 항목 */}
+                              <InputRow>
+                                  <label>공급자 등록번호</label>
+                                  <InputWrapper>
+                                      <input placeholder="000-00-00000" />
+                                      <RemoveButton>×</RemoveButton>
+                                  </InputWrapper>
+                              </InputRow>
+                              <InputRow>
+                                  <label>공급받는자 등록번호</label>
+                                  <InputWrapper>
+                                      <input placeholder="000-00-00000" />
+                                      <RemoveButton>×</RemoveButton>
+                                  </InputWrapper>
+                              </InputRow>
+                              <InputRow>
+                                  <label>승인번호</label>
+                                  <InputWrapper>
+                                      <input placeholder="000-00-00000" />
+                                      <RemoveButton>×</RemoveButton>
+                                  </InputWrapper>
+                              </InputRow>
+                              <InputRow>
+                                  <label>작성일자</label>
+                                  <InputWrapper>
+                                      <input placeholder="YYYY-MM-DD" />
+                                      <RemoveButton>×</RemoveButton>
+                                  </InputWrapper>
+                              </InputRow>
+                              <InputRow>
+                                  <label>공급가액</label>
+                                  <InputWrapper>
+                                      <input placeholder="금액" />
+                                      <RemoveButton>×</RemoveButton>
+                                  </InputWrapper>
+                              </InputRow>
 
-                           <ButtonRow>
-                               <button>삭제</button>
-                               <button>제출</button>
-                           </ButtonRow>
-                       </DetailForm>
+                              <ButtonRow>
+                                  <button>삭제</button>
+                                  <button>제출</button>
+                              </ButtonRow>
+                          </DetailForm>
+                      </RightContentContainer>
                    </RightPanel>
                </Container>
            </PageWrapper>
@@ -223,14 +242,14 @@ const PageWrapper = styled.div`
 // 오른쪽이 커질 때 왼쪽도 늘어납니다.
 const Container = styled.div`
     display: flex;
-    /* align-items: stretch가 핵심 */
-    align-items: stretch;
+    align-items: stretch; /* 자식 요소가 컨테이너 높이에 맞게 늘어남 */
     width: 100%;
-    /* 제거: height: 80vh;  */
+    /* height: 120vh; 제거 - 컨테이너가 내용물에 맞춰 늘어나도록 */
     border-radius: 16px;
     background-color: #fff;
-    border: 1px solid ${({theme})=>theme.colors.gray300};
+    border: 1px solid ${({ theme }) => theme.colors.gray300};
 `;
+
 
 const PageTitle = styled.h1`
   margin-bottom: 24px;
@@ -239,20 +258,21 @@ const PageTitle = styled.h1`
   line-height: 1.3;
 `;
 
-/* 왼쪽 패널 */
 const LeftPanel = styled.div`
-    width: 400px;
+    width: 350px; /* 400px에서 350px로 축소 */
     border-right: 1px solid #ddd;
     background-color: #f8f9fa;
     display: flex;
     flex-direction: column;
-    border-radius: 16px 0 0  16px;
-    /* 높이 자동, stretch에 의해 오른쪽 패널만큼 늘어남 */
+    border-radius: 16px 0 0 16px;
+    /* overflow-y 속성 제거 - ScrollArea에서 처리 */
 `;
 
+
 const LeftTitle = styled.h2`
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: ${({theme})=>theme.typography.titleM.fontSize};
+    font-weight: ${({theme})=>theme.typography.titleM.fontWeight};
+    color: ${({theme})=>theme.colors.gray1600};
     padding: 16px;
 `;
 
@@ -264,6 +284,8 @@ const ActionRow = styled.div`
 `;
 
 const SelectAllCheckbox = styled.input`
+    width: 1rem;
+    height:1rem;
     margin-right: 8px;
 `;
 
@@ -278,8 +300,16 @@ const DeleteButton = styled.button`
 // 왼쪽 패널의 스크롤 영역
 // 만약 오른쪽 패널보다 내용이 더 많다면 스크롤됨
 const ScrollArea = styled.div`
-    flex: 1;
-    overflow-y: auto;
+    flex: 1; /* Takes remaining space in the flex container */
+    overflow-y: auto; /* Enables vertical scrolling */
+    /* Optional: adds some styling to the scrollbar */
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 3px;
+    }
 `;
 
 interface ListItemProps {
@@ -301,6 +331,8 @@ const ListItem = styled.div<ListItemProps>`
 const Checkbox = styled.input`
     margin-right: 8px;
     margin-top: 4px; /* slightly center with text if needed */
+    width: 1rem;
+    height: 1rem;
 `;
 
 const ListItemContent = styled.div`
@@ -336,14 +368,21 @@ const MetaRow = styled.div`
 const Divider = styled.span`
   color: #ccc; /* or #ddd, whichever you prefer */
 `;
-/* 오른쪽 패널 */
+/* 오른쪽 패널 - 너비 조정 */
 const RightPanel = styled.div`
-    width: calc(100% - 400px);
+    width: calc(100% - 350px); /* 왼쪽 패널 크기에 맞게 조정 */
     display: flex;
     flex-direction: column;
     padding: 16px;
+    overflow-y: auto; /* 내용이 많아질 경우 스크롤 */
 `;
-
+/* 오른쪽 컨텐츠 컨테이너 - 너비 조정 */
+const RightContentContainer = styled.div`
+    width: 100%; /* 90%에서 100%로 변경 */
+    max-width: 800px; /* 최대 너비 유지 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding-bottom: 24px; /* 하단 여백 추가 */
+`;
 /* 상단 문구 */
 const NoticeContainer = styled.div`
     margin-bottom: 16px;
@@ -372,7 +411,8 @@ const FilePreviewContainer = styled.div`
     background: #fff;
     position: relative;
     margin-bottom: 16px;
-    min-height: 300px; /* 필요하다면 최소 높이 추가 */
+    min-height: 350px;
+    max-height: 400px; /* Add a maximum height constraint */
 `;
 
 const PreviewWrapper = styled.div`
@@ -381,7 +421,8 @@ const PreviewWrapper = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-   
+    height: 350px; /* Set a fixed height */
+    max-height: 350px; /* Ensure it doesn't grow beyond this */
 `;
 
 const BottomBar = styled.div`
@@ -414,7 +455,9 @@ const ReuploadButton = styled.button`
 const PreviewImage = styled.img`
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
+    object-fit: contain; /* This preserves the aspect ratio */
+    width: auto;
+    height: auto;
 `;
 
 const EmptyState = styled.div`
@@ -428,9 +471,8 @@ const EmptyState = styled.div`
 
 /* 폼 영역 */
 const DetailForm = styled.div`
-    border: 1px solid red;
-    border-radius: 8px;
-    /* Increase the padding for more space inside the form */
+    border: 1px solid ${({theme})=>theme.colors.gray400};
+    border-radius: 16px;
     padding: 24px;
     /* Add top margin so there's space above it */
     margin-top: 24px;
@@ -457,22 +499,27 @@ const InputRow = styled.div`
 
     label {
         width: 140px;
-        font-size: 0.9rem;
-        color: #666;
+        font-size: ${({theme})=>theme.typography.bodyL.fontSize};
+        font-weight: ${({theme})=>theme.typography.bodyL.fontWeight};;
+        color:  ${({theme})=>theme.colors.gray1300};
     }
 `;
 
 const InputWrapper = styled.div`
-    position: relative; /* Make this container a positioning context */
-    width: 300px; /* Increase width for a longer input */
+    position: relative;
+    width: 300px; 
 
     input {
         width: 100%;
-        padding: 10px 40px 10px 10px; /* Extra right padding for the remove button */
+        padding: 15px 40px 15px 10px; /* Extra right padding for the remove button */
         border: 2px solid #ddd;  /* Thicker border */
-        border-radius: 4px;
-        font-size: 1rem;
+        border-radius: 10px;
+        background-color: ${({theme})=>theme.colors.gray100};
+        color:  ${({theme})=>theme.colors.gray1600};
+        font-size:  ${({theme})=>theme.typography.bodyL.fontSize};
+        font-weight: ${({theme})=>theme.typography.bodyL.fontWeight};
         box-sizing: border-box;
+        text-indent: 1rem;
     }
 `;
 
