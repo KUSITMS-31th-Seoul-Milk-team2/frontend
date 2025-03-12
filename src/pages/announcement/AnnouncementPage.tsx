@@ -19,31 +19,40 @@ const AnnouncementPage = () => {
     const { notices, totalPages, setNotices, setPagination, isMyPostsOnly, setMyPostsOnly } =
         useNoticeStore();
 
-    // 개별 체크 상태는 로컬 state로 관리 (필요하다면 store로도 옮길 수 있음)
+    // 현재 페이지 상태 추가
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // 개별 체크 상태는 로컬 state로 관리
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-    const handleGetList = () => {
-        console.log(cookies)
+    // 공지사항 리스트 가져오기 (페이지네이션 적용)
+    const handleGetList = (page: number = 1) => {
         const endpoint = isMyPostsOnly
             ? `${BaseUrl}/v1/notice/my-notices`
             : `${BaseUrl}/v1/notice/list`;
 
         token
             .get(endpoint, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${cookies.accessToken}` },
+                params: { page: page - 1, size: 10 }, // 페이지는 0부터 시작
             })
             .then((res) => {
                 if (res.status === 200) {
                     const data = res.data.data;
-                    console.log(data);
                     setNotices(data.content);
-                    setPagination(data.pageNo, data.pageSize, data.totalElements, data.totalPages);
+                    setPagination(data.pageNo + 1, data.pageSize, data.totalElements, data.totalPages);
                     setSelectedIds([]); // 목록 갱신 시 선택 초기화
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
+    };
+
+    // 페이지 변경 시 호출될 함수
+    const handlePageChange = ({ selected }: { selected: number }) => {
+        setCurrentPage(selected + 1);
+        handleGetList(selected + 1);
     };
 
     // 전체 선택/해제
@@ -70,19 +79,14 @@ const AnnouncementPage = () => {
         try {
             await token.delete(`${BaseUrl}/v1/notice`, {
                 data: { ids: selectedIds },
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${cookies.accessToken}` },
             });
             alert("삭제 성공");
-            handleGetList();
+            handleGetList(currentPage);
         } catch (err) {
             console.error(err);
             alert("삭제 실패");
         }
-    };
-
-    const handlePageChange = ({ selected }: { selected: number }) => {
-        console.log(selected)
-        // 페이지 변경 관련 로직 필요 시 추가
     };
 
     const toggleMyPosts = () => {
@@ -90,8 +94,8 @@ const AnnouncementPage = () => {
     };
 
     useEffect(() => {
-        handleGetList();
-    }, [isMyPostsOnly]);
+        handleGetList(currentPage);
+    }, [isMyPostsOnly, currentPage]);
 
     return (
         <Container>
@@ -113,7 +117,7 @@ const AnnouncementPage = () => {
 
             <BottomPagination
                 pageCount={totalPages}
-                currentPage={1}
+                currentPage={currentPage}
                 onPageChange={handlePageChange}
             />
 

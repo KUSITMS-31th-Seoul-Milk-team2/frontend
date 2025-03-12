@@ -10,7 +10,6 @@ interface BottomPaginationProps {
     currentPage: number;
     onPageChange: (selectedItem: { selected: number }) => void;
 }
-
 const BottomPagination = ({ pageCount, currentPage, onPageChange }: BottomPaginationProps) => {
     return (
         <Container>
@@ -23,7 +22,7 @@ const BottomPagination = ({ pageCount, currentPage, onPageChange }: BottomPagina
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 onPageChange={onPageChange}
-                forcePage={currentPage - 1}
+                forcePage={currentPage - 1} // 현재 페이지 설정
                 renderOnZeroPageCount={null}
                 previousLabel={<NavButton><ArrowLeftIcon /></NavButton>}
                 nextLabel={<NavButton><ArrowRightIcon /></NavButton>}
