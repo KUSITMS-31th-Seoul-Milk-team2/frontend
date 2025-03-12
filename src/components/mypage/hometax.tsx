@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import AuthSelectModal from "./AuthSelectModal"; 
 import quikAuth from "@assets/icons/quickAuth.svg";
 import DigitalCertifi from "@assets/icons/DigitalCertifi.svg"; 
 import Info from "@assets/icons/infoBlack.svg";
@@ -7,45 +8,48 @@ import RightArrow from "@assets/icons/rightArrow.svg";
 import Recent from "@assets/icons/recentLogin.png";
 
 const HomeTax: React.FC = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   return (
     <Container>
-      <AuthBox>
+      <AuthBox onClick={() => setIsAuthModalOpen(true)}>
         <Content>
-        <AuthContent>
-          <Icon src={quikAuth} alt="간편인증" />
-          <TextContainer>
-            <Title>간편인증</Title>
-            <SubTitle>민간 전자서명 이용</SubTitle>
-            <Description>
-            <DescriptionLogo src={Info}/>
-              카카오톡, 페이코, 삼성패스, KB 모바일, 통신사(PASS), 네이버, 신한 인증서, toss, 뱅크 샐러드
-            </Description>
-          </TextContainer>
-        </AuthContent>
-        <Arrow src={RightArrow}/>
+          <AuthContent>
+            <Icon src={quikAuth} alt="간편인증" />
+            <TextContainer>
+              <Title>간편인증</Title>
+              <SubTitle>민간 전자서명 이용</SubTitle>
+              <Description>
+                <DescriptionLogo src={Info}/>
+                카카오톡, 페이코, 삼성패스, KB 모바일, 통신사(PASS), 네이버, 신한 인증서, Toss, 뱅크 샐러드
+              </Description>
+            </TextContainer>
+          </AuthContent>
+          <Arrow src={RightArrow}/>
         </Content>
         <RecentLoginTag src={Recent}/>
       </AuthBox>
 
       <AuthBox>
         <Content>
-        <AuthContent>
-          <Icon src={DigitalCertifi} alt="공동인증서" />
-          <TextContainer>
-            <Title>공동인증서</Title>
-            <SubTitle>공공기관 발급 인증서</SubTitle>
-            <Description>구 공인인증서</Description>
-          </TextContainer>
-        </AuthContent>
-        <Arrow src={RightArrow}/>
+          <AuthContent>
+            <Icon src={DigitalCertifi} alt="공동인증서" />
+            <TextContainer>
+              <Title>공동인증서</Title>
+              <SubTitle>공공기관 발급 인증서</SubTitle>
+              <Description>구 공인인증서</Description>
+            </TextContainer>
+          </AuthContent>
+          <Arrow src={RightArrow}/>
         </Content>
       </AuthBox>
+
+      {isAuthModalOpen && <AuthSelectModal onClose={() => setIsAuthModalOpen(false)} />} 
     </Container>
   );
 };
 
 export default HomeTax;
-
 
 const Container = styled.div`
   display: flex;
@@ -55,16 +59,18 @@ const Container = styled.div`
 
 const AuthBox = styled.div`
   display: flex;
-width: 450px;
-height: 80px;
-padding: 22px 40px;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 10px;
-border-radius: 8px;
-border: 1px solid var(--gray-200, #F1F1F1);
-background: #F8F8F9;
+  width: 450px;
+  height: 80px;
+  padding: 22px 40px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--gray-200, #F1F1F1);
+  background: #F8F8F9;
+  cursor: pointer;
+  
   &:hover {
     background: #ececec;
   }
@@ -99,33 +105,34 @@ const SubTitle = styled.div`
 
 const Description = styled.div`
   color: var(--gray-800, #777);
-font-family: Pretendard;
-font-size: 12px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-weight: 500;
   margin-top: 4px;
   max-width: 250px;
+  display: flex;
+  align-items: center;
+`;
+
+const DescriptionLogo = styled.img`
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
 `;
 
 const Arrow = styled.img`
-  fwidth: 26px;
-height: 26px;
-aspect-ratio: 1/1;
+  width: 26px;
+  height: 26px;
+  aspect-ratio: 1/1;
 `;
 
 const RecentLoginTag = styled.img`
-width: 80px;
-position : absolute;
-top : 83%;
-left : 43%;
-
+  width: 80px;
+  position: absolute;
+  top: 83%;
+  left: 43%;
 `;
-const DescriptionLogo = styled.img`
-width: 12px;
-height: 12px;
-aspect-ratio: 1/1;
-`
+
 const Content = styled.div`
   display: flex;
   flex-direction: row;
@@ -133,4 +140,4 @@ const Content = styled.div`
   align-items: center;
   gap: 10px;
   margin-top: 10px;
-`
+`;
