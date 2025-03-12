@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import EmployeeLayout from "./EmployeeLayout";
 import Dropdown from "@assets/icons/LayoutLogo.svg";
+import PwToolTip from "@components/pwSetting/PwToolTip";
 
 interface UserInfo {
   name: string;
@@ -74,6 +75,7 @@ const HeaderLayout: React.FC = () => {
           </UserInfoContainer>
         </HeaderContent>
       </Header>
+      <PwToolTip />
       <Main>
         <Outlet />
       </Main>
