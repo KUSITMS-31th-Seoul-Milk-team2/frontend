@@ -41,7 +41,7 @@ useEffect(() => {
         console.log("userInfo 업데이트됨, fetchSearchResults 실행", userInfo);
         fetchSearchResults(userInfo);
     }
-}, [userInfo]); 
+}, [userInfo]);
 
   const [filters, setFilters] = useState({
     writer: "",
@@ -59,9 +59,9 @@ useEffect(() => {
       erdatStart: filters.startDate ? filters.startDate.toISOString().split("T")[0] : null,
       erdatEnd: filters.endDate ? filters.endDate.toISOString().split("T")[0] : null,
     };
-  
+
     console.log("전송할 requestBody:", requestBody);
-  
+
     try {
       const response = await token.post("/v1/receipt/search", requestBody);
       console.log("검색 결과:", response.data);
@@ -82,35 +82,35 @@ useEffect(() => {
       [name]: filteredValue,
     }));
   };
-  
+
   const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
 
     const today = new Date();
-    let newStartDate: Date | null = new Date(today); 
+    let newStartDate: Date | null = new Date(today);
 
     switch (filter) {
       case "오늘":
         newStartDate = today;
         break;
       case "1주":
-        newStartDate.setDate(today.getDate() - 7); 
+        newStartDate.setDate(today.getDate() - 7);
         break;
       case "1개월":
-        newStartDate.setMonth(today.getMonth() - 1); 
+        newStartDate.setMonth(today.getMonth() - 1);
         break;
       case "3개월":
-        newStartDate.setMonth(today.getMonth() - 3); 
+        newStartDate.setMonth(today.getMonth() - 3);
         break;
       case "1년":
-        newStartDate.setFullYear(today.getFullYear() - 1); 
+        newStartDate.setFullYear(today.getFullYear() - 1);
         break;
     }
 
     setFilters((prev) => ({
       ...prev,
       startDate: newStartDate,
-      endDate: today, 
+      endDate: today,
     }));
 };
 
@@ -122,7 +122,7 @@ useEffect(() => {
       startDate: null,
       endDate: null,
     });
-    setFilterTags([]); 
+    setFilterTags([]);
     setSelectedFilter("전체");
   };
   const handleDateChange = (date: Date | null, field: "startDate" | "endDate") => {
@@ -131,21 +131,21 @@ useEffect(() => {
       [field]: date,
     }));
   };
-  
+
 const handleClearField = (field: keyof typeof filters) => {
   setFilters((prevFilters) => ({
     ...prevFilters,
     [field]: field === "startDate" || field === "endDate" ? null : "",
   }));
-}; 
-  
-  
+};
+
+
   return (
     <SearchContainer>
       <GlobalStyles />
       <SearchBox>
       <DateComponent>
-      <DateLabel>기간</DateLabel> 
+      <DateLabel>기간</DateLabel>
       <DateContainer>
           <DatePickerWrapper>
           <Icon src={calendar} alt="Calendar Icon" />
@@ -178,7 +178,7 @@ const handleClearField = (field: keyof typeof filters) => {
         {filter}
       </DateFilterButton>
       ))}
-    </ButtonContainer> 
+    </ButtonContainer>
         </DateContainer>
     </DateComponent>
 <InputComponent>

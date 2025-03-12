@@ -1,200 +1,187 @@
-import { useState, useEffect } from "react";
-import axios, { CancelTokenSource } from "axios";
+// UploadPage.tsx
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Uploader from "@components/upload/Uploader";
 import UploadModal from "@components/upload/UploadModal";
 import SelectionPopup from "@components/modal/SelectionPopup";
-import { useNavigate } from "react-router-dom";
-import LoadingModal from "@components/modal/LoadingModal.tsx";
-import checkAroundIcon from "@assets/icons/checkAroundIcon.svg"
+import LoadingModal from "@components/modal/LoadingModal";
+import checkAroundIcon from "@assets/icons/checkAroundIcon.svg";
+import token from "@utils/token.tsx";
 
 export interface FileUploadState {
     file: File;
     progress: number;
-    status: "pending" | "uploading" | "success" | "error";
-    cancelToken?: CancelTokenSource;
+    status: "ready" | "uploaded" | "error" |"uploading";
 }
 
 const UploadPage = () => {
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const navigate = useNavigate();
 
-    // 파일과 업로드 상태 관리
+    // 파일 크기 제한 (20MB)
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+    // 선택된 파일들을 저장
     const [files, setFiles] = useState<File[]>([]);
+    // 파일의 업로드 상태를 관리 (여기서는 이미 업로드된 것으로 간주)
     const [uploadStates, setUploadStates] = useState<FileUploadState[]>([]);
-
-    // 업로드 모달 & 다음 팝업 표시 여부
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // 간편 인증 후 진행 여부 확인 모달
     const [showSelectionPopup, setShowSelectionPopup] = useState(false);
+    // 추가 API 호출 시 로딩 상태 모달
     const [showLoadingModal, setShowLoadingModal] = useState(false);
+    // 최종 성공 후 표시할 모달
     const [showSecondPopup, setShowSecondPopup] = useState(false);
-    // 완료(두 번째) 요청 중 로딩 상태
-    const [isSendingAll, setIsSendingAll] = useState(false);
-    // 에러 메시지
-    const [error, setError] = useState("");
 
-    // 업로드 모달 열고 닫기
-    const closeModal = () => setIsModalOpen(false);
-
-    // 1) 파일 선택 시
+    // Uploader에서 파일이 선택되면 호출됨
     const handleFilesAdded = (newFiles: File[]) => {
         setFiles((prev) => [...prev, ...newFiles]);
+
+        // 파일 크기에 따라 상태 설정
+        const newStates = newFiles.map<FileUploadState>((file) => {
+            // 파일 크기가 20MB를 초과하는 경우 uploading 상태로 설정
+            if (file.size > MAX_FILE_SIZE) {
+                return {
+                    file,
+                    progress: 0, // 업로드 시작 상태
+                    status: "uploading", // uploading 상태로 설정
+                };
+            } else {
+                // 20MB 이하인 경우 기존과 같이 업로드 완료 상태로 설정
+                return {
+                    file,
+                    progress: 100, // 이미 업로드 완료된 상태로 표시
+                    status: "uploaded",
+                };
+            }
+        });
+
+        setUploadStates((prev) => [...prev, ...newStates]);
         setIsModalOpen(true);
     };
 
-    // 2) 새로 들어온 파일이 있으면 uploadStates에 추가
-    useEffect(() => {
-        const newFiles = files.filter(
-            (file) => !uploadStates.some((state) => state.file === file)
-        );
-        if (newFiles.length > 0) {
-            const newUploadStates = newFiles.map((file) => ({
-                file,
-                progress: 0,
-                status: "pending" as const,
-            }));
-            setUploadStates((prev) => [...prev, ...newUploadStates]);
-        }
-    }, [files, uploadStates]);
-
-    // 3) uploadStates 중 "pending"인 파일을 찾아 업로드
-    useEffect(() => {
-        uploadStates.forEach((state) => {
-            if (state.status === "pending") {
-                uploadFile(state);
-            }
-        });
-    }, [uploadStates]);
-
-    // 4) 개별 파일 업로드 (기존 로직)
-    const uploadFile = async (fileState: FileUploadState) => {
-        const formData = new FormData();
-        formData.append("files", fileState.file);
-        const source = axios.CancelToken.source();
-        console.log(isSendingAll);
-        console.log(error)
-        // 업로드 시작: status를 uploading으로
-        setUploadStates((prev) =>
-            prev.map((state) =>
-                state.file === fileState.file
-                    ? { ...state, status: "uploading", cancelToken: source }
-                    : state
-            )
-        );
-
-        try {
-            const response = await axios.post(`${BaseUrl}/v1/invoice`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization:
-                        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiMTAyNiIsImlzcyI6InNlb3VsbWlsayIsImlhdCI6MTc0MTUwNzc4MiwiZXhwIjoxNzQxNTk0MTgyfQ.aBcb4Q41p9r3ZEUYZx5rapRVIZ4DSHczG9l0W_K5hWJ9ZROZGy5WZpG2SHbutF3qJfHEj-QeX_cPiq4oMEss8g",
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percent = Math.round(
-                        (progressEvent.loaded * 100) /
-                        (progressEvent.total || fileState.file.size)
-                    );
-                    // 진행률 업데이트
-                    setUploadStates((prev) =>
-                        prev.map((state) =>
-                            state.file === fileState.file
-                                ? { ...state, progress: percent }
-                                : state
-                        )
-                    );
-                },
-                cancelToken: source.token,
-            });
-
-            setUploadStates((prev) =>
-                prev.map((state) =>
-                    state.file === fileState.file
-                        ? { ...state, status: response.status === 200 ? "success" : "error" }
+    // 취소 버튼 처리 기능 추가
+    const handleCancel = (fileState: FileUploadState) => {
+        // uploading 상태의 파일만 취소 처리
+        if (fileState.status === "uploading") {
+            // 해당 파일의 상태를 error로 변경
+            setUploadStates(prev =>
+                prev.map(state =>
+                    state.file.name === fileState.file.name &&
+                    state.file.lastModified === fileState.file.lastModified
+                        ? { ...state, status: "error", progress: 0 }
                         : state
                 )
             );
-        } catch (err) {
-            if (axios.isCancel(err)) {
-                console.log("업로드가 취소되었습니다.");
-            } else {
-                console.error("업로드 중 에러 발생:", err);
-            }
-            setUploadStates((prev) =>
-                prev.map((state) =>
-                    state.file === fileState.file ? { ...state, status: "error" } : state
-                )
-            );
         }
     };
 
-    // 업로드 취소
-    const handleCancel = (fileState: FileUploadState) => {
-        fileState.cancelToken?.cancel("User canceled upload");
-        setUploadStates((prev) => prev.filter((st) => st.file !== fileState.file));
+    // 재시도 기능 추가
+    const handleRetry = (fileState: FileUploadState) => {
+        // 오류 상태의 파일만 재시도 처리
+        if (fileState.status === "error") {
+            // 파일 크기에 따라 상태 변경
+            if (fileState.file.size > MAX_FILE_SIZE) {
+                setUploadStates(prev =>
+                    prev.map(state =>
+                        state.file.name === fileState.file.name &&
+                        state.file.lastModified === fileState.file.lastModified
+                            ? { ...state, status: "uploading", progress: 0 }
+                            : state
+                    )
+                );
+            } else {
+                setUploadStates(prev =>
+                    prev.map(state =>
+                        state.file.name === fileState.file.name &&
+                        state.file.lastModified === fileState.file.lastModified
+                            ? { ...state, status: "uploaded", progress: 100 }
+                            : state
+                    )
+                );
+            }
+        }
     };
 
-    // 재시도
-    const handleRetry = (fileState: FileUploadState) => {
-        setUploadStates((prev) =>
-            prev.map((state) =>
-                state.file === fileState.file
-                    ? { ...state, status: "pending", progress: 0 }
-                    : state
+    // 삭제 기능 추가
+    const handleRemove = (fileState: FileUploadState) => {
+        // 파일 목록에서 제거
+        setFiles(prev =>
+            prev.filter(file =>
+                !(file.name === fileState.file.name &&
+                    file.lastModified === fileState.file.lastModified)
+            )
+        );
+
+        // 업로드 상태 목록에서도 제거
+        setUploadStates(prev =>
+            prev.filter(state =>
+                !(state.file.name === fileState.file.name &&
+                    state.file.lastModified === fileState.file.lastModified)
             )
         );
     };
 
-    // 파일 제거
-    const handleRemove = (fileState: FileUploadState) => {
-        setUploadStates((prev) => prev.filter((st) => st.file !== fileState.file));
-    };
-
-    // 모든 파일이 성공 상태인지
-    const isAllSuccess =
-        uploadStates.length > 0 &&
-        uploadStates.every((state) => state.status === "success");
-
-    // 5) "완료" 버튼 → 성공한 파일들을 한 번 더 multipart/form-data로 전송
     const handleComplete = async () => {
-        if (!isAllSuccess) {
-            console.log("아직 모든 파일이 성공 상태가 아닙니다.");
-            return;
-        }
-
-        // 업로드 모달 닫기
-        closeModal();
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append("files", file);
+        });
 
         try {
-            setIsSendingAll(true);
-            setError("");
-
-            // (1) 성공한 파일만 추출
-            const successFiles = uploadStates
-                .filter((state) => state.status === "success")
-                .map((state) => state.file);
-
-            // (2) 새 FormData 생성
-            const formData2 = new FormData();
-            successFiles.forEach((file) => {
-                formData2.append("files", file);
-            });
-
-            // (3) multipart/form-data로 다시 POST
-            await axios.post(`${BaseUrl}/v1/invoice`, formData2, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization:
-                        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiMTAyNiIsImlzcyI6InNlb3VsbWlsayIsImlhdCI6MTc0MTUwNzc4MiwiZXhwIjoxNzQxNTk0MTgyfQ.aBcb4Q41p9r3ZEUYZx5rapRVIZ4DSHczG9l0W_K5hWJ9ZROZGy5WZpG2SHbutF3qJfHEj-QeX_cPiq4oMEss8g",
-                },
-            });
-
-            // 성공 시 SelectionPopup 띄우기
-            setIsSendingAll(false);
-            setShowSelectionPopup(true);
+            const invoiceResponse = await token.post(
+                `${BaseUrl}/v1/invoice`,
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+            if (invoiceResponse.status === 200) {
+                // ✅ 업로드 모달을 닫고 간편 인증 모달을 띄우기
+                setIsModalOpen(false);
+                setShowSelectionPopup(true);
+            } else {
+                alert("파일 업로드 확인에 실패했습니다.");
+                navigate("/home");
+            }
         } catch (err) {
-            console.error("두 번째 요청 중 에러 발생:", err);
-            setIsSendingAll(false);
-            setError("다시 요청 중 오류가 발생했습니다.");
+            console.error("Invoice API error", err);
+            alert("API 통신에 실패했습니다.");
+            navigate("/home");
         }
+    };
+
+// "확인" 버튼 클릭 시 실행되는 함수
+    const handleSelectionConfirm = async () => {
+        setShowSelectionPopup(false);
+        setShowLoadingModal(true);
+
+        try {
+            const additionResponse = await token.post(
+                `${BaseUrl}/v1/receipt/upload/addition`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setShowLoadingModal(false);
+
+            if (additionResponse.data === 200) {
+                setShowSecondPopup(true);
+            } else {
+                alert("세금계산서 정보가 일치하지 않습니다.");
+                navigate("/reconciliation");
+            }
+        } catch (err) {
+            console.error("upload/addition API error", err);
+            setShowLoadingModal(false);
+            alert("API 통신에 실패했습니다.");
+            navigate("/home");
+        }
+    };
+    // 모달 닫기 처리
+    const handleModalClose = () => {
+        setIsModalOpen(false);
     };
 
     return (
@@ -208,27 +195,18 @@ const UploadPage = () => {
                     onRetry={handleRetry}
                     onRemove={handleRemove}
                     onComplete={handleComplete}
-                    onClose={closeModal}
-                    // 필요하다면 isSendingAll, error 등을 모달에 전달
+                    onClose={handleModalClose}
+                    isSendingAll={false}
+                    error={""}
                 />
             )}
 
             {showSelectionPopup && (
                 <SelectionPopup
-                    Content={"간편인증이 완료되면\n확인 버튼을 눌러주세요"}
+                    Content={"간편인이 완료되면 \n확인 버튼 눌러주세요"}
                     primaryButton={{
                         label: "확인",
-                        onClick: () => {
-                            // 첫 팝업 닫고 로딩 모달 띄움
-                            setShowSelectionPopup(false);
-                            setShowLoadingModal(true);
-
-                            // 2초 후 로딩 모달 닫고 두 번째 팝업 열기
-                            setTimeout(() => {
-                                setShowLoadingModal(false);
-                                setShowSecondPopup(true);
-                            }, 2000);
-                        },
+                        onClick: handleSelectionConfirm, // ✅ 중복 호출 없이 이 함수만 호출
                     }}
                     secondaryButton={{
                         label: "취소",
@@ -236,12 +214,14 @@ const UploadPage = () => {
                     }}
                 />
             )}
+
             {showLoadingModal && (
                 <LoadingModal
-                    content="처리중입니다."
-                    subContent="잠시만 기다려주세요..."
+                    content="세금계산서 확인중"
+                    subContent="홈텍스 정보와 세금계산서가 일치하는지 확인중이에요"
                 />
             )}
+
             {showSecondPopup && (
                 <SelectionPopup
                     IconImg={checkAroundIcon}
