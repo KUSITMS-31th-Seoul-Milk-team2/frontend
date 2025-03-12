@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PaginationComponent from "@components/Search/PaginationComponent";
 import UserCreate from "@components/userSetting/userCreate";
 import UserSuccess from "@components/userSetting/userSuccess";
+import token from "@utils/token";
 
 interface User {
   id: number;
@@ -11,34 +12,46 @@ interface User {
   role: string;
 }
 
-const dummyUsers: User[] = Array.from({ length: 34 }, (_, index) => ({
-  id: index + 1,
-  name: "김혜연",
-  employeeId: "12345678",
-  role: "사원",
-}));
-
 const itemsPerPage = 10;
 
 const UserList: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [newUser, setNewUser] = useState<{ name: string; employeeId: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await token.get("/v1/admin/all"); 
+        setUsers(response.data.data.emps || []); 
+      } catch (err: any) {
+        setError(err.response?.data?.message || "사용자 데이터를 불러오는데 실패했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const offset = currentPage * itemsPerPage;
-  const currentItems = dummyUsers.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(dummyUsers.length / itemsPerPage);
-
+  const currentItems = users.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(users.length / itemsPerPage);
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
-
   const handleCreateSuccess = (name: string, employeeId: string) => {
     setNewUser({ name, employeeId });
     setIsCreateOpen(false);
     setIsSuccessOpen(true);
   };
+
+  if (loading) return <p>데이터를 불러오는 중...</p>;
+  if (error) return <p>오류 발생: {error}</p>;
 
   return (
     <Container>
@@ -52,17 +65,28 @@ const UserList: React.FC = () => {
           </TableRow>
         </thead>
         <tbody>
-          {currentItems.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.employeeId}</TableCell>
-              <TableCell>{user.role}</TableCell>
+          {currentItems.length > 0 ? (
+            currentItems.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.employeeId}</TableCell>
+                <TableCell>{user.role === "ADMIN" ? "관리자" : "사원"}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4}>사용자가 없습니다.</TableCell>
             </TableRow>
-          ))}
+          )}
         </tbody>
       </Table>
-      <PaginationComponent currentPage={currentPage} pageCount={pageCount} onPageChange={handlePageClick} />
+      <PaginationComponent 
+        currentPage={currentPage} 
+        pageCount={pageCount} 
+        onPageChange={handlePageClick} 
+      />
+      
       <ButtonContainer>
         <CreateButton onClick={() => setIsCreateOpen(true)}>+ 생성하기</CreateButton>
       </ButtonContainer>
@@ -74,7 +98,6 @@ const UserList: React.FC = () => {
 };
 
 export default UserList;
-
 const Container = styled.div`
   width: 100%;
   max-width: 900px;
@@ -108,6 +131,7 @@ const ButtonContainer = styled.div`
   bottom: 9px;
   right: 20px;
 `;
+
 const CreateButton = styled.button`
   display: flex;
   align-items: center;

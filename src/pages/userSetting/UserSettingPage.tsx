@@ -18,16 +18,21 @@ export default UserSettingPage;
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 40px auto;
   padding: 16px;
 `;
 
 const Title = styled.h1`
+  font-family: Pretendard;
   font-size: 24px;
-  font-weight: bold;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
   margin-bottom: 16px;
-  color: #333;
+  text-align: left;  
+  align-items: center;
+  width : 1044px;
 `;
