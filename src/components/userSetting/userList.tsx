@@ -19,35 +19,65 @@ const UserList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [newUser, setNewUser] = useState<{ name: string; employeeId: string } | null>(null);
+  const [newUser] = useState<{ name: string; employeeId: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await token.get("/v1/admin/all"); 
-        setUsers(response.data.data.emps || []); 
-      } catch (err: any) {
-        setError(err.response?.data?.message || "사용자 데이터를 불러오는데 실패했습니다.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, []);
 
+  const fetchUsers = async () => {
+    try {
+      const response = await token.get("/v1/admin/all");
+      setUsers(response.data.data.emps || []);
+      setSelectedUsers([]);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "사용자 데이터를 불러오는데 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
   const offset = currentPage * itemsPerPage;
   const currentItems = users.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(users.length / itemsPerPage);
+
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
-  const handleCreateSuccess = (name: string, employeeId: string) => {
-    setNewUser({ name, employeeId });
+
+  const handleCheckboxChange = (id: number) => {
+    setSelectedUsers((prev) =>
+      prev.includes(id) ? prev.filter((userId) => userId !== id) : [...prev, id]
+    );
+  };
+  const handleCreateSuccess = () => {
     setIsCreateOpen(false);
     setIsSuccessOpen(true);
+    fetchUsers(); 
+  };
+  
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(currentItems.map((user) => user.id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedUsers.length === 0) return alert("삭제할 사용자를 선택하세요.");
+
+    try {
+      await token.delete("/v1/admin", { data: { ids: selectedUsers } });
+      alert("삭제가 완료되었습니다.");
+      fetchUsers(); 
+    } catch (err: any) {
+      alert("삭제 중 오류 발생: " + (err.response?.data?.message || "다시 시도해주세요."));
+    }
   };
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
@@ -58,35 +88,50 @@ const UserList: React.FC = () => {
       <Table>
         <thead>
           <TableRow>
-            <TableHeader>번호</TableHeader>
+            <TableHeader>
+              <input type="checkbox" onChange={handleSelectAll} checked={selectAll} />
+            </TableHeader>
+            <TableHeader>
+              <DeleteButton onClick={handleDeleteSelected}>삭제</DeleteButton>
+            </TableHeader>
             <TableHeader>이름</TableHeader>
             <TableHeader>사번</TableHeader>
-            <TableHeader>역할</TableHeader>
+            <TableHeader>직책</TableHeader>
+            <TableHeader></TableHeader>
           </TableRow>
         </thead>
         <tbody>
           {currentItems.length > 0 ? (
             currentItems.map((user) => (
               <TableRow key={user.id}>
+                <TableCell>
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.includes(user.id)}
+                    onChange={() => handleCheckboxChange(user.id)}
+                  />
+                </TableCell>
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.employeeId}</TableCell>
                 <TableCell>{user.role === "ADMIN" ? "관리자" : "사원"}</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4}>사용자가 없습니다.</TableCell>
+              <TableCell colSpan={6}>사용자가 없습니다.</TableCell>
             </TableRow>
           )}
         </tbody>
       </Table>
+
       <PaginationComponent 
         currentPage={currentPage} 
         pageCount={pageCount} 
         onPageChange={handlePageClick} 
       />
-      
+
       <ButtonContainer>
         <CreateButton onClick={() => setIsCreateOpen(true)}>+ 생성하기</CreateButton>
       </ButtonContainer>
@@ -98,9 +143,10 @@ const UserList: React.FC = () => {
 };
 
 export default UserList;
+
 const Container = styled.div`
   width: 100%;
-  max-width: 900px;
+  max-width: 1044px;
   margin-top: 30px;
   position: relative;
 `;
@@ -145,4 +191,15 @@ const CreateButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   width: 150px;
+`;
+
+const DeleteButton = styled.button`
+  background: transparent;
+  border: none;
+  color: var(--gray-500, #C0C0C0);
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 `;
