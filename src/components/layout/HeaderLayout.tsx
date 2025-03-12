@@ -293,6 +293,9 @@ font-size: 14px;
 font-style: normal;
   color: ${({ active }) => (active ? "#393C3C" : "#898989")};
   font-weight: ${({ active }) => (active ? "700" : "500")};
+  &:hover {
+    color: #393C3C;
+  }
 `;
 const UserInfoContainer = styled.div`
 color: var(--gray-1600, #393C3C);
