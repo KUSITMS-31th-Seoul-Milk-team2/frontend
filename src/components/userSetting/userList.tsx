@@ -21,7 +21,7 @@ const UserList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [newUser] = useState<User | null>(null);
+  const [newUser, setNewUser] = useState<{ name: string; employeeId: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
@@ -63,11 +63,14 @@ const UserList: React.FC = () => {
     setCurrentPage(selected);
   };
 
-  const handleCreateSuccess = () => {
+  const handleCreateSuccess = ({ name, employeeId }: { name: string; employeeId: string }) => {
     setIsCreateOpen(false);
     setIsSuccessOpen(true);
+    setNewUser({ name, employeeId }); 
     fetchUsers(); 
   };
+  ;
+  
 
   const handleCheckboxChange = (id: number) => {
     setSelectedUsers((prev) =>

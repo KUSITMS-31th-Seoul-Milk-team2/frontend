@@ -4,7 +4,7 @@ import close from "@assets/icons/cancel.svg";
 
 interface UserCreateProps {
   onClose: () => void;
-  onCreateSuccess: (name: string, employeeId: string) => void;
+  onCreateSuccess: (user: { name: string; employeeId: string }) => void;
 }
 
 const UserCreate: React.FC<UserCreateProps> = ({ onClose, onCreateSuccess }) => {
@@ -22,7 +22,7 @@ const UserCreate: React.FC<UserCreateProps> = ({ onClose, onCreateSuccess }) => 
       setError("이름이나 사번을 다시 확인해주세요.");
       return;
     }
-    onCreateSuccess(name, employeeId);
+    onCreateSuccess({ name, employeeId });
   };
 
   return (
