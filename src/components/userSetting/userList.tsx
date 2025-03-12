@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PaginationComponent from "@components/Search/PaginationComponent";
 import UserCreate from "@components/userSetting/userCreate";
 import UserSuccess from "@components/userSetting/userSuccess";
+import UserSearch from "@components/userSetting/userSearch";
 import token from "@utils/token";
 
 interface User {
@@ -16,10 +17,11 @@ const itemsPerPage = 10;
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [searchResults, setSearchResults] = useState<User[] | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [newUser] = useState<{ name: string; employeeId: string } | null>(null);
+  const [newUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
@@ -33,19 +35,38 @@ const UserList: React.FC = () => {
     try {
       const response = await token.get("/v1/admin/all");
       setUsers(response.data.data.emps || []);
-      setSelectedUsers([]);
+      setSearchResults(null);
+      setSelectedUsers([]); 
     } catch (err: any) {
       setError(err.response?.data?.message || "사용자 데이터를 불러오는데 실패했습니다.");
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSearchResults = (users: User[] | null) => { 
+    if (users && users.length > 0) {
+      setSearchResults(users);
+    } else {
+      alert("검색 결과가 없습니다.");
+      setSearchResults(null);
+    }
+  };
+  
+
+  const dataToShow = searchResults || users;
   const offset = currentPage * itemsPerPage;
-  const currentItems = users.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(users.length / itemsPerPage);
+  const currentItems = dataToShow.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(dataToShow.length / itemsPerPage);
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
+  };
+
+  const handleCreateSuccess = () => {
+    setIsCreateOpen(false);
+    setIsSuccessOpen(true);
+    fetchUsers(); 
   };
 
   const handleCheckboxChange = (id: number) => {
@@ -53,12 +74,7 @@ const UserList: React.FC = () => {
       prev.includes(id) ? prev.filter((userId) => userId !== id) : [...prev, id]
     );
   };
-  const handleCreateSuccess = () => {
-    setIsCreateOpen(false);
-    setIsSuccessOpen(true);
-    fetchUsers(); 
-  };
-  
+
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedUsers([]);
@@ -74,21 +90,22 @@ const UserList: React.FC = () => {
     try {
       await token.delete("/v1/admin", { data: { ids: selectedUsers } });
       alert("삭제가 완료되었습니다.");
-      fetchUsers(); 
+      fetchUsers();
     } catch (err: any) {
       alert("삭제 중 오류 발생: " + (err.response?.data?.message || "다시 시도해주세요."));
     }
   };
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
+console.log("에러 발생 ",error);
 
   return (
     <Container>
+      <UserSearch onSearch={handleSearchResults} />
       <Table>
         <thead>
           <TableRow>
-            <TableHeader>
+          <TableHeader>
               <input type="checkbox" onChange={handleSelectAll} checked={selectAll} />
             </TableHeader>
             <TableHeader>
@@ -120,7 +137,7 @@ const UserList: React.FC = () => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={6}>사용자가 없습니다.</TableCell>
+              <TableCell colSpan={5}>사용자가 없습니다.</TableCell>
             </TableRow>
           )}
         </tbody>
@@ -141,7 +158,6 @@ const UserList: React.FC = () => {
     </Container>
   );
 };
-
 export default UserList;
 
 const Container = styled.div`
@@ -155,6 +171,7 @@ const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 16px;
+  margin-top : 35px;
 `;
 
 const TableRow = styled.tr`
