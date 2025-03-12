@@ -21,12 +21,12 @@ const EmployeeListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const sortedData = [...data].sort((a, b) => {
-    if (sortOrder === "최신순") return b.erdatEnd.localeCompare(a.erdatEnd);
-    if (sortOrder === "오래된순") return a.erdatEnd.localeCompare(b.erdatEnd);
-    if (sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)") return a.ipName.localeCompare(b.ipName);
-    if (sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)") return b.ipName.localeCompare(a.ipName);
+    if (sortOrder === "최신순") return (b.erdatEnd ?? "").localeCompare(a.erdatEnd ?? "");
+    if (sortOrder === "오래된순") return (a.erdatEnd ?? "").localeCompare(b.erdatEnd ?? "");
+    if (sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)") return (a.ipName ?? "").localeCompare(b.ipName ?? "");
+    if (sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)") return (b.ipName ?? "").localeCompare(a.ipName ?? "");
     return 0;
-  });
+  });  
 
   const offset = currentPage * itemsPerPage;
   const currentItems = sortedData.slice(offset, offset + itemsPerPage);
