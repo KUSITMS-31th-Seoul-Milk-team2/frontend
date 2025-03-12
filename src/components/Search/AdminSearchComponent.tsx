@@ -34,9 +34,9 @@ const AdminSearchComponent: React.FC = () => {
       erdatStart: filters.startDate ? filters.startDate.toISOString().split("T")[0] : null,
       erdatEnd: filters.endDate ? filters.endDate.toISOString().split("T")[0] : null,
     };
-
+  
     console.log("전송할 requestBody:", requestBody);
-
+  
     try {
       const response = await token.post("/v1/receipt/search", requestBody);
       console.log("검색 결과:", response.data);
@@ -63,14 +63,14 @@ const AdminSearchComponent: React.FC = () => {
       [field]: date,
     }));
   };
-
+  
 const handleClearField = (field: keyof typeof filters) => {
   setFilters((prevFilters) => ({
     ...prevFilters,
     [field]: field === "startDate" || field === "endDate" ? null : "",
   }));
-};
-
+};  
+  
   const handleFilterClick = (filter: string) => {
     setSelectedFilter(filter);
 
@@ -83,23 +83,23 @@ const handleClearField = (field: keyof typeof filters) => {
         newStartDate = today;
         break;
       case "1주":
-        newStartDate.setDate(today.getDate() - 7);
+        newStartDate.setDate(today.getDate() - 7); 
         break;
       case "1개월":
-        newStartDate.setMonth(today.getMonth() - 1);
+        newStartDate.setMonth(today.getMonth() - 1); 
         break;
       case "3개월":
-        newStartDate.setMonth(today.getMonth() - 3);
+        newStartDate.setMonth(today.getMonth() - 3); 
         break;
       case "1년":
-        newStartDate.setFullYear(today.getFullYear() - 1);
+        newStartDate.setFullYear(today.getFullYear() - 1); 
         break;
     }
 
     setFilters((prev) => ({
       ...prev,
       startDate: newStartDate,
-      endDate: newEndDate,
+      endDate: newEndDate, 
     }));
 };
 
@@ -111,10 +111,10 @@ const handleClearField = (field: keyof typeof filters) => {
       startDate: null,
       endDate: null,
     });
-    setFilterTags([]);
+    setFilterTags([]); 
     setSelectedFilter("전체");
   };
-
+  
   return (
     <SearchContainer>
       <GlobalStyles />
@@ -134,7 +134,7 @@ const handleClearField = (field: keyof typeof filters) => {
     )}
     </WriterInputContainer>
       <DateComponent>
-      <DateLabel>기간</DateLabel>
+      <DateLabel>기간</DateLabel> 
       <DateContainer>
           <DatePickerWrapper>
           <Icon src={calendar} alt="Calendar Icon" />
@@ -167,7 +167,7 @@ const handleClearField = (field: keyof typeof filters) => {
         {filter}
       </DateFilterButton>
       ))}
-    </ButtonContainer>
+    </ButtonContainer> 
         </DateContainer>
     </DateComponent>
     </FirstColumn>

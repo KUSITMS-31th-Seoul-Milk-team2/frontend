@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import token from "@utils/token";
+import token from "@utils/token"; 
 
 const PwSettingComponent: React.FC = () => {
   const [currentPw, setCurrentPw] = useState("");
@@ -9,7 +9,7 @@ const PwSettingComponent: React.FC = () => {
   const [focusField, setFocusField] = useState<string | null>(null);
   const [isPwCorrect, setIsPwCorrect] = useState<boolean | null>(null);
   const [message, setMessage] = useState("");
-  const [isPwMismatch, setIsPwMismatch] = useState(false);
+  const [isPwMismatch, setIsPwMismatch] = useState(false); 
   console.log(message);
 
   const handleCheckPassword = async () => {
@@ -129,8 +129,8 @@ const PwSettingComponent: React.FC = () => {
           <ErrorMessage>비밀번호가 일치하지 않습니다. 다시 입력해주세요.</ErrorMessage>
         )}
 
-        <SubmitButton
-          onClick={handleChangePassword}
+        <SubmitButton 
+          onClick={handleChangePassword} 
           disabled={isPwMismatch || newPw.length < 8}
         >
           변경하기
