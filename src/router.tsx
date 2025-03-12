@@ -64,11 +64,6 @@ const router = createBrowserRouter([
     element: <HeaderLayout />,
     children: [{ path: "", element: <PwSettingPage /> }]
     },
-    {
-        path: "/reconciliation",
-        element: <HeaderLayout />,
-        children: [{ path: "", element: <ReconciliationPage /> }]
-    },
 ]);
 
 export default router;
