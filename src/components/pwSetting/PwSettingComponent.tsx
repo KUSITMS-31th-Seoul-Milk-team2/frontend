@@ -9,6 +9,8 @@ const PwSettingComponent: React.FC = () => {
   const [focusField, setFocusField] = useState<string | null>(null);
   const [isPwCorrect, setIsPwCorrect] = useState<boolean | null>(null);
   const [message, setMessage] = useState("");
+  const [isPwMismatch, setIsPwMismatch] = useState(false); 
+  console.log(message);
 
   const handleCheckPassword = async () => {
     try {
@@ -54,10 +56,17 @@ const PwSettingComponent: React.FC = () => {
         setNewPw("");
         setConfirmPw("");
         setIsPwCorrect(null);
+        alert("비밀번호가 성공적으로 변경되었습니다.");
       }
     } catch (error) {
       setMessage("비밀번호 변경에 실패했습니다.");
     }
+  };
+
+  const handleConfirmPwChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setConfirmPw(value);
+    setIsPwMismatch(newPw !== value);
   };
 
   return (
@@ -109,18 +118,23 @@ const PwSettingComponent: React.FC = () => {
           <Input
             type="password"
             value={confirmPw}
-            onChange={(e) => setConfirmPw(e.target.value)}
+            onChange={handleConfirmPwChange}
             onFocus={() => setFocusField("confirmPw")}
             onBlur={() => setFocusField(null)}
             required
           />
         </InputContainer>
 
-        {message && <Message isError={message.includes("실패") || message.includes("일치하지 않습니다.")}>
-          {message}
-        </Message>}
+        {isPwMismatch && (
+          <ErrorMessage>비밀번호가 일치하지 않습니다. 다시 입력해주세요.</ErrorMessage>
+        )}
 
-        <SubmitButton onClick={handleChangePassword}>변경하기</SubmitButton>
+        <SubmitButton 
+          onClick={handleChangePassword} 
+          disabled={isPwMismatch || newPw.length < 8}
+        >
+          변경하기
+        </SubmitButton>
       </FormBox>
     </Container>
   );
@@ -146,14 +160,14 @@ const FormBox = styled.div`
   border-radius: 16px;
   border: 1px solid var(--gray-400, #D6D6D5);
   width: 500px;
-  height: auto;
+  height: 460px;
 `;
 
 const InputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   width: 100%;
 `;
 
@@ -201,7 +215,7 @@ const ConfirmButton = styled.button`
 
 const SubmitButton = styled.button`
   width: 100%;
-  background: #009857;
+  background: ${({ disabled }) => (disabled ? "#ccc" : "#009857")};
   color: white;
   padding: 14px;
   border-radius: 6px;
@@ -209,9 +223,9 @@ const SubmitButton = styled.button`
   font-weight: bold;
   border: none;
   margin-top: 20px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   &:hover {
-    background: #007a48;
+    background: ${({ disabled }) => (disabled ? "#ccc" : "#007a48")};
   }
 `;
 
@@ -220,13 +234,6 @@ const Label = styled.div`
   font-weight: 700;
   width: 100%;
 `;
-
-const Message = styled.div<{ isError: boolean }>`
-  font-size: 14px;
-  margin-top: 5px;
-  color: ${({ isError }) => (isError ? "red" : "#009857")};
-`;
-
 const ErrorMessage = styled.div`
   font-size: 14px;
   color: red;
@@ -234,7 +241,10 @@ const ErrorMessage = styled.div`
 `;
 
 const SuccessMessage = styled.div`
-  font-size: 14px;
-  color: green;
-  margin-top: 5px;
+  color: var(--primary-main-200, #009857);
+font-family: Pretendard;
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
