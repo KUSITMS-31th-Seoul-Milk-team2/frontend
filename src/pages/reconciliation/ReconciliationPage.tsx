@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { transparentize } from "polished";
 
 interface InvoiceItem {
     id: number;
     title: string;
     imageUrl: string;
+}
+
+interface FormValues {
+    supplierRegNumber: string;
+    recipientRegNumber: string;
+    approvalNumber: string;
+    writtenDate: string;
+    supplyAmount: string;
 }
 
 const dummyList: InvoiceItem[] = [
@@ -28,12 +37,25 @@ const dummyList: InvoiceItem[] = [
     { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
     { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
     { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-
 ];
 
 const ReconciliationPage: React.FC = () => {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
+    const [formValues, setFormValues] = useState<FormValues>({
+        supplierRegNumber: "",
+        recipientRegNumber: "",
+        approvalNumber: "",
+        writtenDate: "",
+        supplyAmount: ""
+    });
+    const [isRequeryEnabled, setIsRequeryEnabled] = useState<boolean>(false);
+
+    // Check if any form field has a value to enable the requery button
+    useEffect(() => {
+        const hasValue = Object.values(formValues).some(value => value.trim() !== "");
+        setIsRequeryEnabled(hasValue);
+    }, [formValues]);
 
     const selectedItem = dummyList.find((item) => item.id === selectedId);
     const totalCount = dummyList.length;
@@ -67,154 +89,217 @@ const ReconciliationPage: React.FC = () => {
         setCheckedIds([]);
     };
 
+    const handleInputChange = (field: keyof FormValues, value: string) => {
+        setFormValues(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleClearInput = (field: keyof FormValues) => {
+        setFormValues(prev => ({
+            ...prev,
+            [field]: ""
+        }));
+    };
+
+    const handleCancel = () => {
+        // Reset form values
+        setFormValues({
+            supplierRegNumber: "",
+            recipientRegNumber: "",
+            approvalNumber: "",
+            writtenDate: "",
+            supplyAmount: ""
+        });
+    };
+
+    const handleRequery = () => {
+        // Handle requery logic
+        alert("재조회 요청이 실행되었습니다.");
+    };
+
     return (
-       <Wrapper>
-           <PageWrapper>
-               <PageTitle>미발급 파일 수정</PageTitle>
+        <Wrapper>
+            <PageWrapper>
+                <PageTitle>미발급 파일 수정</PageTitle>
 
-               <Container>
-                   {/* 왼쪽 패널 */}
-                   <LeftPanel>
-                       <LeftTitle>총 {totalCount}건</LeftTitle>
-                       <ActionRow>
-                           <SelectAllCheckbox
-                               type="checkbox"
-                               checked={allChecked}
-                               onChange={(e) => handleSelectAll(e.target.checked)}
-                           />
-                           <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
-                       </ActionRow>
+                <Container>
+                    {/* 왼쪽 패널 */}
+                    <LeftPanel>
+                        <LeftTitle>총 {totalCount}건</LeftTitle>
+                        <ActionRow>
+                            <SelectAllCheckbox
+                                type="checkbox"
+                                checked={allChecked}
+                                onChange={(e) => handleSelectAll(e.target.checked)}
+                            />
+                            <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                        </ActionRow>
 
-                       <ScrollArea>
-                           {dummyList.map((item) => {
-                               const isSelected = item.id === selectedId;
-                               const isChecked = checkedIds.includes(item.id);
+                        <ScrollArea>
+                            {dummyList.map((item) => {
+                                const isSelected = item.id === selectedId;
+                                const isChecked = checkedIds.includes(item.id);
 
-                               return (
-                                   <ListItem
-                                       key={item.id}
-                                       selected={isSelected}
-                                       onClick={() => handleSelect(item.id)}
-                                   >
-                                       <Checkbox
-                                           type="checkbox"
-                                           checked={isChecked}
-                                           onChange={(e) => {
-                                               e.stopPropagation();
-                                               handleCheck(item.id, e.target.checked);
-                                           }}
-                                       />
-                                       <ListItemContent>
-                                           {/* 첫 번째 줄 */}
-                                           <TitleRow>
-                                               <TruncatedSpan>공급자 사업체명</TruncatedSpan>
-                                               <Divider>|</Divider>
-                                               <TruncatedSpan>공급받는자 사업체명</TruncatedSpan>
-                                           </TitleRow>
-                                           {/* 두 번째 줄 */}
-                                           <MetaRow>
-                                               <span>PDF</span>
-                                               <Divider>|</Divider>
-                                               <span>2024.12.10</span>
-                                           </MetaRow>
-                                       </ListItemContent>
-                                   </ListItem>
-                               );
-                           })}
-                       </ScrollArea>
-                   </LeftPanel>
+                                return (
+                                    <ListItem
+                                        key={item.id}
+                                        selected={isSelected}
+                                        onClick={() => handleSelect(item.id)}
+                                    >
+                                        <Checkbox
+                                            type="checkbox"
+                                            checked={isChecked}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                handleCheck(item.id, e.target.checked);
+                                            }}
+                                        />
+                                        <ListItemContent>
+                                            {/* 첫 번째 줄 */}
+                                            <TitleRow>
+                                                <TruncatedSpan>공급자 사업체명</TruncatedSpan>
+                                                <Divider>|</Divider>
+                                                <TruncatedSpan>공급받는자 사업체명</TruncatedSpan>
+                                            </TitleRow>
+                                            {/* 두 번째 줄 */}
+                                            <MetaRow>
+                                                <span>PDF</span>
+                                                <Divider>|</Divider>
+                                                <span>2024.12.10</span>
+                                            </MetaRow>
+                                        </ListItemContent>
+                                    </ListItem>
+                                );
+                            })}
+                        </ScrollArea>
+                    </LeftPanel>
 
-                   {/* 오른쪽 패널 */}
-                   <RightPanel>
-                      <RightContentContainer>
-                          <NoticeContainer>
-                              <NoticeTitle>발급여부가 확인되지 않았어요</NoticeTitle>
-                              <NoticeSubtitle>
-                                  인식된 세금계산서 서류가 잘못되지 않았는지 확인해보세요.
-                              </NoticeSubtitle>
-                          </NoticeContainer>
+                    {/* 오른쪽 패널 */}
+                    <RightPanel>
+                        <RightContentContainer>
+                            <NoticeContainer>
+                                <NoticeTitle>발급여부가 확인되지 않았어요</NoticeTitle>
+                                <NoticeSubtitle>
+                                    인식된 세금계산서 서류가 잘못되지 않았는지 확인해보세요.
+                                </NoticeSubtitle>
+                            </NoticeContainer>
 
-                          <FilePreviewContainer>
-                              {selectedItem ? (
-                                  <TransformWrapper initialScale={1} wheel={{ step: 0.2 }}>
-                                      {({ zoomIn, zoomOut }) => (
-                                          <>
-                                              <PreviewWrapper>
-                                                  <TransformComponent>
-                                                      <PreviewImage
-                                                          src={selectedItem.imageUrl}
-                                                          alt={selectedItem.title}
-                                                      />
-                                                  </TransformComponent>
-                                              </PreviewWrapper>
-                                              <BottomBar>
-                                                  <ZoomButtons>
-                                                      <button onClick={() => zoomIn()}>+</button>
-                                                      <button onClick={() => zoomOut()}>-</button>
-                                                  </ZoomButtons>
-                                                  <ReuploadButton>첨부파일 재업로드</ReuploadButton>
-                                              </BottomBar>
-                                          </>
-                                      )}
-                                  </TransformWrapper>
-                              ) : (
-                                  <EmptyState>왼쪽에서 파일을 선택해주세요</EmptyState>
-                              )}
-                          </FilePreviewContainer>
-                          <SubTitle>인식된 세금계산서</SubTitle>
-                          <FormDescription>
-                              계속 일치하지 않을 경우 "첨부파일 재업로드" 혹은 "삭제"를 눌러주세요.
-                          </FormDescription>
-                          <DetailForm>
-
-
-                              {/* 예시 항목 */}
-                              <InputRow>
-                                  <label>공급자 등록번호</label>
-                                  <InputWrapper>
-                                      <input placeholder="000-00-00000" />
-                                      <RemoveButton>×</RemoveButton>
-                                  </InputWrapper>
-                              </InputRow>
-                              <InputRow>
-                                  <label>공급받는자 등록번호</label>
-                                  <InputWrapper>
-                                      <input placeholder="000-00-00000" />
-                                      <RemoveButton>×</RemoveButton>
-                                  </InputWrapper>
-                              </InputRow>
-                              <InputRow>
-                                  <label>승인번호</label>
-                                  <InputWrapper>
-                                      <input placeholder="000-00-00000" />
-                                      <RemoveButton>×</RemoveButton>
-                                  </InputWrapper>
-                              </InputRow>
-                              <InputRow>
-                                  <label>작성일자</label>
-                                  <InputWrapper>
-                                      <input placeholder="YYYY-MM-DD" />
-                                      <RemoveButton>×</RemoveButton>
-                                  </InputWrapper>
-                              </InputRow>
-                              <InputRow>
-                                  <label>공급가액</label>
-                                  <InputWrapper>
-                                      <input placeholder="금액" />
-                                      <RemoveButton>×</RemoveButton>
-                                  </InputWrapper>
-                              </InputRow>
-
-                              <ButtonRow>
-                                  <button>삭제</button>
-                                  <button>제출</button>
-                              </ButtonRow>
-                          </DetailForm>
-                      </RightContentContainer>
-                   </RightPanel>
-               </Container>
-           </PageWrapper>
-       </Wrapper>
+                            <FilePreviewContainer>
+                                {selectedItem ? (
+                                    <TransformWrapper initialScale={1} wheel={{ step: 0.2 }}>
+                                        {({ zoomIn, zoomOut }) => (
+                                            <>
+                                                <PreviewWrapper>
+                                                    <TransformComponent>
+                                                        <PreviewImage
+                                                            src={selectedItem.imageUrl}
+                                                            alt={selectedItem.title}
+                                                        />
+                                                    </TransformComponent>
+                                                </PreviewWrapper>
+                                                <BottomBar>
+                                                    <ZoomButtons>
+                                                        <button onClick={() => zoomIn()}>+</button>
+                                                        <button onClick={() => zoomOut()}>-</button>
+                                                    </ZoomButtons>
+                                                    <ReuploadButton>첨부파일 재업로드</ReuploadButton>
+                                                </BottomBar>
+                                            </>
+                                        )}
+                                    </TransformWrapper>
+                                ) : (
+                                    <EmptyState>왼쪽에서 파일을 선택해주세요</EmptyState>
+                                )}
+                            </FilePreviewContainer>
+                            <SubTitle>인식된 세금계산서</SubTitle>
+                            <FormDescription>
+                                계속 일치하지 않을 경우 "첨부파일 재업로드" 혹은 "삭제"를 눌러주세요.
+                            </FormDescription>
+                            <DetailForm>
+                                {/* 폼 항목들 */}
+                                <InputRow>
+                                    <label>공급자 등록번호</label>
+                                    <InputWrapper>
+                                        <input
+                                            placeholder="000-00-00000"
+                                            value={formValues.supplierRegNumber}
+                                            onChange={(e) => handleInputChange("supplierRegNumber", e.target.value)}
+                                        />
+                                        {formValues.supplierRegNumber && (
+                                            <RemoveButton onClick={() => handleClearInput("supplierRegNumber")}>×</RemoveButton>
+                                        )}
+                                    </InputWrapper>
+                                </InputRow>
+                                <InputRow>
+                                    <label>공급받는자 등록번호</label>
+                                    <InputWrapper>
+                                        <input
+                                            placeholder="000-00-00000"
+                                            value={formValues.recipientRegNumber}
+                                            onChange={(e) => handleInputChange("recipientRegNumber", e.target.value)}
+                                        />
+                                        {formValues.recipientRegNumber && (
+                                            <RemoveButton onClick={() => handleClearInput("recipientRegNumber")}>×</RemoveButton>
+                                        )}
+                                    </InputWrapper>
+                                </InputRow>
+                                <InputRow>
+                                    <label>승인번호</label>
+                                    <InputWrapper>
+                                        <input
+                                            placeholder="000-00-00000"
+                                            value={formValues.approvalNumber}
+                                            onChange={(e) => handleInputChange("approvalNumber", e.target.value)}
+                                        />
+                                        {formValues.approvalNumber && (
+                                            <RemoveButton onClick={() => handleClearInput("approvalNumber")}>×</RemoveButton>
+                                        )}
+                                    </InputWrapper>
+                                </InputRow>
+                                <InputRow>
+                                    <label>작성일자</label>
+                                    <InputWrapper>
+                                        <input
+                                            placeholder="YYYY-MM-DD"
+                                            value={formValues.writtenDate}
+                                            onChange={(e) => handleInputChange("writtenDate", e.target.value)}
+                                        />
+                                        {formValues.writtenDate && (
+                                            <RemoveButton onClick={() => handleClearInput("writtenDate")}>×</RemoveButton>
+                                        )}
+                                    </InputWrapper>
+                                </InputRow>
+                                <InputRow>
+                                    <label>공급가액</label>
+                                    <InputWrapper>
+                                        <input
+                                            placeholder="금액"
+                                            value={formValues.supplyAmount}
+                                            onChange={(e) => handleInputChange("supplyAmount", e.target.value)}
+                                        />
+                                        {formValues.supplyAmount && (
+                                            <RemoveButton onClick={() => handleClearInput("supplyAmount")}>×</RemoveButton>
+                                        )}
+                                    </InputWrapper>
+                                </InputRow>
+                            </DetailForm>
+                            <ButtonRow>
+                                <CancelButton onClick={handleCancel}>취소</CancelButton>
+                                <RequeryButton
+                                    onClick={handleRequery}
+                                    disabled={!isRequeryEnabled}
+                                    isEnabled={isRequeryEnabled}
+                                >
+                                    재조회
+                                </RequeryButton>
+                            </ButtonRow>
+                        </RightContentContainer>
+                    </RightPanel>
+                </Container>
+            </PageWrapper>
+        </Wrapper>
     );
 };
 
@@ -235,39 +320,34 @@ const PageWrapper = styled.div`
     flex-direction: column;
     margin: 0 auto;
     width: 100%;
-
 `;
 
-// 부모 높이를 없애고, align-items: stretch로 두면
-// 오른쪽이 커질 때 왼쪽도 늘어납니다.
 const Container = styled.div`
     display: flex;
-    align-items: stretch; /* 자식 요소가 컨테이너 높이에 맞게 늘어남 */
+    align-items: stretch;
     width: 100%;
-    /* height: 120vh; 제거 - 컨테이너가 내용물에 맞춰 늘어나도록 */
+    height: 90vh;
     border-radius: 16px;
     background-color: #fff;
     border: 1px solid ${({ theme }) => theme.colors.gray300};
 `;
 
-
 const PageTitle = styled.h1`
-  margin-bottom: 24px;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.3;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
 `;
 
 const LeftPanel = styled.div`
-    width: 350px; /* 400px에서 350px로 축소 */
+    width: 300px;
     border-right: 1px solid #ddd;
     background-color: #f8f9fa;
     display: flex;
     flex-direction: column;
     border-radius: 16px 0 0 16px;
-    /* overflow-y 속성 제거 - ScrollArea에서 처리 */
+    overflow-y: auto;
 `;
-
 
 const LeftTitle = styled.h2`
     font-size: ${({theme})=>theme.typography.titleM.fontSize};
@@ -297,12 +377,9 @@ const DeleteButton = styled.button`
     cursor: pointer;
 `;
 
-// 왼쪽 패널의 스크롤 영역
-// 만약 오른쪽 패널보다 내용이 더 많다면 스크롤됨
 const ScrollArea = styled.div`
-    flex: 1; /* Takes remaining space in the flex container */
-    overflow-y: auto; /* Enables vertical scrolling */
-    /* Optional: adds some styling to the scrollbar */
+    flex: 1;
+    overflow-y: auto;
     &::-webkit-scrollbar {
         width: 6px;
     }
@@ -321,16 +398,13 @@ const ListItem = styled.div<ListItemProps>`
     align-items: flex-start;
     padding: 12px 16px;
     cursor: pointer;
-    background-color: ${({ selected }) => (selected ? "#f0f0f0" : "transparent")};
-
-    &:hover {
-        background-color: #f9f9f9;
-    }
+    background-color: ${({ selected, theme }) =>
+            selected ? transparentize(0.8, theme.colors.main200) : "transparent"};
 `;
 
 const Checkbox = styled.input`
     margin-right: 8px;
-    margin-top: 4px; /* slightly center with text if needed */
+    margin-top: 4px;
     width: 1rem;
     height: 1rem;
 `;
@@ -338,52 +412,53 @@ const Checkbox = styled.input`
 const ListItemContent = styled.div`
     display: flex;
     flex-direction: column;
-    /* optionally add margin-left if you want more spacing from checkbox */
 `;
+
 const TruncatedSpan = styled.span`
-  max-width: 7ch;          /* Enough space for ~7 characters */
-  white-space: nowrap;     /* No wrapping */
-  overflow: hidden;        /* Hide overflow */
-  text-overflow: ellipsis; /* Show ... when truncated */
-  display: inline-block;   /* Needed for text-overflow to work on inline elements */
+    max-width: 7ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
 `;
+
 const TitleRow = styled.div`
-  font-size: 1rem;
-  font-weight: 500;
-  color: #393C3C; /* example color */
-  display: flex;
-  align-items: center;
-  gap: 4px; /* space around the divider */
+    font-size: 1rem;
+    font-weight: 500;
+    color: #393C3C;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 `;
 
 const MetaRow = styled.div`
-  margin-top: 4px;
-  font-size: 0.875rem;
-  color: #999;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+    margin-top: 4px;
+    font-size: 0.875rem;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 `;
 
 const Divider = styled.span`
-  color: #ccc; /* or #ddd, whichever you prefer */
+    color: #ccc;
 `;
-/* 오른쪽 패널 - 너비 조정 */
+
 const RightPanel = styled.div`
-    width: calc(100% - 350px); /* 왼쪽 패널 크기에 맞게 조정 */
+    width: calc(100% - 350px);
     display: flex;
     flex-direction: column;
     padding: 16px;
-    overflow-y: auto; /* 내용이 많아질 경우 스크롤 */
+    overflow-y: auto;
 `;
-/* 오른쪽 컨텐츠 컨테이너 - 너비 조정 */
+
 const RightContentContainer = styled.div`
-    width: 100%; /* 90%에서 100%로 변경 */
-    max-width: 800px; /* 최대 너비 유지 */
-    margin: 0 auto; /* 중앙 정렬 */
-    padding-bottom: 24px; /* 하단 여백 추가 */
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 24px;
 `;
-/* 상단 문구 */
+
 const NoticeContainer = styled.div`
     margin-bottom: 16px;
 `;
@@ -401,7 +476,6 @@ const NoticeSubtitle = styled.div`
     line-height: 1.3;
 `;
 
-/* 미리보기 영역 */
 const FilePreviewContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -412,7 +486,7 @@ const FilePreviewContainer = styled.div`
     position: relative;
     margin-bottom: 16px;
     min-height: 350px;
-    max-height: 400px; /* Add a maximum height constraint */
+    max-height: 400px;
 `;
 
 const PreviewWrapper = styled.div`
@@ -421,8 +495,8 @@ const PreviewWrapper = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    height: 350px; /* Set a fixed height */
-    max-height: 350px; /* Ensure it doesn't grow beyond this */
+    height: 350px;
+    max-height: 350px;
 `;
 
 const BottomBar = styled.div`
@@ -455,7 +529,7 @@ const ReuploadButton = styled.button`
 const PreviewImage = styled.img`
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain; /* This preserves the aspect ratio */
+    object-fit: contain;
     width: auto;
     height: auto;
 `;
@@ -469,14 +543,11 @@ const EmptyState = styled.div`
     flex: 1;
 `;
 
-/* 폼 영역 */
 const DetailForm = styled.div`
     border: 1px solid ${({theme})=>theme.colors.gray400};
     border-radius: 16px;
     padding: 24px;
-    /* Add top margin so there's space above it */
     margin-top: 24px;
-    /* Use flex layout + gap to space out each row */
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -495,7 +566,7 @@ const FormDescription = styled.p`
 const InputRow = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between; // 이 부분을 추가
+    justify-content: space-between;
 
     label {
         width: 140px;
@@ -507,12 +578,12 @@ const InputRow = styled.div`
 
 const InputWrapper = styled.div`
     position: relative;
-    width: 300px; 
+    width: 300px;
 
     input {
         width: 100%;
-        padding: 15px 40px 15px 10px; /* Extra right padding for the remove button */
-        border: 2px solid #ddd;  /* Thicker border */
+        padding: 15px 40px 15px 10px;
+        border: 2px solid #ddd;
         border-radius: 10px;
         background-color: ${({theme})=>theme.colors.gray100};
         color:  ${({theme})=>theme.colors.gray1600};
@@ -525,7 +596,7 @@ const InputWrapper = styled.div`
 
 const RemoveButton = styled.button`
     position: absolute;
-    right: 10px;     
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
@@ -544,12 +615,28 @@ const ButtonRow = styled.div`
     justify-content: flex-end;
     gap: 8px;
     margin-top: 24px;
+`;
 
-    button {
-        padding: 8px 16px;
-        cursor: pointer;
-        border: 1px solid #999;
-        background: #fff;
-        border-radius: 4px;
-    }
+// New styled components for the buttons
+interface RequeryButtonProps {
+    isEnabled: boolean;
+}
+
+const CancelButton = styled.button`
+    padding: 8px 16px;
+    cursor: pointer;
+    background: #F0F0F0;
+    border-radius: 8px;
+    border: none; // Remove border
+`;
+
+const RequeryButton = styled.button<RequeryButtonProps>`
+    padding: 8px 16px;
+    cursor: ${props => props.isEnabled ? 'pointer' : 'not-allowed'};
+    background: ${props => props.isEnabled ? '#009857' : '#F0F0F0'};
+    color: ${props => props.isEnabled ? 'white' : '#999'};
+    border-radius: 8px;
+    border: none; // Remove border
+    opacity: ${props => props.isEnabled ? '1' : '0.7'};
+    transition: all 0.3s ease;
 `;
