@@ -53,10 +53,10 @@ const ReconciliationPage = () => {
     const [showPageDeletePopup, setShowPageDeletePopup] = useState<boolean>(false);
     const [showNoItemsPopup, setShowNoItemsPopup] = useState<boolean>(false);
 
-    // 목록은 API로 받아오기
+
     const [list, setList] = useState<InvoiceItem[]>([]);
 
-    // API를 통해 불일치 내역 받아오기
+
     useEffect(() => {
         const fetchInvalidList = async () => {
             try {
@@ -150,7 +150,7 @@ const ReconciliationPage = () => {
         }
     };
 
-    // 단일 삭제 API 호출 (삭제 확인 모달의 "삭제" 버튼)
+
     const handlePageDeleteClick = () => {
         if (!selectedItem) {
             alert("선택된 세금계산서가 없습니다.");
@@ -162,7 +162,7 @@ const ReconciliationPage = () => {
     const handleConfirmPageDelete = async () => {
         if (!selectedItem) return;
         try {
-            const response = await token.delete(`${BaseUrl}/v1/receipt/${selectedItem.id}`, {
+            const response = await token.delete(`${BaseUrl}/v1/receipt/invalid/${selectedItem.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (response.status === 200) {
