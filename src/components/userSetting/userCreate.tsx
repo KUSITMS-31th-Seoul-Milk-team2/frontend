@@ -13,7 +13,7 @@ const UserCreate: React.FC<UserCreateProps> = ({ onClose, onCreateSuccess }) => 
   const [error, setError] = useState("");
 
   const handleEmployeeIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 8);
+    const value = e.target.value.replace(/\D/g, "").slice(0, 9);
     setEmployeeId(value);
   };
 

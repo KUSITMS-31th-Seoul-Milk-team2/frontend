@@ -18,7 +18,7 @@ export default UserSettingPage;
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
   max-width: 1200px;
   margin: 40px auto;
