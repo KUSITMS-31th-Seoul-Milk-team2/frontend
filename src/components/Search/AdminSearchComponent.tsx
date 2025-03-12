@@ -26,13 +26,21 @@ const AdminSearchComponent: React.FC = () => {
     endDate: null as Date | null,
   });
   const [searchResults, setSearchResults] = useState<ListItem[]>([]);
+  const formatDate = (date: Date | null) => {
+    if (!date) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  
   const fetchSearchResults = async () => {
     const requestBody = {
       employeeName: filters.writer ? [filters.writer] : [],
       suNames: filters.supplier ? [filters.supplier] : null,
       ipNames: filters.recipient ? [filters.recipient] : null,
-      erdatStart: filters.startDate ? filters.startDate.toISOString().split("T")[0] : null,
-      erdatEnd: filters.endDate ? filters.endDate.toISOString().split("T")[0] : null,
+      erdatStart: formatDate(filters.startDate),
+      erdatEnd: formatDate(filters.endDate),
     };
   
     console.log("전송할 requestBody:", requestBody);
@@ -45,7 +53,6 @@ const AdminSearchComponent: React.FC = () => {
       console.error("검색 중 오류 발생:", error);
     }
   };
-
   const [selectedFilter, setSelectedFilter] = useState<string | null>("전체");
   const [filterTags, setFilterTags] = useState<string[]>([]);
   console.log(filterTags);
