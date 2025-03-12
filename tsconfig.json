@@ -5,11 +5,20 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "types": ["vite-plugin-svgr/client"],
     "baseUrl": "./",
     "paths": {
       "@components/*": ["src/components/*"],
+      "@assets/*": ["src/assets/*"],
+      "@assets/icons/*": ["src/assets/icons/*"],
       "@utils/*": ["src/utils/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@pages/*": ["src/pages/*"],
+      "@icons/*": ["public/icons/*"],
+      "@styles/*": ["src/styles/*"],
+      "@recoil/*": ["src/recoil/*"],
+      "@recoil/state/*": ["src/recoil/state/*"],
+      "@store/*": ["src/store/*"],
     }
   }
 }

@@ -10,10 +10,26 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^44.3.0",
+    "@ckeditor/ckeditor5-react": "^9.5.0",
+    "axios": "^1.8.1",
+    "ckeditor5": "^44.3.0",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "polished": "^4.3.1",
     "react": "^19.0.0",
+    "react-cookie": "^7.2.2",
+    "react-datepicker": "^8.1.0",
+    "react-day-picker": "^9.6.1",
     "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.6",
+    "react-paginate": "^8.3.0",
     "react-router-dom": "^7.2.0",
-    "styled-components": "^6.1.15"
+    "react-webcam": "^7.2.0",
+    "styled-components": "^6.1.15",
+    "vite-plugin-svgr": "^4.3.0",
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
