@@ -117,8 +117,8 @@ aspect-ratio: 1/1;
 const RecentLoginTag = styled.img`
 width: 80px;
 position : absolute;
-top : 90%;
-left : 44%;
+top : 83%;
+left : 43%;
 
 `;
 const DescriptionLogo = styled.img`
