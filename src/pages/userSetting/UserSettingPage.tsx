@@ -1,13 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import UserSearch from "@components/userSetting/userSearch";
 import UserList from "@components/userSetting/userList";
 
 const UserSettingPage: React.FC = () => {
   return (
     <PageContainer>
       <Title>사용자 권한 관리</Title>
-      <UserSearch />
       <UserList/>
     </PageContainer>
   );
@@ -20,14 +18,19 @@ const PageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 40px auto;
   padding: 16px;
 `;
 
 const Title = styled.h1`
+  font-family: Pretendard;
   font-size: 24px;
-  font-weight: bold;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
   margin-bottom: 16px;
-  color: #333;
+  text-align: left;  
+  align-items: center;
+  width : 1044px;
 `;
