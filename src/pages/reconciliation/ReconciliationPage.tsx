@@ -1,15 +1,31 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { transparentize } from "polished";
 import SelectionPopup from "@components/modal/SelectionPopup.tsx";
-import roundCheckIcon from "@assets/icons/checkAroundIcon.svg"
-import {useNavigate} from "react-router-dom";
+import roundCheckIcon from "@assets/icons/checkAroundIcon.svg";
+import { useNavigate } from "react-router-dom";
+import token from "@utils/token.tsx";
 
 interface InvoiceItem {
     id: number;
-    title: string;
-    imageUrl: string;
+    createdAt: string;
+    updatedAt: string;
+    deleted: boolean;
+    employeeId: string;
+    arap: string;
+    issueId: string;
+    issueDate: string;
+    suId: string;
+    suName: string;
+    ipId: string;
+    ipName: string;
+    chargeTotal: number;
+    taxTotal: number;
+    grandTotal: number;
+    erdat: string;
+    erzet: string;
+    fileUrl: string;
 }
 
 interface FormValues {
@@ -20,17 +36,11 @@ interface FormValues {
     supplyAmount: string;
 }
 
-const dummyList: InvoiceItem[] = [
-    { id: 1, title: "세금계산서 사업체명 A", imageUrl: "/red_image.png" },
-    { id: 2, title: "세금계산서 사업체명 B", imageUrl: "/sample2.png" },
-    { id: 3, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-];
-
 const ReconciliationPage = () => {
     const navigate = useNavigate();
+    const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
-
     const [formValues, setFormValues] = useState<FormValues>({
         supplierRegNumber: "",
         recipientRegNumber: "",
@@ -39,22 +49,48 @@ const ReconciliationPage = () => {
         supplyAmount: "",
     });
     const [isRequeryEnabled, setIsRequeryEnabled] = useState<boolean>(false);
-
-
     const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
     const [showPageDeletePopup, setShowPageDeletePopup] = useState<boolean>(false);
     const [showNoItemsPopup, setShowNoItemsPopup] = useState<boolean>(false);
 
-    // 실제 목록 (테스트 용 - 실제론 useState/useZustand로 관리)
-    const [list, setList] = useState<InvoiceItem[]>(dummyList);
+    // 목록은 API로 받아오기
+    const [list, setList] = useState<InvoiceItem[]>([]);
+
+    // API를 통해 불일치 내역 받아오기
+    useEffect(() => {
+        const fetchInvalidList = async () => {
+            try {
+                const response = await token.get(`${BaseUrl}/v1/receipt/invalid/search`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (response.status === 200) {
+                    setList(response.data.data);
+                }
+            } catch (error) {
+                console.error("불일치 내역을 받아오는 중 오류 발생:", error);
+            }
+        };
+        fetchInvalidList();
+    }, [BaseUrl]);
 
 
     const selectedItem = list.find((item) => item.id === selectedId);
+    useEffect(() => {
+        if (selectedItem) {
+            setFormValues({
+                supplierRegNumber: selectedItem.suId,
+                recipientRegNumber: selectedItem.ipId,
+                approvalNumber: selectedItem.issueId,
+                writtenDate: selectedItem.erdat,
+                supplyAmount: selectedItem.chargeTotal.toString(),
+            });
+        }
+    }, [selectedItem]);
+
     const totalCount = list.length;
-
-    const allChecked =
-        list.length > 0 && list.every((item) => checkedIds.includes(item.id));
-
+    const allChecked = list.length > 0 && list.every((item) => checkedIds.includes(item.id));
 
     useEffect(() => {
         const hasValue = Object.values(formValues).some((value) => value.trim() !== "");
@@ -88,22 +124,33 @@ const ReconciliationPage = () => {
     };
 
 
-    const handleConfirmDelete = () => {
-
-        const newList = list.filter((item) => !checkedIds.includes(item.id));
-        setList(newList);
-        setCheckedIds([]);
-        setShowDeletePopup(false);
-
-        if (newList.length === 0) {
-            setShowNoItemsPopup(true);
+    const handleConfirmDelete = async () => {
+        try {
+            const response = await token.delete(`${BaseUrl}/v1/receipt/delete`, {
+                data: checkedIds,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response.status === 200) {
+                const newList = list.filter((item) => !checkedIds.includes(item.id));
+                setList(newList);
+                setCheckedIds([]);
+                setShowDeletePopup(false);
+                if (newList.length === 0) {
+                    setShowNoItemsPopup(true);
+                }
+            } else {
+                alert("전체 삭제에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("전체 삭제 에러:", error);
+            alert("전체 삭제에 실패했습니다.");
         }
     };
 
-    const handleCancelDelete = () => {
-        setShowDeletePopup(false);
-    };
-
+    // 단일 삭제 API 호출 (삭제 확인 모달의 "삭제" 버튼)
     const handlePageDeleteClick = () => {
         if (!selectedItem) {
             alert("선택된 세금계산서가 없습니다.");
@@ -112,21 +159,27 @@ const ReconciliationPage = () => {
         setShowPageDeletePopup(true);
     };
 
-    const handleConfirmPageDelete = () => {
+    const handleConfirmPageDelete = async () => {
         if (!selectedItem) return;
-
-        const newList = list.filter((item) => item.id !== selectedItem.id);
-        setList(newList);
-        setSelectedId(null);
-        setShowPageDeletePopup(false);
-
-
-        if (newList.length === 0) {
-            setShowNoItemsPopup(true);
+        try {
+            const response = await token.delete(`${BaseUrl}/v1/receipt/${selectedItem.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (response.status === 200) {
+                const newList = list.filter((item) => item.id !== selectedItem.id);
+                setList(newList);
+                setSelectedId(null);
+                setShowPageDeletePopup(false);
+                if (newList.length === 0) {
+                    setShowNoItemsPopup(true);
+                }
+            } else {
+                alert("삭제에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("단일 삭제 에러:", error);
+            alert("삭제에 실패했습니다.");
         }
-    };
-    const handleCancelPageDelete = () => {
-        setShowPageDeletePopup(false);
     };
 
     const handleInputChange = (field: keyof FormValues, value: string) => {
@@ -137,15 +190,63 @@ const ReconciliationPage = () => {
         setFormValues((prev) => ({ ...prev, [field]: "" }));
     };
 
-    const handleRequery = () => {
-        alert("재조회 요청이 실행되었습니다.");
+    const handleRequery =  async () => {
+        try {
+            const formattedDate = formValues.writtenDate.replace(/-/g, "");
+            const requestBody = [{
+                supplierRegNumber: formValues.supplierRegNumber,
+                contractorRegNumber: formValues.recipientRegNumber,
+                approvalNo: formValues.approvalNumber,
+                reportingDate: formattedDate,
+                supplyValue: formValues.supplyAmount,
+            },];
+            const response = await token.post(`${BaseUrl}/v1/receipt/validation`, requestBody, {
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", },
+            });
+            if (response.status=== 200) {
+                const transactionId = response.data.data;
+                console.log(transactionId)
+                if (!selectedItem) {
+                    alert("선택된 항목이 없습니다.");
+                    return;
+                }
+                alert("재조회 요청이 성공적으로 완료되었습니다.");
+                const additionResponse = await token.post(
+                    `${BaseUrl}/v1/receipt/addition?transactionId=${transactionId}`,
+                    [ selectedItem.id ],
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                console.log("addition response:", additionResponse);
+                if (additionResponse.status === 200) {
+                    alert("추가 인증이 성공적으로 완료되었습니다.");
+                } else {
+                    alert("추가 인증에 실패했습니다.");
+                }
+            } else {
+                alert("재조회 요청에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("재조회 요청 에러:", error);
+            alert("재조회 요청 중 오류가 발생했습니다.");
+        }
     };
+
+
+    const formatIssueDate = (dateStr: string) => {
+        if (dateStr.length === 8) {
+            return `${dateStr.substring(0, 4)}.${dateStr.substring(4, 6)}.${dateStr.substring(6, 8)}`;
+        }
+        return dateStr;
+    };
+
 
     return (
         <Wrapper>
             <PageWrapper>
                 <PageTitle>미발급 파일 수정</PageTitle>
-
                 <Container>
                     <LeftPanel>
                         <LeftTitle>총 {totalCount}건</LeftTitle>
@@ -157,12 +258,10 @@ const ReconciliationPage = () => {
                             />
                             <DeleteButton onClick={handleDeleteClick}>전체삭제</DeleteButton>
                         </ActionRow>
-
                         <ScrollArea>
                             {list.map((item) => {
                                 const isSelected = item.id === selectedId;
                                 const isChecked = checkedIds.includes(item.id);
-
                                 return (
                                     <ListItem
                                         key={item.id}
@@ -179,14 +278,14 @@ const ReconciliationPage = () => {
                                         />
                                         <ListItemContent>
                                             <TitleRow>
-                                                <TruncatedSpan>공급자 사업체명</TruncatedSpan>
+                                                <TruncatedSpan>{item.suName}</TruncatedSpan>
                                                 <Divider>|</Divider>
-                                                <TruncatedSpan>공급받는자 사업체명</TruncatedSpan>
+                                                <TruncatedSpan>{item.ipName}</TruncatedSpan>
                                             </TitleRow>
                                             <MetaRow>
                                                 <span>PDF</span>
                                                 <Divider>|</Divider>
-                                                <span>2024.12.10</span>
+                                                <span>{formatIssueDate(item.issueDate)}</span>
                                             </MetaRow>
                                         </ListItemContent>
                                     </ListItem>
@@ -194,7 +293,6 @@ const ReconciliationPage = () => {
                             })}
                         </ScrollArea>
                     </LeftPanel>
-
                     <RightPanel>
                         <RightContentContainer>
                             <NoticeContainer>
@@ -203,7 +301,6 @@ const ReconciliationPage = () => {
                                     인식된 세금계산서 서류가 잘못되지 않았는지 확인해보세요.
                                 </NoticeSubtitle>
                             </NoticeContainer>
-
                             <FilePreviewContainer>
                                 {selectedItem ? (
                                     <TransformWrapper initialScale={1} wheel={{ step: 0.2 }}>
@@ -212,8 +309,8 @@ const ReconciliationPage = () => {
                                                 <PreviewWrapper>
                                                     <TransformComponent>
                                                         <PreviewImage
-                                                            src={selectedItem.imageUrl}
-                                                            alt={selectedItem.title}
+                                                            src={selectedItem.fileUrl}
+                                                            alt={selectedItem.suName}
                                                         />
                                                     </TransformComponent>
                                                 </PreviewWrapper>
@@ -231,7 +328,6 @@ const ReconciliationPage = () => {
                                     <EmptyState>왼쪽에서 파일을 선택해주세요</EmptyState>
                                 )}
                             </FilePreviewContainer>
-
                             <SubTitle>인식된 세금계산서</SubTitle>
                             <FormDescription>
                                 계속 일치하지 않을 경우 "첨부파일 재업로드" 혹은 "삭제"를 눌러주세요.
@@ -319,14 +415,10 @@ const ReconciliationPage = () => {
                                     </InputWrapper>
                                 </InputRow>
                             </DetailForm>
-
                             <ButtonRow>
-                                {/* 오른쪽 "삭제" 버튼 (현재 페이지) */}
                                 <ActionButton onClick={handlePageDeleteClick}>
                                     삭제
                                 </ActionButton>
-
-                                {/* "재조회" 버튼 */}
                                 <ActionButton
                                     onClick={handleRequery}
                                     disabled={!isRequeryEnabled}
@@ -353,7 +445,7 @@ const ReconciliationPage = () => {
                     }}
                     secondaryButton={{
                         label: "취소",
-                        onClick: handleCancelDelete,
+                        onClick: () => setShowDeletePopup(false),
                     }}
                 />
             )}
@@ -367,7 +459,7 @@ const ReconciliationPage = () => {
                     }}
                     secondaryButton={{
                         label: "취소",
-                        onClick: handleCancelPageDelete,
+                        onClick: () => setShowPageDeletePopup(false),
                     }}
                 />
             )}
@@ -378,15 +470,11 @@ const ReconciliationPage = () => {
                     Content={"불일치된 수정이 끝났어요."}
                     primaryButton={{
                         label: "홈으로 이동",
-                        onClick: () => {
-                            navigate("/home");
-                        },
+                        onClick: () => navigate("/home"),
                     }}
                     secondaryButton={{
                         label: "계속 업로드",
-                        onClick: () => {
-                            navigate("/upload");
-                        },
+                        onClick: () => navigate("/upload"),
                     }}
                 />
             )}

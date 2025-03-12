@@ -166,7 +166,7 @@ const UploadPage = () => {
             );
             setShowLoadingModal(false);
 
-            if (additionResponse.status === 200) {
+            if (additionResponse.data === 200) {
                 setShowSecondPopup(true);
             } else {
                 alert("세금계산서 정보가 일치하지 않습니다.");
