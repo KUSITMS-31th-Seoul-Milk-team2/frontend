@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { transparentize } from "polished";
+import SelectionPopup from "@components/modal/SelectionPopup.tsx";
+import roundCheckIcon from "@assets/icons/checkAroundIcon.svg"
+import {useNavigate} from "react-router-dom";
 
 interface InvoiceItem {
     id: number;
@@ -21,46 +24,42 @@ const dummyList: InvoiceItem[] = [
     { id: 1, title: "세금계산서 사업체명 A", imageUrl: "/red_image.png" },
     { id: 2, title: "세금계산서 사업체명 B", imageUrl: "/sample2.png" },
     { id: 3, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 4, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 5, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 6, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 7, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 8, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 9, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 10, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id:11, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 12, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
-    { id: 13, title: "세금계산서 사업체명 C", imageUrl: "/sample3.png" },
 ];
 
-const ReconciliationPage: React.FC = () => {
+const ReconciliationPage = () => {
+    const navigate = useNavigate();
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
     const [formValues, setFormValues] = useState<FormValues>({
         supplierRegNumber: "",
         recipientRegNumber: "",
         approvalNumber: "",
         writtenDate: "",
-        supplyAmount: ""
+        supplyAmount: "",
     });
     const [isRequeryEnabled, setIsRequeryEnabled] = useState<boolean>(false);
 
-    // Check if any form field has a value to enable the requery button
+
+    const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
+    const [showPageDeletePopup, setShowPageDeletePopup] = useState<boolean>(false);
+    const [showNoItemsPopup, setShowNoItemsPopup] = useState<boolean>(false);
+
+    // 실제 목록 (테스트 용 - 실제론 useState/useZustand로 관리)
+    const [list, setList] = useState<InvoiceItem[]>(dummyList);
+
+
+    const selectedItem = list.find((item) => item.id === selectedId);
+    const totalCount = list.length;
+
+    const allChecked =
+        list.length > 0 && list.every((item) => checkedIds.includes(item.id));
+
+
     useEffect(() => {
-        const hasValue = Object.values(formValues).some(value => value.trim() !== "");
+        const hasValue = Object.values(formValues).some((value) => value.trim() !== "");
         setIsRequeryEnabled(hasValue);
     }, [formValues]);
-
-    const selectedItem = dummyList.find((item) => item.id === selectedId);
-    const totalCount = dummyList.length;
-    const allChecked =
-        dummyList.length > 0 && dummyList.every((item) => checkedIds.includes(item.id));
 
     const handleSelect = (id: number) => {
         setSelectedId(id);
@@ -74,48 +73,71 @@ const ReconciliationPage: React.FC = () => {
 
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            setCheckedIds(dummyList.map((item) => item.id));
+            setCheckedIds(list.map((item) => item.id));
         } else {
             setCheckedIds([]);
         }
     };
 
-    const handleDelete = () => {
+    const handleDeleteClick = () => {
         if (checkedIds.length === 0) {
             alert("선택된 항목이 없습니다.");
             return;
         }
-        alert(`선택된 항목 삭제: ${checkedIds.join(", ")}`);
+        setShowDeletePopup(true);
+    };
+
+
+    const handleConfirmDelete = () => {
+
+        const newList = list.filter((item) => !checkedIds.includes(item.id));
+        setList(newList);
         setCheckedIds([]);
+        setShowDeletePopup(false);
+
+        if (newList.length === 0) {
+            setShowNoItemsPopup(true);
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeletePopup(false);
+    };
+
+    const handlePageDeleteClick = () => {
+        if (!selectedItem) {
+            alert("선택된 세금계산서가 없습니다.");
+            return;
+        }
+        setShowPageDeletePopup(true);
+    };
+
+    const handleConfirmPageDelete = () => {
+        if (!selectedItem) return;
+
+        const newList = list.filter((item) => item.id !== selectedItem.id);
+        setList(newList);
+        setSelectedId(null);
+        setShowPageDeletePopup(false);
+
+
+        if (newList.length === 0) {
+            setShowNoItemsPopup(true);
+        }
+    };
+    const handleCancelPageDelete = () => {
+        setShowPageDeletePopup(false);
     };
 
     const handleInputChange = (field: keyof FormValues, value: string) => {
-        setFormValues(prev => ({
-            ...prev,
-            [field]: value
-        }));
+        setFormValues((prev) => ({ ...prev, [field]: value }));
     };
 
     const handleClearInput = (field: keyof FormValues) => {
-        setFormValues(prev => ({
-            ...prev,
-            [field]: ""
-        }));
-    };
-
-    const handleCancel = () => {
-        // Reset form values
-        setFormValues({
-            supplierRegNumber: "",
-            recipientRegNumber: "",
-            approvalNumber: "",
-            writtenDate: "",
-            supplyAmount: ""
-        });
+        setFormValues((prev) => ({ ...prev, [field]: "" }));
     };
 
     const handleRequery = () => {
-        // Handle requery logic
         alert("재조회 요청이 실행되었습니다.");
     };
 
@@ -125,7 +147,6 @@ const ReconciliationPage: React.FC = () => {
                 <PageTitle>미발급 파일 수정</PageTitle>
 
                 <Container>
-                    {/* 왼쪽 패널 */}
                     <LeftPanel>
                         <LeftTitle>총 {totalCount}건</LeftTitle>
                         <ActionRow>
@@ -134,11 +155,11 @@ const ReconciliationPage: React.FC = () => {
                                 checked={allChecked}
                                 onChange={(e) => handleSelectAll(e.target.checked)}
                             />
-                            <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                            <DeleteButton onClick={handleDeleteClick}>전체삭제</DeleteButton>
                         </ActionRow>
 
                         <ScrollArea>
-                            {dummyList.map((item) => {
+                            {list.map((item) => {
                                 const isSelected = item.id === selectedId;
                                 const isChecked = checkedIds.includes(item.id);
 
@@ -157,13 +178,11 @@ const ReconciliationPage: React.FC = () => {
                                             }}
                                         />
                                         <ListItemContent>
-                                            {/* 첫 번째 줄 */}
                                             <TitleRow>
                                                 <TruncatedSpan>공급자 사업체명</TruncatedSpan>
                                                 <Divider>|</Divider>
                                                 <TruncatedSpan>공급받는자 사업체명</TruncatedSpan>
                                             </TitleRow>
-                                            {/* 두 번째 줄 */}
                                             <MetaRow>
                                                 <span>PDF</span>
                                                 <Divider>|</Divider>
@@ -176,7 +195,6 @@ const ReconciliationPage: React.FC = () => {
                         </ScrollArea>
                     </LeftPanel>
 
-                    {/* 오른쪽 패널 */}
                     <RightPanel>
                         <RightContentContainer>
                             <NoticeContainer>
@@ -213,22 +231,26 @@ const ReconciliationPage: React.FC = () => {
                                     <EmptyState>왼쪽에서 파일을 선택해주세요</EmptyState>
                                 )}
                             </FilePreviewContainer>
+
                             <SubTitle>인식된 세금계산서</SubTitle>
                             <FormDescription>
                                 계속 일치하지 않을 경우 "첨부파일 재업로드" 혹은 "삭제"를 눌러주세요.
                             </FormDescription>
                             <DetailForm>
-                                {/* 폼 항목들 */}
                                 <InputRow>
                                     <label>공급자 등록번호</label>
                                     <InputWrapper>
                                         <input
                                             placeholder="000-00-00000"
                                             value={formValues.supplierRegNumber}
-                                            onChange={(e) => handleInputChange("supplierRegNumber", e.target.value)}
+                                            onChange={(e) =>
+                                                handleInputChange("supplierRegNumber", e.target.value)
+                                            }
                                         />
                                         {formValues.supplierRegNumber && (
-                                            <RemoveButton onClick={() => handleClearInput("supplierRegNumber")}>×</RemoveButton>
+                                            <RemoveButton onClick={() => handleClearInput("supplierRegNumber")}>
+                                                ×
+                                            </RemoveButton>
                                         )}
                                     </InputWrapper>
                                 </InputRow>
@@ -238,10 +260,14 @@ const ReconciliationPage: React.FC = () => {
                                         <input
                                             placeholder="000-00-00000"
                                             value={formValues.recipientRegNumber}
-                                            onChange={(e) => handleInputChange("recipientRegNumber", e.target.value)}
+                                            onChange={(e) =>
+                                                handleInputChange("recipientRegNumber", e.target.value)
+                                            }
                                         />
                                         {formValues.recipientRegNumber && (
-                                            <RemoveButton onClick={() => handleClearInput("recipientRegNumber")}>×</RemoveButton>
+                                            <RemoveButton onClick={() => handleClearInput("recipientRegNumber")}>
+                                                ×
+                                            </RemoveButton>
                                         )}
                                     </InputWrapper>
                                 </InputRow>
@@ -251,10 +277,14 @@ const ReconciliationPage: React.FC = () => {
                                         <input
                                             placeholder="000-00-00000"
                                             value={formValues.approvalNumber}
-                                            onChange={(e) => handleInputChange("approvalNumber", e.target.value)}
+                                            onChange={(e) =>
+                                                handleInputChange("approvalNumber", e.target.value)
+                                            }
                                         />
                                         {formValues.approvalNumber && (
-                                            <RemoveButton onClick={() => handleClearInput("approvalNumber")}>×</RemoveButton>
+                                            <RemoveButton onClick={() => handleClearInput("approvalNumber")}>
+                                                ×
+                                            </RemoveButton>
                                         )}
                                     </InputWrapper>
                                 </InputRow>
@@ -267,7 +297,9 @@ const ReconciliationPage: React.FC = () => {
                                             onChange={(e) => handleInputChange("writtenDate", e.target.value)}
                                         />
                                         {formValues.writtenDate && (
-                                            <RemoveButton onClick={() => handleClearInput("writtenDate")}>×</RemoveButton>
+                                            <RemoveButton onClick={() => handleClearInput("writtenDate")}>
+                                                ×
+                                            </RemoveButton>
                                         )}
                                     </InputWrapper>
                                 </InputRow>
@@ -280,31 +312,89 @@ const ReconciliationPage: React.FC = () => {
                                             onChange={(e) => handleInputChange("supplyAmount", e.target.value)}
                                         />
                                         {formValues.supplyAmount && (
-                                            <RemoveButton onClick={() => handleClearInput("supplyAmount")}>×</RemoveButton>
+                                            <RemoveButton onClick={() => handleClearInput("supplyAmount")}>
+                                                ×
+                                            </RemoveButton>
                                         )}
                                     </InputWrapper>
                                 </InputRow>
                             </DetailForm>
+
                             <ButtonRow>
-                                <CancelButton onClick={handleCancel}>취소</CancelButton>
-                                <RequeryButton
+                                {/* 오른쪽 "삭제" 버튼 (현재 페이지) */}
+                                <ActionButton onClick={handlePageDeleteClick}>
+                                    삭제
+                                </ActionButton>
+
+                                {/* "재조회" 버튼 */}
+                                <ActionButton
                                     onClick={handleRequery}
                                     disabled={!isRequeryEnabled}
-                                    isEnabled={isRequeryEnabled}
+                                    style={{
+                                        backgroundColor: isRequeryEnabled ? "#009857" : "#f0f0f0",
+                                        color: isRequeryEnabled ? "#fff" : "#999",
+                                        cursor: isRequeryEnabled ? "pointer" : "not-allowed",
+                                    }}
                                 >
                                     재조회
-                                </RequeryButton>
+                                </ActionButton>
                             </ButtonRow>
                         </RightContentContainer>
                     </RightPanel>
                 </Container>
             </PageWrapper>
+
+            {showDeletePopup && (
+                <SelectionPopup
+                    Content={"선택한 파일을 삭제하시겠습니까?\n삭제 후에는 되돌릴 수 없습니다."}
+                    primaryButton={{
+                        label: "삭제",
+                        onClick: handleConfirmDelete,
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: handleCancelDelete,
+                    }}
+                />
+            )}
+
+            {showPageDeletePopup && (
+                <SelectionPopup
+                    Content={"현재 페이지의 세금계산서를 삭제하시겠습니까?\n삭제 후에는 되돌릴 수 없습니다."}
+                    primaryButton={{
+                        label: "삭제",
+                        onClick: handleConfirmPageDelete,
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: handleCancelPageDelete,
+                    }}
+                />
+            )}
+
+            {showNoItemsPopup && (
+                <SelectionPopup
+                    IconImg={roundCheckIcon}
+                    Content={"불일치된 수정이 끝났어요."}
+                    primaryButton={{
+                        label: "홈으로 이동",
+                        onClick: () => {
+                            navigate("/home");
+                        },
+                    }}
+                    secondaryButton={{
+                        label: "계속 업로드",
+                        onClick: () => {
+                            navigate("/upload");
+                        },
+                    }}
+                />
+            )}
         </Wrapper>
     );
 };
 
 export default ReconciliationPage;
-
 /* ================= Styled-Components ================= */
 
 const Wrapper = styled.div`
@@ -312,11 +402,10 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
-`
+`;
 
 const PageWrapper = styled.div`
     display: flex;
-    justify-content: center;
     flex-direction: column;
     margin: 0 auto;
     width: 100%;
@@ -339,6 +428,7 @@ const PageTitle = styled.h1`
     line-height: 1.3;
 `;
 
+/* 왼쪽 패널 */
 const LeftPanel = styled.div`
     width: 300px;
     border-right: 1px solid #ddd;
@@ -350,9 +440,9 @@ const LeftPanel = styled.div`
 `;
 
 const LeftTitle = styled.h2`
-    font-size: ${({theme})=>theme.typography.titleM.fontSize};
-    font-weight: ${({theme})=>theme.typography.titleM.fontWeight};
-    color: ${({theme})=>theme.colors.gray1600};
+    font-size: ${({ theme }) => theme.typography.titleM.fontSize};
+    font-weight: ${({ theme }) => theme.typography.titleM.fontWeight};
+    color: ${({ theme }) => theme.colors.gray1600};
     padding: 16px;
 `;
 
@@ -365,7 +455,7 @@ const ActionRow = styled.div`
 
 const SelectAllCheckbox = styled.input`
     width: 1rem;
-    height:1rem;
+    height: 1rem;
     margin-right: 8px;
 `;
 
@@ -380,6 +470,7 @@ const DeleteButton = styled.button`
 const ScrollArea = styled.div`
     flex: 1;
     overflow-y: auto;
+
     &::-webkit-scrollbar {
         width: 6px;
     }
@@ -400,6 +491,13 @@ const ListItem = styled.div<ListItemProps>`
     cursor: pointer;
     background-color: ${({ selected, theme }) =>
             selected ? transparentize(0.8, theme.colors.main200) : "transparent"};
+
+    &:hover {
+        background-color: ${({ selected, theme }) =>
+                selected
+                        ? transparentize(0.2, theme.colors.main200)
+                        : transparentize(0.2, "#f9f9f9")};
+    }
 `;
 
 const Checkbox = styled.input`
@@ -425,7 +523,7 @@ const TruncatedSpan = styled.span`
 const TitleRow = styled.div`
     font-size: 1rem;
     font-weight: 500;
-    color: #393C3C;
+    color: #393c3c;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -444,8 +542,9 @@ const Divider = styled.span`
     color: #ccc;
 `;
 
+/* 오른쪽 패널 */
 const RightPanel = styled.div`
-    width: calc(100% - 350px);
+    width: calc(100% - 300px);
     display: flex;
     flex-direction: column;
     padding: 16px;
@@ -543,17 +642,8 @@ const EmptyState = styled.div`
     flex: 1;
 `;
 
-const DetailForm = styled.div`
-    border: 1px solid ${({theme})=>theme.colors.gray400};
-    border-radius: 16px;
-    padding: 24px;
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-`;
-
 const SubTitle = styled.h3`
+    margin-top: 16px;
     margin-bottom: 8px;
 `;
 
@@ -563,6 +653,16 @@ const FormDescription = styled.p`
     margin-bottom: 16px;
 `;
 
+const DetailForm = styled.div`
+    border: 1px solid ${({ theme }) => theme.colors.gray400};
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+`;
+
 const InputRow = styled.div`
     display: flex;
     align-items: center;
@@ -570,9 +670,9 @@ const InputRow = styled.div`
 
     label {
         width: 140px;
-        font-size: ${({theme})=>theme.typography.bodyL.fontSize};
-        font-weight: ${({theme})=>theme.typography.bodyL.fontWeight};;
-        color:  ${({theme})=>theme.colors.gray1300};
+        font-size: ${({ theme }) => theme.typography.bodyL.fontSize};
+        font-weight: ${({ theme }) => theme.typography.bodyL.fontWeight};
+        color: ${({ theme }) => theme.colors.gray1300};
     }
 `;
 
@@ -585,10 +685,10 @@ const InputWrapper = styled.div`
         padding: 15px 40px 15px 10px;
         border: 2px solid #ddd;
         border-radius: 10px;
-        background-color: ${({theme})=>theme.colors.gray100};
-        color:  ${({theme})=>theme.colors.gray1600};
-        font-size:  ${({theme})=>theme.typography.bodyL.fontSize};
-        font-weight: ${({theme})=>theme.typography.bodyL.fontWeight};
+        background-color: ${({ theme }) => theme.colors.gray100};
+        color: ${({ theme }) => theme.colors.gray1600};
+        font-size: ${({ theme }) => theme.typography.bodyL.fontSize};
+        font-weight: ${({ theme }) => theme.typography.bodyL.fontWeight};
         box-sizing: border-box;
         text-indent: 1rem;
     }
@@ -617,26 +717,10 @@ const ButtonRow = styled.div`
     margin-top: 24px;
 `;
 
-// New styled components for the buttons
-interface RequeryButtonProps {
-    isEnabled: boolean;
-}
-
-const CancelButton = styled.button`
+const ActionButton = styled.button`
     padding: 8px 16px;
     cursor: pointer;
-    background: #F0F0F0;
+    background: #f0f0f0;
+    border: none;
     border-radius: 8px;
-    border: none; // Remove border
-`;
-
-const RequeryButton = styled.button<RequeryButtonProps>`
-    padding: 8px 16px;
-    cursor: ${props => props.isEnabled ? 'pointer' : 'not-allowed'};
-    background: ${props => props.isEnabled ? '#009857' : '#F0F0F0'};
-    color: ${props => props.isEnabled ? 'white' : '#999'};
-    border-radius: 8px;
-    border: none; // Remove border
-    opacity: ${props => props.isEnabled ? '1' : '0.7'};
-    transition: all 0.3s ease;
 `;
