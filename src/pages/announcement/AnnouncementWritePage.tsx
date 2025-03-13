@@ -68,6 +68,7 @@ const Title = styled.h1`
     margin-left: 2.7rem;
     font-size: ${theme.typography.headlineM.fontSize};
     font-weight: ${theme.typography.headlineM.fontWeight};
+    font-family: ‘Pretendard’;
 `;
 
 const TitleInput = styled.input`

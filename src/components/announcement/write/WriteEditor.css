@@ -24,8 +24,7 @@
 .ck-editor__editable {
     min-height: 300px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    /* 높이가 자동으로 늘어나도록 고정 높이는 지정하지 않습니다. */
+    border-radius: 10px;
 }
 
 .editor-container_include-block-toolbar {

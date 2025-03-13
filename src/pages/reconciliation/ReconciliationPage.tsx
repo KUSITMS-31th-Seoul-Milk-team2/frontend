@@ -353,6 +353,7 @@ export default ReconciliationPage;
 /* ================= Styled-Components ================= */
 
 const Wrapper = styled.div`
+    font-family: ‘Pretendard’;
     width: 80%;
     display: flex;
     flex-direction: column;

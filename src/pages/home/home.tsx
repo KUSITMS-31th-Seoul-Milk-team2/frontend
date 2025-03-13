@@ -50,6 +50,7 @@ const CardContainer = styled.div`
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    font-family: ‘Pretendard’;
     @media (max-width: 768px) {
         display: flex;
         justify-content: center;

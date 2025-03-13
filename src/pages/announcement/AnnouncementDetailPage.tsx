@@ -5,6 +5,9 @@ import NoticeList from "@components/announcement/NoticeList.tsx";
 import useNoticeStore from "@store/noticeStore";
 import { useEffect, useState } from "react";
 import token from "@utils/token.tsx";
+import ArrowRight from "@assets/icons/icon_seemore_right.svg";
+import ArrowLeft from "@assets/icons/icon_seemore_left.svg";
+import {transparentize} from "polished";
 
 interface NoticeDetail {
     id: number;
@@ -121,6 +124,7 @@ const AnnouncementDetailPage = () => {
                         }
                         disabled={!prevNotice}
                     >
+                        <PrevIcon src={ArrowLeft} alt="이전" />
                         이전
                     </PrevButton>
                     <NextButton
@@ -130,6 +134,7 @@ const AnnouncementDetailPage = () => {
                         disabled={!nextNotice}
                     >
                         다음
+                        <NextIcon src={ArrowRight} alt="다음" />
                     </NextButton>
                 </RightButtons>
             </ControlButtonContainer>
@@ -153,6 +158,7 @@ width: 100%;
 max-width: 1200px;
 margin: 0 auto;
 padding: 2rem;
+    font-family: ‘Pretendard’;
 `;
 
 const PageTitle = styled.h1`
@@ -167,6 +173,7 @@ padding: 1rem 2rem 0 2rem;
 `;
 
 const AnnouncementTitle = styled.h2`
+    font-family: ‘Pretendard’;
     font-size: ${({theme})=>theme.typography.headlineS.fontSize};
     font-weight:  ${({theme})=>theme.typography.headlineS.fontWeight};
 color: ${theme.colors.gray1600};
@@ -289,41 +296,59 @@ font-weight: 500;
     opacity: 0.8;
 }
 `;
-
 const PrevButton = styled.button`
-background-color: ${theme.colors.gray200};
-color: ${theme.colors.gray1600};
-border: 1px solid ${theme.colors.gray300};
-padding: 0.75rem 3rem;
-border-radius: 4px;
-cursor: pointer;
-font-weight: 500;
-&:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-&:hover:enabled {
-    opacity: 0.8;
-}
+    background-color: #F1F1F1;
+    color: #535051;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: ${({theme})=>theme.typography.buttonL.fontWeight};
+    font-size: ${({theme})=>theme.typography.buttonL.fontSize};
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    &:hover:enabled {
+        opacity: 0.8;
+    }
 `;
 
 const NextButton = styled.button`
-background-color: ${theme.colors.main200};
-color: #fff;
-border: 1px solid ${theme.colors.main200};
-padding: 0.75rem 3rem;
-border-radius: 8px;
-cursor: pointer;
-font-weight: 500;
-&:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-&:hover:enabled {
-    opacity: 0.8;
-}
+    background-color: ${({ theme }) =>
+            transparentize(0.9, theme.colors.main200)
+    };
+    color: ${({theme})=>theme.colors.main200};
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: ${({theme})=>theme.typography.buttonL.fontWeight};
+    font-size: ${({theme})=>theme.typography.buttonL.fontSize};
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    &:hover:enabled {
+        opacity: 0.8;
+    }
 `;
 
+const PrevIcon = styled.img`
+  width: 1.5rem;
+  height: auto;
+`;
+
+const NextIcon = styled.img`
+  width: 1.5rem;
+  height: auto;
+`;
 const NoticeListHeader = styled.div`
 display: flex;
 justify-content: space-between;
