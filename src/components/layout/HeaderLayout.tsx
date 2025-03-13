@@ -124,7 +124,7 @@ const NotificationBar = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  z-index: 1000; 
+  z-index: 1015; 
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;
