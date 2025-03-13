@@ -128,8 +128,9 @@ const Container = styled.div`
     justify-content: center;
     align-content: center;
     max-width: 900px;
-    margin: 0 auto;
+    
     width: 85%;
+    margin-bottom: 3rem;
 `;
 
 const HeaderRow = styled.div`
