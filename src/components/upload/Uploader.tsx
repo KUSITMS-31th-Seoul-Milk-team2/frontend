@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import Webcam from "react-webcam";
 import cameraIcon from "@assets/icons/cameraIcon.svg";
 import fileUploadIcon from "@assets/icons/fileUploadIcon.svg";
+import uploadArrowIcon from "@assets/icons/uploadArrowIcon.svg";
 import { transparentize } from "polished";
 import styled from "styled-components";
 
@@ -65,8 +66,7 @@ const Uploader = ({ onFilesAdded }: UploaderProps) => {
                 <TitleArea>
                     <Title>세금계산서 업로드</Title>
                     <Subtitle>
-                        전달받은 세금계산서를 <br />
-                        아래와 같은 형식으로 올려주세요
+                        파일 선택을 눌러 전달받은 세금계산서 파일을 올려주세요.
                     </Subtitle>
                 </TitleArea>
 
@@ -88,10 +88,16 @@ const Uploader = ({ onFilesAdded }: UploaderProps) => {
                     <FileUploadButton>
                         <UploadIcon src={fileUploadIcon} alt="File Upload Icon" />
                     </FileUploadButton>
-                    <FileSelectButton>파일 선택</FileSelectButton>
+                    <FileSelectButtonContainer>
+                        <ButtonContent>
+                            <span>파일 선택</span>
+                            <ArrowIcon src={uploadArrowIcon} alt="Upload Arrow"/>
+                        </ButtonContent>
+                    </FileSelectButtonContainer>
                 </DropZone>
             </DropZoneContainer>
-
+            <FileInfoText>파일 형식: PNG, PDF, JPG, JPEG</FileInfoText>
+            <FileInfoText>최대 크기: 20MB</FileInfoText>
             {isCameraOpen && (
                 <ModalOverlay>
                     <ModalContainer>
@@ -114,7 +120,6 @@ const Uploader = ({ onFilesAdded }: UploaderProps) => {
 
 export default Uploader;
 
-/* styled-components 코드는 이전과 동일하게 사용합니다 */
 /* ======= styled-components ======= */
 
 const Container = styled.div`
@@ -131,7 +136,6 @@ const HeaderRow = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
-    margin-left: 1rem;
     margin-right: 1rem;
 
     @media (max-width: 768px) {
@@ -159,12 +163,13 @@ const Title = styled.h2`
 const Subtitle = styled.p`
     font-size: 1rem;
     color: #666;
-    margin: 0;
+    margin-top: 1rem;
     line-height: 1.4;
+    margin-bottom: 0;
+    
 `;
 
 const CameraButton = styled.div`
-    //display: flex;  완전히 빼지 않고 none 으로 안보이게 처리 
     display: none;
     flex-direction: row;
     align-items: center;
@@ -180,7 +185,6 @@ const FileUploadButton = styled.div`
     justify-content: center;
     cursor: pointer;
     margin-top: 1rem;
-
 `;
 
 const UploadIcon = styled.img`
@@ -207,7 +211,7 @@ const Text = styled.span`
 const DropZoneContainer = styled.div`
     width: 100%;
     max-width: 900px;
-    margin: 2rem auto 0;
+    margin: 1rem auto 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -218,9 +222,45 @@ const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
     width: 100%;
     max-width: 1000px;
     aspect-ratio: 2.5 / 1;
-    border: 2px
-    ${({ $isClicked }) => ($isClicked ? "solid #0098571A" : "dashed #ccc")};
-    border-radius: 0.75rem;
+    /* Replace the existing border property with these */
+    border: 2px ${({ $isClicked }) => ($isClicked ? "solid #0098571A" : "none")};
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    /* Add this for customized dashes when not clicked */
+    ${({ $isClicked }) => !$isClicked && `
+      background-image: repeating-linear-gradient(
+        to right,
+        #ccc 0%,
+        #ccc 5px,
+        transparent 5px,
+        transparent 15px
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        #ccc 0%,
+        #ccc 5px,
+        transparent 5px,
+        transparent 15px
+      ),
+      repeating-linear-gradient(
+        to left,
+        #ccc 0%,
+        #ccc 5px,
+        transparent 5px,
+        transparent 15px
+      ),
+      repeating-linear-gradient(
+        to top,
+        #ccc 0%,
+        #ccc 5px,
+        transparent 5px,
+        transparent 15px
+      );
+      background-position: top, right, bottom, left;
+      background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+      background-repeat: no-repeat;
+    `}
+
     background-color: ${(props) => (props.$isDragActive ? "#f0f0f0" : "#fff")};
     display: flex;
     flex-direction: column;
@@ -239,7 +279,7 @@ const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
     @media (max-width: 768px) {
         width: 90%;
         max-width: 600px;
-        aspect-ratio: auto; 
+        aspect-ratio: auto;
     }
     @media (max-width: 480px) {
         width: 95%;
@@ -247,27 +287,40 @@ const DropZone = styled.div<{ $isDragActive: boolean; $isClicked: boolean }>`
         aspect-ratio: auto;
     }
 `;
+const FileSelectButtonContainer = styled.div`
 
-const FileSelectButton = styled.button`
-    background-color: #4caf50;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 1.25rem;
-    font-size: 0.9rem;
-    font-weight: bold;
+    border-radius: 12px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
     cursor: pointer;
-    transition: background-color 0.2s ease;
     
-    @media (max-width: 768px) {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.8rem;
-    }
+    
+`;
 
-    @media (max-width: 480px) {
-        font-size: 0.8rem;
-        padding: 0.35rem 0.7rem;
+const ButtonContent = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: ${({theme})=>theme.colors.main200};;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 22px;
+    background-color: rgba(0, 152, 87, 0.10);
+    border: 1px solid ${({theme})=>theme.colors.main200};
+    height: 22px;
+    padding: 9px 18px;
+    @media (max-width: 768px) {
+        font-size: 0.9rem;
     }
+`;
+
+const ArrowIcon = styled.img`
+    width: 16px;
+    height: 16px;
 `;
 
 const ModalOverlay = styled.div`
@@ -276,7 +329,7 @@ const ModalOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -324,5 +377,15 @@ const CancelButton = styled.button`
     cursor: pointer;
     &:hover {
         background-color: #777;
+    }
+`;
+const FileInfoText = styled.p`
+    margin: 0.5rem 0 0;
+    font-size:${({theme})=>theme.typography.bodyL.fontSize};
+    font-weight: ${({theme})=>theme.typography.bodyL.fontWeight};
+    color: ${({theme})=>theme.colors.gray1000};
+    text-align: left;
+    &:first-of-type {
+        margin-top: 1rem;
     }
 `;
