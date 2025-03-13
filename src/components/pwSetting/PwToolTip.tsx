@@ -51,14 +51,14 @@ const PwToolTip = () => {
 export default PwToolTip;
 
 const TooltipContainer = styled.div`
-  position: absolute;
+  position: fixed;
   top: 70px;
   left: 70%;
   transform: translateX(-50%);
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  z-index: 1000;
+  z-index: 1001;
   background: transparent;
   pointer-events: auto; 
   width : 130px;
