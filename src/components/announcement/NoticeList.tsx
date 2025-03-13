@@ -58,9 +58,7 @@ const NoticeList = ({
                     )}
 
                     <div className="title">공지사항 제목</div>
-
                     <div className="author">작성자</div>
-
                     <div className="date">작성일자</div>
                 </NoticeHeader>
             )}
@@ -101,8 +99,7 @@ export default NoticeList;
 /* ======= styled-components ======= */
 const NoticeWrapper = styled.div`
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    /* 부모(Container)에서 이미 max-width: 1200px; 설정했으므로 여기선 제거 */
 `;
 
 const NoticeHeader = styled.div<{ hasCheckbox: boolean }>`
@@ -129,6 +126,7 @@ const NoticeHeader = styled.div<{ hasCheckbox: boolean }>`
         padding-left: 20px;
     }
 `;
+
 const DeleteHeaderButton = styled.button`
     background-color: ${theme.colors.gray200};
     border: 1px solid ${theme.colors.gray300};
@@ -137,6 +135,7 @@ const DeleteHeaderButton = styled.button`
     font-size: 0.8rem;
     cursor: pointer;
     border-radius: 4px;
+
     &:hover {
         opacity: 0.8;
     }
@@ -170,9 +169,9 @@ const NoticeItem = styled.div<{ hasCheckbox: boolean }>`
     & > div.title {
         text-align: left;
         padding-left: 20px;
-        font-size: ${({theme})=>theme.typography.titleM.fontSize};
-        font-weight:  ${({theme})=>theme.typography.titleM.fontWeight};
-        color: ${({theme})=>theme.colors.gray1600};
+        font-size: ${({ theme }) => theme.typography.titleM.fontSize};
+        font-weight: ${({ theme }) => theme.typography.titleM.fontWeight};
+        color: ${({ theme }) => theme.colors.gray1600};
         cursor: pointer;
         white-space: nowrap;
         overflow: hidden;
