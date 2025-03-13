@@ -36,55 +36,85 @@ const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1010;
 `;
 
 const ModalContainer = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+width: 634px;
+padding : 40px 24px 20px 24px;
+flex-direction: column;
+justify-content: flex-end;
+align-items: center;
+border-radius: 16px;
+background: #FFF;
+box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);
 `;
 
 const Message = styled.p`
-  font-size: 18px;
-  font-weight: bold;
-  color: #393c3c;
+  fcolor: var(--gray-1600, #393C3C);
+text-align: center;
+font-family: Pretendard;
+font-size: 28px;
+font-style: normal;
+font-weight: 600;
+line-height: 150%; /* 42px */
 `;
 
 const SubMessage = styled.p`
-  font-size: 14px;
-  color: #888;
-  margin-top: 8px;
+  color: var(--gray-600, #A6A5A5);
+text-align: center;
+font-family: Pretendard;
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+line-height: 150%; /* 36px */
+margin-top : -20px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  gap : 20px;
 `;
 
 const CancelButton = styled.button`
-  background: #f0f0f0;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+  display: flex;
+height: 68px;
+padding: 19px 121px;
+justify-content: center;
+align-items: center;
+gap: 10px;
+flex: 1 0 0;
+color: var(--gray-1600, #393C3C);
+text-align: right;
+font-family: Pretendard;
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+line-height: 150%; /* 36px */
+border-radius: 16px;
+background: var(--gray-200, #F1F1F1);
+border : none;
 `;
 
 const DeleteButton = styled.button`
-  background: #008000;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  &:hover {
-    background: #393c3c;
-  }
+  display: flex;
+height: 68px;
+padding: 19px 116px;
+justify-content: center;
+align-items: center;
+gap: 10px;
+flex: 1 0 0;
+color: var(--gray-100, #F8F8F9);
+text-align: right;
+font-family: Pretendard;
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+line-height: 150%; /* 36px */
+border-radius: 16px;
+background: var(--primary-main-200, #009857);
+border : none;
 `;
