@@ -52,7 +52,7 @@ const HeaderLayout: React.FC = () => {
       <Header>
         <HeaderContent>
           <LogoContainer onClick={() => navigate("/home")}>
-            <Logo src="/SeoulMilkLogo.png" alt="서울우유협동조합" />
+            <Logo src="/SeoulMilkLogoS.png" alt="서울우유협동조합" />
           </LogoContainer>
           <Nav>
             <NavItem onClick={() => navigate("/upload")} active={location.pathname === "/upload"}>
