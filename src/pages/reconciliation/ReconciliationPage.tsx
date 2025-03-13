@@ -41,24 +41,22 @@ const ReconciliationPage = () => {
         setShowFailurePopup,
     } = useReconciliationStore();
 
-    // 불일치 내역 API 호출 (초기화)
-    useEffect(() => {
-        const fetchInvalidList = async () => {
-            try {
-                const response = await token.get(`${BaseUrl}/v1/receipt/invalid/search`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                if (response.status === 200) {
-                    setList(response.data.data);
-                }
-            } catch (error) {
-                console.error("불일치 내역을 받아오는 중 오류 발생:", error);
+    const fetchInvalidList = async (): Promise<[]> => {
+        try {
+            const response = await token.get(`${BaseUrl}/v1/receipt/invalid/search`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (response.status === 200) {
+                setList(response.data.data);
+                return response.data.data;
             }
-        };
-        fetchInvalidList();
-    }, [BaseUrl, setList]);
+            return [];
+        } catch (error) {
+            console.error("불일치 내역을 받아오는 중 오류 발생:", error);
+            return [];
+        }
+    };
 
-    // 좌측에서 선택한 항목이 변경되면 해당 항목의 데이터를 폼에 셋팅
     const selectedItem = list.find((item) => item.id === selectedId);
     useEffect(() => {
         if (selectedItem) {
@@ -72,7 +70,7 @@ const ReconciliationPage = () => {
         }
     }, [selectedItem, setFormValues]);
 
-    // 좌측 패널 관련 함수
+
     const handleSelect = (id: number) => {
         setSelectedId(id);
     };
@@ -89,7 +87,6 @@ const ReconciliationPage = () => {
         }
     };
 
-    // 전체 삭제: 삭제 확인 모달에서 "삭제" 선택 시 호출
     const handleDeleteClick = () => {
         if (checkedIds.length === 0) {
             alert("선택된 항목이 없습니다.");
@@ -101,7 +98,7 @@ const ReconciliationPage = () => {
     const handleConfirmDelete = async () => {
         try {
             const response = await token.delete(`${BaseUrl}/v1/receipt/delete`, {
-                data: checkedIds, // 배열 그대로 전송
+                data: checkedIds,
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -124,7 +121,6 @@ const ReconciliationPage = () => {
         }
     };
 
-    // 단일 삭제: 선택된 항목에 대해 삭제 확인 모달에서 "삭제" 선택 시 호출
     const handlePageDeleteClick = () => {
         if (!selectedItem) {
             alert("선택된 세금계산서가 없습니다.");
@@ -156,7 +152,6 @@ const ReconciliationPage = () => {
         }
     };
 
-    // 재조회: validation API 호출 → transactionId 저장 → 간편인증 확인 모달 표시
     const handleRequery = async () => {
         try {
             const formattedDate = formValues.writtenDate.replace(/-/g, "");
@@ -169,11 +164,9 @@ const ReconciliationPage = () => {
                     supplyValue: formValues.supplyAmount,
                 },
             ];
-
             const response = await token.post(`${BaseUrl}/v1/receipt/validation`, requestBody, {
                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
-
             if (response.status === 200) {
                 const transactionId = response.data.data;
                 setTransactionIdForAddition(transactionId);
@@ -182,7 +175,7 @@ const ReconciliationPage = () => {
                     alert("선택된 항목이 없습니다.");
                     return;
                 }
-                // 간편인증 확인 모달을 표시
+
                 setShowSelectionPopup(true);
             } else {
                 alert("재조회 요청에 실패했습니다.");
@@ -194,7 +187,6 @@ const ReconciliationPage = () => {
         }
     };
 
-    // 추가 인증: 재조회 후 간편인증 모달에서 "확인" 클릭 시 호출 → 추가인증 API 호출
     const handleSelectionConfirm = async () => {
         try {
             setShowSelectionPopup(false);
@@ -214,7 +206,13 @@ const ReconciliationPage = () => {
             setShowLoadingModal(false);
             console.log("Addition response:", additionResponse.data);
             if (additionResponse.status === 200 && additionResponse.data.data === true) {
-                setShowSuccessPopup(true);
+
+                const newList = await fetchInvalidList();
+                if (newList.length === 0) {
+                    setShowNoItemsPopup(true);
+                } else {
+                    setShowSuccessPopup(true);
+                }
             } else {
                 setShowFailurePopup(true);
             }
@@ -225,7 +223,6 @@ const ReconciliationPage = () => {
         }
     };
 
-    // 폼 입력 관련 함수
     const handleInputChange = (field: string, value: string) => {
         setFormValues({ ...formValues, [field]: value });
     };

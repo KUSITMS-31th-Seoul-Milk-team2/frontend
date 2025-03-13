@@ -139,8 +139,8 @@ const RightPanel = ({
                 </InputRow>
             </DetailForm>
             <ButtonRow>
-                <ActionButton onClick={onPageDeleteClick}>삭제</ActionButton>
-                <ActionButton onClick={onRequery}>재조회</ActionButton>
+                <CancelButton onClick={onPageDeleteClick}>삭제</CancelButton>
+                <RetryButton onClick={onRequery}>재조회</RetryButton>
             </ButtonRow>
         </RightPanelContainer>
     );
@@ -314,10 +314,18 @@ const ButtonRow = styled.div`
     margin-top: 24px;
 `;
 
-const ActionButton = styled.button`
+const CancelButton = styled.button`
     padding: 8px 16px;
     cursor: pointer;
     background: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+`;
+const RetryButton = styled.button`
+    padding: 8px 16px;
+    cursor: pointer;
+    background: #009857;
+    color: ${({theme})=>theme.colors.white};
     border: none;
     border-radius: 8px;
 `;
