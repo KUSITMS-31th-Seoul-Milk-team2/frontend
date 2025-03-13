@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import styled from "styled-components";
+import { useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import token from "@utils/token.tsx";
 import { useReconciliationStore } from "@store/reconciliationStore";
@@ -9,6 +8,7 @@ import SelectionPopup from "@components/modal/SelectionPopup";
 import LoadingModal from "@components/modal/LoadingModal";
 import roundCheckIcon from "@assets/icons/checkAroundIcon.svg";
 import checkAroundIcon from "@assets/icons/checkAroundIcon.svg";
+import styled from "styled-components";
 
 const ReconciliationPage = () => {
     const navigate = useNavigate();
@@ -41,11 +41,29 @@ const ReconciliationPage = () => {
         setShowFailurePopup,
     } = useReconciliationStore();
 
-    const fetchInvalidList = async (): Promise<[]> => {
+    // 데이터 초기 로드
+    useEffect(() => {
+        fetchInvalidList();
+    }, []);
+
+    // 페이지가 마운트될 때 팝업 관련 상태를 동기적으로 초기화합니다.
+    useLayoutEffect(() => {
+        setShowNoItemsPopup(false);
+        setShowDeletePopup(false);
+        setShowPageDeletePopup(false);
+        setShowSelectionPopup(false);
+        setShowLoadingModal(false);
+        setShowSuccessPopup(false);
+        setShowFailurePopup(false);
+    }, []);
+
+    const fetchInvalidList = async () => {
+        console.log("fetchInvalidList 호출");
         try {
             const response = await token.get(`${BaseUrl}/v1/receipt/invalid/search`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log(response);
             if (response.status === 200) {
                 setList(response.data.data);
                 return response.data.data;
@@ -58,6 +76,7 @@ const ReconciliationPage = () => {
     };
 
     const selectedItem = list.find((item) => item.id === selectedId);
+
     useEffect(() => {
         if (selectedItem) {
             setFormValues({
@@ -69,7 +88,6 @@ const ReconciliationPage = () => {
             });
         }
     }, [selectedItem, setFormValues]);
-
 
     const handleSelect = (id: number) => {
         setSelectedId(id);
@@ -104,7 +122,7 @@ const ReconciliationPage = () => {
                     "Content-Type": "application/json",
                 },
             });
-            if (response.status === 200) {
+            if (response.data.data === true) {
                 const newList = list.filter((item) => !checkedIds.includes(item.id));
                 setList(newList);
                 setCheckedIds([]);
@@ -135,7 +153,7 @@ const ReconciliationPage = () => {
             const response = await token.delete(`${BaseUrl}/v1/receipt/invalid/${selectedItem.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (response.status === 200) {
+            if (response.data.data === true) {
                 const newList = list.filter((item) => item.id !== selectedItem.id);
                 setList(newList);
                 setSelectedId(null);
@@ -175,7 +193,6 @@ const ReconciliationPage = () => {
                     alert("선택된 항목이 없습니다.");
                     return;
                 }
-
                 setShowSelectionPopup(true);
             } else {
                 alert("재조회 요청에 실패했습니다.");
@@ -206,7 +223,6 @@ const ReconciliationPage = () => {
             setShowLoadingModal(false);
             console.log("Addition response:", additionResponse.data);
             if (additionResponse.status === 200 && additionResponse.data.data === true) {
-
                 const newList = await fetchInvalidList();
                 if (newList.length === 0) {
                     setShowNoItemsPopup(true);
