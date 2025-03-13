@@ -6,6 +6,8 @@ import SelectionPopup from "@components/modal/SelectionPopup.tsx";
 import roundCheckIcon from "@assets/icons/checkAroundIcon.svg";
 import { useNavigate } from "react-router-dom";
 import token from "@utils/token.tsx";
+import checkAroundIcon from "@assets/icons/checkAroundIcon.svg";
+import LoadingModal from "@components/modal/LoadingModal.tsx";
 
 interface InvoiceItem {
     id: number;
@@ -52,7 +54,13 @@ const ReconciliationPage = () => {
     const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
     const [showPageDeletePopup, setShowPageDeletePopup] = useState<boolean>(false);
     const [showNoItemsPopup, setShowNoItemsPopup] = useState<boolean>(false);
+    const [showSelectionPopup, setShowSelectionPopup] = useState<boolean>(false);
+    const [showLoadingModal, setShowLoadingModal] = useState<boolean>(false);
+    const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
+    const [showFailurePopup, setShowFailurePopup] = useState<boolean>(false);
 
+// Add this to your state declarations
+    const [transactionIdForAddition, setTransactionIdForAddition] = useState<string | null>(null);
 
     const [list, setList] = useState<InvoiceItem[]>([]);
 
@@ -190,8 +198,9 @@ const ReconciliationPage = () => {
         setFormValues((prev) => ({ ...prev, [field]: "" }));
     };
 
-    const handleRequery =  async () => {
+    const handleRequery = async () => {
         try {
+
             const formattedDate = formValues.writtenDate.replace(/-/g, "");
             const requestBody = [{
                 supplierRegNumber: formValues.supplierRegNumber,
@@ -199,41 +208,70 @@ const ReconciliationPage = () => {
                 approvalNo: formValues.approvalNumber,
                 reportingDate: formattedDate,
                 supplyValue: formValues.supplyAmount,
-            },];
+            }];
+
             const response = await token.post(`${BaseUrl}/v1/receipt/validation`, requestBody, {
                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", },
             });
-            if (response.status=== 200) {
+
+
+            if (response.status === 200) {
                 const transactionId = response.data.data;
-                console.log(transactionId)
+                console.log(transactionId);
+
                 if (!selectedItem) {
                     alert("선택된 항목이 없습니다.");
                     return;
                 }
-                alert("재조회 요청이 성공적으로 완료되었습니다.");
-                const additionResponse = await token.post(
-                    `${BaseUrl}/v1/receipt/addition?transactionId=${transactionId}`,
-                    [ selectedItem.id ],
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
 
-                console.log("addition response:", additionResponse);
-                if (additionResponse.status === 200) {
-                    alert("추가 인증이 성공적으로 완료되었습니다.");
-                } else {
-                    alert("추가 인증에 실패했습니다.");
-                }
+                // Show confirmation popup after validation succeeds
+                setTransactionIdForAddition(transactionId); // Store transactionId for later use
+                setShowSelectionPopup(true);
             } else {
                 alert("재조회 요청에 실패했습니다.");
             }
         } catch (error) {
+            setShowLoadingModal(false);
             console.error("재조회 요청 에러:", error);
             alert("재조회 요청 중 오류가 발생했습니다.");
         }
     };
 
+// Handle confirmation click
+    const handleSelectionConfirm = async () => {
+        try {
+            setShowSelectionPopup(false);
+            setShowLoadingModal(true); // Show loading modal for second API call
+
+            if (!selectedItem || !transactionIdForAddition) {
+                setShowLoadingModal(false);
+                alert("필요한 정보가 없습니다.");
+                return;
+            }
+
+            const additionResponse = await token.post(
+                `${BaseUrl}/v1/receipt/addition?transactionId=${transactionIdForAddition}`,
+                [selectedItem.id],
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            console.log("addition response:", additionResponse);
+            setShowLoadingModal(false);
+
+            if (additionResponse.data.data === true) {
+                // Show success popup
+                setShowSuccessPopup(true);
+            } else {
+                setShowFailurePopup(true);
+            }
+        } catch (error) {
+            setShowLoadingModal(false);
+            console.error("추가 인증 요청 에러:", error);
+            alert("추가 인증 요청 중 오류가 발생했습니다.");
+        }
+    };
 
     const formatIssueDate = (dateStr: string) => {
         if (dateStr.length === 8) {
@@ -475,6 +513,55 @@ const ReconciliationPage = () => {
                     secondaryButton={{
                         label: "계속 업로드",
                         onClick: () => navigate("/upload"),
+                    }}
+                />
+            )}
+            {showSelectionPopup && (
+                <SelectionPopup
+                    Content={"간편인증이 완료되면 \n확인 버튼 눌러주세요"}
+                    primaryButton={{
+                        label: "확인",
+                        onClick: handleSelectionConfirm,
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: () => setShowSelectionPopup(false),
+                    }}
+                />
+            )}
+
+            {showLoadingModal && (
+                <LoadingModal
+                    content="세금계산서 확인중"
+                    subContent="홈텍스 정보와 세금계산서가 일치하는지 확인중이에요"
+                />
+            )}
+
+            {showSuccessPopup && (
+                <SelectionPopup
+                    IconImg={checkAroundIcon}
+                    Content={"파일이 일치합니다"}
+                    primaryButton={{
+                        label: "확인",
+                        onClick: () => setShowSuccessPopup(false),
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: () => setShowSuccessPopup(false),
+                    }}
+                />
+            )}
+            {showFailurePopup && (
+                <SelectionPopup
+                    Content={"파일이 일치하지않습니다"}
+                    SubContent={"다시 확인해주세요"}
+                    primaryButton={{
+                        label: "확인",
+                        onClick: () => setShowFailurePopup(false),
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: () => setShowFailurePopup(false),
                     }}
                 />
             )}
