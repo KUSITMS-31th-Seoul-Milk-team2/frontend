@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Uploader from "@components/upload/Uploader";
 import UploadModal from "@components/upload/UploadModal";
 import SelectionPopup from "@components/modal/SelectionPopup";
@@ -11,35 +10,29 @@ import token from "@utils/token.tsx";
 export interface FileUploadState {
     file: File;
     progress: number;
-    status: "ready" | "uploaded" | "error" |"uploading";
+    status: "ready" | "uploaded" | "error" | "uploading";
 }
 
 const UploadPage = () => {
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
     const navigate = useNavigate();
 
-
     const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-
     const [files, setFiles] = useState<File[]>([]);
-
     const [uploadStates, setUploadStates] = useState<FileUploadState[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [showSelectionPopup, setShowSelectionPopup] = useState(false);
-
     const [showLoadingModal, setShowLoadingModal] = useState(false);
-
     const [showSecondPopup, setShowSecondPopup] = useState(false);
-
+    // 새로 추가된 실패 팝업 상태
+    const [showFailurePopup, setShowFailurePopup] = useState(false);
 
     const handleFilesAdded = (newFiles: File[]) => {
         setFiles((prev) => [...prev, ...newFiles]);
 
-
         const newStates = newFiles.map<FileUploadState>((file) => {
-
             if (file.size > MAX_FILE_SIZE) {
                 return {
                     file,
@@ -47,7 +40,6 @@ const UploadPage = () => {
                     status: "uploading",
                 };
             } else {
-
                 return {
                     file,
                     progress: 100,
@@ -60,64 +52,53 @@ const UploadPage = () => {
         setIsModalOpen(true);
     };
 
-
     const handleCancel = (fileState: FileUploadState) => {
-
         if (fileState.status === "uploading") {
-
-            setUploadStates(prev =>
-                prev.map(state =>
-                    state.file.name === fileState.file.name &&
-                    state.file.lastModified === fileState.file.lastModified
-                        ? { ...state, status: "error", progress: 0 }
-                        : state
+            setUploadStates((prev) =>
+                prev.map((st) =>
+                    st.file === fileState.file
+                        ? { ...st, status: "error", progress: 0 }
+                        : st
                 )
             );
         }
     };
 
-
     const handleRetry = (fileState: FileUploadState) => {
-
         if (fileState.status === "error") {
-
             if (fileState.file.size > MAX_FILE_SIZE) {
-                setUploadStates(prev =>
-                    prev.map(state =>
-                        state.file.name === fileState.file.name &&
-                        state.file.lastModified === fileState.file.lastModified
-                            ? { ...state, status: "uploading", progress: 0 }
-                            : state
+                setUploadStates((prev) =>
+                    prev.map((st) =>
+                        st.file === fileState.file
+                            ? { ...st, status: "uploading", progress: 0 }
+                            : st
                     )
                 );
             } else {
-                setUploadStates(prev =>
-                    prev.map(state =>
-                        state.file.name === fileState.file.name &&
-                        state.file.lastModified === fileState.file.lastModified
-                            ? { ...state, status: "uploaded", progress: 100 }
-                            : state
+                setUploadStates((prev) =>
+                    prev.map((st) =>
+                        st.file === fileState.file
+                            ? { ...st, status: "uploaded", progress: 100 }
+                            : st
                     )
                 );
             }
         }
     };
 
-
     const handleRemove = (fileState: FileUploadState) => {
-
-        setFiles(prev =>
-            prev.filter(file =>
-                !(file.name === fileState.file.name &&
-                    file.lastModified === fileState.file.lastModified)
+        setFiles((prev) =>
+            prev.filter(
+                (file) =>
+                    file.name !== fileState.file.name ||
+                    file.lastModified !== fileState.file.lastModified
             )
         );
-
-
-        setUploadStates(prev =>
-            prev.filter(state =>
-                !(state.file.name === fileState.file.name &&
-                    state.file.lastModified === fileState.file.lastModified)
+        setUploadStates((prev) =>
+            prev.filter(
+                (st) =>
+                    st.file.name !== fileState.file.name ||
+                    st.file.lastModified !== fileState.file.lastModified
             )
         );
     };
@@ -134,9 +115,8 @@ const UploadPage = () => {
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
-            console.log(invoiceResponse.data.data)
+            console.log(invoiceResponse.data.data);
             if (invoiceResponse.data.data === true) {
-
                 setIsModalOpen(false);
                 setShowSelectionPopup(true);
             } else {
@@ -150,7 +130,6 @@ const UploadPage = () => {
         }
     };
 
-
     const handleSelectionConfirm = async () => {
         setShowSelectionPopup(false);
         setShowLoadingModal(true);
@@ -158,19 +137,18 @@ const UploadPage = () => {
         try {
             const additionResponse = await token.post(
                 `${BaseUrl}/v1/receipt/upload/addition`,
+                {},
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 }
             );
             setShowLoadingModal(false);
-            console.log(additionResponse.data.data)
+            console.log(additionResponse.data.data);
             if (additionResponse.data.data === true) {
                 setShowSecondPopup(true);
             } else {
-                alert("세금계산서 정보가 일치하지 않습니다.");
-                navigate("/reconciliation");
+                // 실패시 실패 팝업을 띄움
+                setShowFailurePopup(true);
             }
         } catch (err) {
             console.error("upload/addition API error", err);
@@ -203,7 +181,7 @@ const UploadPage = () => {
 
             {showSelectionPopup && (
                 <SelectionPopup
-                    Content={"간편인이 완료되면 \n확인 버튼 눌러주세요"}
+                    Content={"간편인증이 완료되면 \n확인 버튼 눌러주세요"}
                     primaryButton={{
                         label: "확인",
                         onClick: handleSelectionConfirm,
@@ -233,6 +211,22 @@ const UploadPage = () => {
                     secondaryButton={{
                         label: "계속 업로드",
                         onClick: () => setShowSecondPopup(false),
+                    }}
+                />
+            )}
+
+            {/* 실패시 미발급 수정 페이지로 이동하도록 팝업 */}
+            {showFailurePopup && (
+                <SelectionPopup
+                    Content={"불일치하는 파일 존재"}
+                    SubContent={"미발급 수정 페이지로 이동합니다."}
+                    primaryButton={{
+                        label: "이동하기",
+                        onClick: () => navigate("/reconciliation"),
+                    }}
+                    secondaryButton={{
+                        label: "취소",
+                        onClick: () => setShowFailurePopup(false),
                     }}
                 />
             )}

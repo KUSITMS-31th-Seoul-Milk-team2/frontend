@@ -31,7 +31,7 @@ const Container = styled.div`
     justify-content: center;
     align-content: center;
     flex-direction:column;
-    width: 70%;
+    width: 75%;
     @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;

@@ -86,7 +86,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
                                 : formatFileSize(file.size);
 
                         return (
-                            // 파일명과 lastModified를 키로 사용하여 고유성 보장
+
                             <FileItem key={fileKey}>
                                 <FileRow>
                                     <LeftInfo>
