@@ -201,7 +201,7 @@ const SearchInput = styled.input`
     border: none;
     outline: none;
     padding: 0 0.5rem;
-    color: ${theme.colors.gray800};
+    color: black; 
 
     &::placeholder {
         color: ${theme.colors.gray500};
