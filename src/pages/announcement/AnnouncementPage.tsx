@@ -90,6 +90,7 @@ const AnnouncementPage = () => {
 
     return (
         <Container>
+            <Title>공지사항</Title>
             {/* 부모 컨테이너는 max-width 1200px; margin 0 auto; 만 가집니다 */}
             <SearchBar />
             <TopSection
@@ -122,4 +123,15 @@ const Container = styled.div`
     max-width: 1200px;
     margin: 0 auto;
     padding-bottom: 2rem;
+`;
+const Title = styled.h1`
+  font-family: Pretendard;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 16px;
+  text-align: left;  
+  align-items: center;
+  width : 1044px;
 `;
