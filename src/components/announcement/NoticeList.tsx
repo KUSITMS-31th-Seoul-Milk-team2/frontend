@@ -170,7 +170,9 @@ const NoticeItem = styled.div<{ hasCheckbox: boolean }>`
     & > div.title {
         text-align: left;
         padding-left: 20px;
-        font-weight: 500;
+        font-size: ${({theme})=>theme.typography.titleM.fontSize};
+        font-weight:  ${({theme})=>theme.typography.titleM.fontWeight};
+        color: ${({theme})=>theme.colors.gray1600};
         cursor: pointer;
         white-space: nowrap;
         overflow: hidden;

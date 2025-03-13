@@ -156,8 +156,8 @@ padding: 2rem;
 `;
 
 const PageTitle = styled.h1`
-font-size: 1.75rem;
-font-weight: 600;
+font-size: ${({theme})=>theme.typography.headlineL.fontSize};
+font-weight:  ${({theme})=>theme.typography.headlineL.fontWeight};
 color: ${theme.colors.gray1600};
 margin-left: 2rem;
 `;
@@ -167,8 +167,8 @@ padding: 1rem 2rem 0 2rem;
 `;
 
 const AnnouncementTitle = styled.h2`
-font-size: 1.5rem;
-font-weight: 600;
+    font-size: ${({theme})=>theme.typography.headlineS.fontSize};
+    font-weight:  ${({theme})=>theme.typography.headlineS.fontWeight};
 color: ${theme.colors.gray1600};
 margin-bottom: 1rem;
 `;
