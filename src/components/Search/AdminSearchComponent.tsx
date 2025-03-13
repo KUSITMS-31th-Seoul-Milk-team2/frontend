@@ -399,7 +399,7 @@ const CheckButtonContainer = styled.div`
   gap: 8px;
   margin-bottom: 12px;
   margin-top :40px;
-  z-index : 1001;
+  z-index : 900;
   margin-left : -10px;
 `;
 

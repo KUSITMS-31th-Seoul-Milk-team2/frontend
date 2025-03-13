@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import dropdown from "@assets/icons/dropdown.svg";
-import download from "@assets/icons/download.svg"
+import download from "@assets/icons/download.svg";
 import PaginationComponent from "./PaginationComponent";
 import token from "@utils/token";
+import { useNavigate } from "react-router-dom";
 
-interface ListItem{
+interface ListItem {
   id: number;
   employeeName: string;
   suName: string;
   ipName: string;
-  erdatStart : string;
+  erdatStart: string;
   erdatEnd: string;
 }
 const itemsPerPage = 10;
@@ -19,6 +20,7 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const sortedData = [...data].sort((a, b) => {
     if (sortOrder === "최신순") return (b.erdatEnd ?? "").localeCompare(a.erdatEnd ?? "");
@@ -26,7 +28,7 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
     if (sortOrder === "공급받는자 사업체명(ㄱ→ㅎ)") return (a.ipName ?? "").localeCompare(b.ipName ?? "");
     if (sortOrder === "공급받는자 사업체명(ㅎ→ㄱ)") return (b.ipName ?? "").localeCompare(a.ipName ?? "");
     return 0;
-  });  
+  });
 
   const offset = currentPage * itemsPerPage;
   const currentItems = sortedData.slice(offset, offset + itemsPerPage);
@@ -34,6 +36,16 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
+  };
+  const handleItemClick = (item: ListItem) => {
+    navigate(`/tax-detail/${item.id}`, {
+      state: {
+        suName: item.suName,
+        ipName: item.ipName,
+        employeeName: item.employeeName,
+        erdatEnd: item.erdatEnd,
+      },
+    });
   };
 
   const handleSortChange = (order: string) => {
@@ -45,14 +57,14 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
   const handleExcelDownload = async () => {
     try {
       const response = await token.get("/v1/receipt/download", {
-        responseType: "blob", 
+        responseType: "blob",
       });
-  
+
       const blob = new Blob([response.data], { type: response.headers["content-type"] });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "세금계산서_리스트.xlsx"; 
+      a.download = "세금계산서_리스트.xlsx";
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -62,20 +74,19 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
       alert("엑셀 다운로드 중 오류가 발생했습니다.");
     }
   };
-  
 
   return (
     <Container>
       <ButtonContainer>
-  <ExcelButton onClick={handleExcelDownload}>
-    엑셀 다운로드
-    <Icon src={download} alt="엑셀 다운로드 아이콘" />
-  </ExcelButton>
+        <ExcelButton onClick={handleExcelDownload}>
+          엑셀 다운로드
+          <Icon src={download} alt="엑셀 다운로드 아이콘" />
+        </ExcelButton>
 
-  <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-    {sortOrder}
-    <Icon src={dropdown} alt="드롭다운 아이콘" />
-  </SortButton>
+        <SortButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          {sortOrder}
+          <Icon src={dropdown} alt="드롭다운 아이콘" />
+        </SortButton>
         {isDropdownOpen && (
           <Dropdown>
             <DropdownItem onClick={() => handleSortChange("최신순")} isSelected={sortOrder === "최신순"}>
@@ -106,7 +117,7 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
         </thead>
         <tbody>
           {currentItems.map((item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.id} onClick={() => handleItemClick(item)} style={{ cursor: "pointer" }}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.suName}</TableCell>
               <TableCell>{item.ipName}</TableCell>
@@ -117,11 +128,7 @@ const AdminListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
         </tbody>
       </Table>
 
-      <PaginationComponent
-  currentPage={currentPage}
-  pageCount={pageCount}
-  onPageChange={handlePageClick}
-/>
+      <PaginationComponent currentPage={currentPage} pageCount={pageCount} onPageChange={handlePageClick} />
     </Container>
   );
 };
