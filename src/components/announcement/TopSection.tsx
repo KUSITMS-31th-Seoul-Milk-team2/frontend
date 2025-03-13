@@ -5,7 +5,6 @@ interface TopSectionProps {
     totalCount: number;
     onToggleMyPosts: () => void;
     isMyPostsOnly: boolean;
-
 }
 
 const TopSection = ({
@@ -34,13 +33,12 @@ const TopSection = ({
 export default TopSection;
 
 const Container = styled.div`
+    width: 100%;           /* 부모(Container) 폭에 맞춤 */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
-    padding: 1rem;
-    margin-bottom: 1rem;
+    padding: 1rem 0;       /* 상하단 패딩, 좌우는 부모에 맞춰서 0 */
+    margin-bottom: 1rem;   /* 아래 요소와 간격 */
 `;
 
 const LeftSide = styled.div`
@@ -77,25 +75,26 @@ const FilterLabel = styled.span`
 `;
 
 const ToggleSwitch = styled.button<{ $isActive: boolean }>`
-  width: 40px;
-  height: 20px;
-  border-radius: 10px;border: none;
-  background-color: ${({ $isActive, theme }) =>
-    $isActive ? theme.colors.main200 : theme.colors.gray300};
-  position: relative;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: ${({ $isActive, theme }) =>
+            $isActive ? theme.colors.main200 : theme.colors.gray300};
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 
-  &:after {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background-color: white;
-    border-radius: 50%;
-    top: 50%;
-    left: ${({ $isActive }) => ($isActive ? "calc(100% - 18px)" : "2px")};
-    transform: translateY(-50%);
-    transition: left 0.3s ease;
-  }
+    &:after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background-color: white;
+        border-radius: 50%;
+        top: 50%;
+        left: ${({ $isActive }) => ($isActive ? "calc(100% - 18px)" : "2px")};
+        transform: translateY(-50%);
+        transition: left 0.3s ease;
+    }
 `;

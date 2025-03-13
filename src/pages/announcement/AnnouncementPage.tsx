@@ -15,17 +15,12 @@ const AnnouncementPage = () => {
     const [cookies] = useCookies(["accessToken"]);
     const BaseUrl = import.meta.env.VITE_BACKEND_URL;
 
-    // Zustand에서 관리하는 상태 사용
     const { notices, totalPages, setNotices, setPagination, isMyPostsOnly, setMyPostsOnly } =
         useNoticeStore();
 
-    // 현재 페이지 상태 추가
     const [currentPage, setCurrentPage] = useState(1);
-
-    // 개별 체크 상태는 로컬 state로 관리
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-    // 공지사항 리스트 가져오기 (페이지네이션 적용)
     const handleGetList = (page: number = 1) => {
         const endpoint = isMyPostsOnly
             ? `${BaseUrl}/v1/notice/my-notices`
@@ -34,14 +29,14 @@ const AnnouncementPage = () => {
         token
             .get(endpoint, {
                 headers: { Authorization: `Bearer ${cookies.accessToken}` },
-                params: { page: page - 1, size: 10 }, // 페이지는 0부터 시작
+                params: { page: page - 1, size: 10 },
             })
             .then((res) => {
                 if (res.status === 200) {
                     const data = res.data.data;
                     setNotices(data.content);
                     setPagination(data.pageNo + 1, data.pageSize, data.totalElements, data.totalPages);
-                    setSelectedIds([]); // 목록 갱신 시 선택 초기화
+                    setSelectedIds([]);
                 }
             })
             .catch((err) => {
@@ -49,13 +44,11 @@ const AnnouncementPage = () => {
             });
     };
 
-    // 페이지 변경 시 호출될 함수
     const handlePageChange = ({ selected }: { selected: number }) => {
         setCurrentPage(selected + 1);
         handleGetList(selected + 1);
     };
 
-    // 전체 선택/해제
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
             const allIds = notices.map((n) => n.id);
@@ -65,14 +58,12 @@ const AnnouncementPage = () => {
         }
     };
 
-    // 개별 체크박스 선택/해제
     const handleSelect = (noticeId: number, checked: boolean) => {
         setSelectedIds((prev) =>
             checked ? [...prev, noticeId] : prev.filter((id) => id !== noticeId)
         );
     };
 
-    // 전체 삭제 (헤더의 삭제 버튼)
     const handleDeleteSelected = async () => {
         if (selectedIds.length === 0) return;
         if (!confirm("선택한 게시글을 삭제하시겠습니까?")) return;
@@ -99,13 +90,13 @@ const AnnouncementPage = () => {
 
     return (
         <Container>
+            {/* 부모 컨테이너는 max-width 1200px; margin 0 auto; 만 가집니다 */}
             <SearchBar />
             <TopSection
                 totalCount={notices.length}
                 onToggleMyPosts={toggleMyPosts}
                 isMyPostsOnly={isMyPostsOnly}
             />
-
             <NoticeList
                 notices={notices}
                 isMyPostsOnly={isMyPostsOnly}
@@ -120,8 +111,6 @@ const AnnouncementPage = () => {
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
             />
-
-
         </Container>
     );
 };
