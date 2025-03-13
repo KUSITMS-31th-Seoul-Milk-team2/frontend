@@ -79,7 +79,7 @@ const FilterLabel = styled.span`
 const ToggleSwitch = styled.button<{ $isActive: boolean }>`
   width: 40px;
   height: 20px;
-  border-radius: 10px;
+  border-radius: 10px;border: none;
   background-color: ${({ $isActive, theme }) =>
     $isActive ? theme.colors.main200 : theme.colors.gray300};
   position: relative;

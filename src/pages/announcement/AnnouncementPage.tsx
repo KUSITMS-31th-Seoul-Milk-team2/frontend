@@ -114,14 +114,14 @@ const AnnouncementPage = () => {
                 onSelectAll={handleSelectAll}
                 onDeleteSelected={handleDeleteSelected}
             />
-
+            <WriteButton onClick={() => navigate("/announcement/write")} />
             <BottomPagination
                 pageCount={totalPages}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
             />
 
-            <WriteButton onClick={() => navigate("/announcement/write")} />
+
         </Container>
     );
 };

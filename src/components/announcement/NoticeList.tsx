@@ -35,96 +35,100 @@ const NoticeList = ({
         notices.length > 0 && notices.every((n) => selectedIds.includes(n.id));
 
     return (
-        <>
+        <NoticeWrapper>
             {showHeader && (
                 <NoticeHeader hasCheckbox={hasCheckbox}>
                     {hasCheckbox && (
-                        <HeaderItem>
+                        <div className="checkbox">
                             <input
                                 type="checkbox"
                                 checked={allChecked}
                                 onChange={(e) => onSelectAll(e.target.checked)}
                             />
-                        </HeaderItem>
+                        </div>
                     )}
-                    <HeaderItem>번호</HeaderItem>
+                    <div className="number">번호</div>
 
                     {hasCheckbox && (
-                        <HeaderItem>
+                        <div className="delete">
                             <DeleteHeaderButton onClick={onDeleteSelected}>
                                 삭제
                             </DeleteHeaderButton>
-                        </HeaderItem>
+                        </div>
                     )}
 
-                    <HeaderItem>공지사항 제목</HeaderItem>
+                    <div className="title">공지사항 제목</div>
 
-                    <HeaderItem>작성자</HeaderItem>
+                    <div className="author">작성자</div>
 
-                    <HeaderItem>작성일자</HeaderItem>
+                    <div className="date">작성일자</div>
                 </NoticeHeader>
             )}
 
             <NoticeContainer>
-                {notices.map((notice) => {
-                    return (
-                        <NoticeItem key={notice.id} hasCheckbox={hasCheckbox}>
-                            {hasCheckbox && (
-                                <CheckboxWrapper>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedIds.includes(notice.id)}
-                                        onChange={(e) => onSelect(notice.id, e.target.checked)}
-                                    />
-                                </CheckboxWrapper>
-                            )}
-                            <NoticeNumber>{notice.id}</NoticeNumber>
-                            {hasCheckbox && <EmptyCell />}
-                            <NoticeTitle onClick={() => navigate(`/announcement/${notice.id}`)}>
-                                {notice.title}
-                            </NoticeTitle>
-                            <NoticeAuthor>{notice.author}</NoticeAuthor>
-                            <NoticeDate>
-                                {new Date(notice.createdAt).toISOString().split("T")[0]}
-                            </NoticeDate>
-                        </NoticeItem>
-                    );
-                })}
+                {notices.map((notice) => (
+                    <NoticeItem key={notice.id} hasCheckbox={hasCheckbox}>
+                        {hasCheckbox && (
+                            <div className="checkbox">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedIds.includes(notice.id)}
+                                    onChange={(e) => onSelect(notice.id, e.target.checked)}
+                                />
+                            </div>
+                        )}
+                        <div className="number">{notice.id}</div>
+                        {hasCheckbox && <div className="delete" />}
+                        <div
+                            className="title"
+                            onClick={() => navigate(`/announcement/${notice.id}`)}
+                        >
+                            {notice.title}
+                        </div>
+                        <div className="author">{notice.author}</div>
+                        <div className="date">
+                            {new Date(notice.createdAt).toISOString().split("T")[0]}
+                        </div>
+                    </NoticeItem>
+                ))}
             </NoticeContainer>
-        </>
+        </NoticeWrapper>
     );
 };
 
 export default NoticeList;
 
 /* ======= styled-components ======= */
+const NoticeWrapper = styled.div`
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+`;
+
 const NoticeHeader = styled.div<{ hasCheckbox: boolean }>`
     display: grid;
     grid-template-columns: ${({ hasCheckbox }) =>
             hasCheckbox
-                    ? "50px 50px 80px 1fr 100px 120px"
-                    : "50px 1fr 100px 120px"};
+                    ? "50px 80px 80px 1fr 120px 120px"
+                    : "80px 1fr 120px 120px"};
     align-items: center;
-    justify-content: center;
     padding: 1rem;
     background-color: ${theme.colors.gray100};
-    font-size: ${theme.typography.titleM};
-    font-weight: ${theme.typography.titleM};
-    border: 2px solid ${theme.colors.gray300};
-    border-radius: 10px;
+    font-weight: bold;
+    border: 1px solid ${theme.colors.gray300};
+    border-radius: 8px;
     color: ${theme.colors.gray1600};
-    width: 97%;
-    margin-left: 1rem;
+    box-sizing: border-box;
+
+    & > div {
+        text-align: center;
+    }
+
+    & > div.title {
+        text-align: left;
+        padding-left: 20px;
+    }
 `;
-
-const HeaderItem = styled.div`
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-`;
-
 const DeleteHeaderButton = styled.button`
     background-color: ${theme.colors.gray200};
     border: 1px solid ${theme.colors.gray300};
@@ -140,52 +144,47 @@ const DeleteHeaderButton = styled.button`
 
 const NoticeContainer = styled.div`
     margin-top: 1rem;
+    width: 100%;
 `;
 
 const NoticeItem = styled.div<{ hasCheckbox: boolean }>`
     display: grid;
     grid-template-columns: ${({ hasCheckbox }) =>
             hasCheckbox
-                    ? "50px 50px 80px 1fr 100px 120px"
-                    : "50px 1fr 100px 120px"};
+                    ? "50px 80px 80px 1fr 120px 120px"
+                    : "80px 1fr 120px 120px"};
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid ${theme.colors.gray200};
-    font-size: 1rem;
+    box-sizing: border-box;
 
-`;
+    & > div {
+        text-align: center;
+    }
 
-const CheckboxWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-left: 2rem;
-`;
+    & > div.number {
+        font-weight: bold;
+        color: ${theme.colors.gray500};
+    }
 
-const EmptyCell = styled.div`
-    width: 80px;
-`;
+    & > div.title {
+        text-align: left;
+        padding-left: 20px;
+        font-size: ${({theme})=>theme.typography.titleM.fontSize};
+        font-weight:  ${({theme})=>theme.typography.titleM.fontWeight};
+        color: ${({theme})=>theme.colors.gray1600};
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-const NoticeNumber = styled.span`
-    font-weight: bold;
-    color: ${theme.colors.gray500};
-    text-align: center;
-    margin-left: 1rem;
-`;
+    & > div.author {
+        color: ${theme.colors.gray600};
+    }
 
-const NoticeTitle = styled.span`
-    font-weight: 500;
-    cursor: pointer;
-    margin-left: 3rem;
-`;
-
-const NoticeAuthor = styled.span`
-    color: ${theme.colors.gray600};
-    margin-left: 2rem;
-`;
-
-const NoticeDate = styled.span`
-    color: ${theme.colors.gray900};
-    font-size: 0.9rem;
-    text-align: center;
-    margin-left: 2rem;
+    & > div.date {
+        color: ${theme.colors.gray900};
+        font-size: 0.9rem;
+    }
 `;
