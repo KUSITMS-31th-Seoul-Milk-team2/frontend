@@ -87,10 +87,10 @@ const PwSettingComponent: React.FC = () => {
           />
           <ConfirmButton onClick={handleCheckPassword}>확인</ConfirmButton>
         </InputContainer>
-
+        <MessageWrapper>
         {isPwCorrect === false && <ErrorMessage>현재 비밀번호가 일치하지 않습니다.</ErrorMessage>}
         {isPwCorrect === true && <SuccessMessage>현재 비밀번호가 일치합니다.</SuccessMessage>}
-
+        </MessageWrapper>
         <Label>새 비밀번호</Label>
         <InputContainer>
           <FloatingLabel className={focusField === "newPw" || newPw ? "active" : ""}>
@@ -105,10 +105,10 @@ const PwSettingComponent: React.FC = () => {
             required
           />
         </InputContainer>
-
+        <MessageWrapper>
         {newPw.length > 0 && newPw.length < 8 && (
           <ErrorMessage>비밀번호는 8자 이상이어야 합니다.</ErrorMessage>
-        )}
+        )}</MessageWrapper>
 
         <Label>새 비밀번호 확인</Label>
         <InputContainer>
@@ -124,10 +124,11 @@ const PwSettingComponent: React.FC = () => {
             required
           />
         </InputContainer>
-
+        <MessageWrapper>
         {isPwMismatch && (
           <ErrorMessage>비밀번호가 일치하지 않습니다. 다시 입력해주세요.</ErrorMessage>
         )}
+        </MessageWrapper>
 
         <SubmitButton 
           onClick={handleChangePassword} 
@@ -191,6 +192,7 @@ const FloatingLabel = styled.span`
 const Input = styled.input`
   width: 100%;
   padding: 14px;
+  height : 40px;
   padding-left: 12px;
   border: 1px solid var(--gray-400, #d1d1d1);
   border-radius: 6px;
@@ -203,6 +205,7 @@ const Input = styled.input`
 
 const ConfirmButton = styled.button`
   width: 68px;
+  height : 70px;
   padding: 10px 9px;
   border-radius: 4px;
   background: var(--gray-200, #F1F1F1);
@@ -247,4 +250,10 @@ font-size: 14px;
 font-style: normal;
 font-weight: 400;
 line-height: normal;
+`;
+const MessageWrapper = styled.div`
+  margin-top : -20px;
+  height: 10px; 
+  display: flex;
+  align-items: center;
 `;
