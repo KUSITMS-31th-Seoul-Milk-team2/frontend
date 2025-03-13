@@ -4,17 +4,16 @@ import styled from "styled-components";
 
 interface FilePreviewProps {
     fileUrl: string;
-    suName: string;
 }
 
-const FilePreview: React.FC<FilePreviewProps> = ({ fileUrl, suName }) => {
+const FilePreview: React.FC<FilePreviewProps> = ({ fileUrl }) => {
 
     return (
         <FilePreviewContainer>
             <TransformWrapper initialScale={1} wheel={{ step: 0.2 }}>
                 <PreviewWrapper>
                     <TransformComponent>
-                        <PreviewImage src={fileUrl} alt={suName} />
+                        <PreviewImage src={fileUrl}  />
                     </TransformComponent>
                 </PreviewWrapper>
             </TransformWrapper>
@@ -34,8 +33,7 @@ const FilePreviewContainer = styled.div`
   background: #fff;
   position: relative;
   margin-bottom: 16px;
-  min-height: 350px;
-  max-height: 400px;
+  min-height: 524px;
 `;
 
 const PreviewWrapper = styled.div`
@@ -44,8 +42,7 @@ const PreviewWrapper = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  height: 350px;
-  max-height: 350px;
+  height: 520px;
 `;
 
 const PreviewImage = styled.img`

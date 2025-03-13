@@ -30,7 +30,7 @@ const DetailForm: React.FC<DetailFormProps> = ({
                 <label>총 공금가액 합계</label>
                 <InputWrapper>
                     <input
-                        placeholder="금액을 입력하세요"
+                        placeholder="000-00-00000"
                         value={formValues.totalSupplyAmount}
                         onChange={(e) => onInputChange("totalSupplyAmount", e.target.value)}
                     />
@@ -45,7 +45,7 @@ const DetailForm: React.FC<DetailFormProps> = ({
                 <label>총 세액합계</label>
                 <InputWrapper>
                     <input
-                        placeholder="금액을 입력하세요"
+                        placeholder="000-00-00000"
                         value={formValues.totalTaxAmount}
                         onChange={(e) => onInputChange("totalTaxAmount", e.target.value)}
                     />
@@ -60,7 +60,7 @@ const DetailForm: React.FC<DetailFormProps> = ({
                 <label>총액</label>
                 <InputWrapper>
                     <input
-                        placeholder="금액을 입력하세요"
+                        placeholder="000-00-00000"
                         value={formValues.totalAmount}
                         onChange={(e) => onInputChange("totalAmount", e.target.value)}
                     />
@@ -75,7 +75,7 @@ const DetailForm: React.FC<DetailFormProps> = ({
                 <label>생성일</label>
                 <InputWrapper>
                     <input
-                        placeholder="YYYY-MM-DD"
+                        placeholder="000-00-00000"
                         value={formValues.creationDate}
                         onChange={(e) => onInputChange("creationDate", e.target.value)}
                     />
@@ -90,7 +90,7 @@ const DetailForm: React.FC<DetailFormProps> = ({
                 <label>생성시간</label>
                 <InputWrapper>
                     <input
-                        placeholder="HH:MM:SS"
+                        placeholder="000-00-00000"
                         value={formValues.creationTime}
                         onChange={(e) => onInputChange("creationTime", e.target.value)}
                     />
@@ -126,9 +126,12 @@ const InputRow = styled.div`
 
     label {
         width: 140px;
-        font-size: 1rem;
-        font-weight: bold;
-        color: #333;
+        color: var(--primary-main-200, #009857);
+        font-family: Pretendard;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
     }
 `;
 
@@ -141,7 +144,7 @@ const InputWrapper = styled.div`
         padding: 15px 40px 15px 10px;
         border: 2px solid #ddd;
         border-radius: 10px;
-        background-color: ${({ theme }) => theme.colors.gray300};
+        background-color: #F8F8F9;
         color: ${({ theme }) => theme.colors.main200};
         font-size: ${({ theme }) => theme.typography.bodyL.fontSize};
         font-weight: ${({ theme }) => theme.typography.bodyL.fontWeight};
