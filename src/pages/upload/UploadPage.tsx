@@ -6,6 +6,7 @@ import SelectionPopup from "@components/modal/SelectionPopup";
 import LoadingModal from "@components/modal/LoadingModal";
 import checkAroundIcon from "@assets/icons/checkAroundIcon.svg";
 import token from "@utils/token.tsx";
+import styled from "styled-components";
 
 export interface FileUploadState {
     file: File;
@@ -163,7 +164,7 @@ const UploadPage = () => {
     };
 
     return (
-        <>
+        <Container>
             <Uploader onFilesAdded={handleFilesAdded} />
 
             {isModalOpen && (
@@ -230,8 +231,16 @@ const UploadPage = () => {
                     }}
                 />
             )}
-        </>
+        </Container>
     );
 };
 
 export default UploadPage;
+
+const Container = styled.div`
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    margin-bottom: 20rem;
+`
