@@ -463,6 +463,7 @@ export const GlobalStyles = createGlobalStyle`
   font-size: 14px;
   cursor: pointer;
   width: 90px; 
+  height : 20px;
 }
 
   .react-datepicker__day--today {
