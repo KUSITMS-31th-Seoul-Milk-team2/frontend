@@ -12,6 +12,7 @@ import AnnouncementDetailPage from "@pages/announcement/AnnouncementDetailPage.t
 import AnnouncementEditPage from "@pages/announcement/AnnouncementEditPage.tsx";
 import PwSettingPage from "@pages/pwSetting/PwSettingPage";
 import ReconciliationPage from "@pages/reconciliation/ReconciliationPage.tsx";
+import TaxDetail from "@pages/detail/taxDetail";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +29,11 @@ const router = createBrowserRouter([
         path: "/search",
         element: <HeaderLayout />,
         children: [{ path: "", element: <SearchPage /> }]
+      },
+      {
+        path: "/tax-detail/:id",
+        element: <HeaderLayout />,
+        children: [{ path: "", element: <TaxDetail /> }]
       },
       {
         path: "/user-setting",
