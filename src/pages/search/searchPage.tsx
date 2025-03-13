@@ -18,7 +18,7 @@ const SearchPage: React.FC = () => {
   console.log("User Role:", userInfo?.role);
   return (
     <PageContainer>
-      <Title>세금 계산서 조회</Title>
+      <Title>세금계산서 조회</Title>
       {userInfo?.role === "ADMIN" ? <AdminSearchComponent /> : <EmployeeSearchComponent />}
     </PageContainer>
   );
