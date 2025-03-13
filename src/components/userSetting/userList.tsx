@@ -112,7 +112,7 @@ console.log("에러 발생 ",error);
               <input type="checkbox" onChange={handleSelectAll} checked={selectAll} />
             </TableHeader>
             <TableHeader>
-              <DeleteButton onClick={handleDeleteSelected}>삭제</DeleteButton>
+              <DeleteButton onClick={handleDeleteSelected} isActive={selectedUsers.length > 0}>삭제</DeleteButton>
             </TableHeader>
             <TableHeader>이름</TableHeader>
             <TableHeader>사번</TableHeader>
@@ -213,13 +213,15 @@ const CreateButton = styled.button`
   width: 150px;
 `;
 
-const DeleteButton = styled.button`
+const DeleteButton = styled.button<{ isActive: boolean }>`
   background: transparent;
   border: none;
-  color: var(--gray-500, #C0C0C0);
-font-family: Pretendard;
-font-size: 14px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  color: ${({ isActive }) => (isActive ? "#009857" : "var(--gray-500, #C0C0C0)")};
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  cursor: ${({ isActive }) => (isActive ? "pointer" : "default")};
 `;
+
