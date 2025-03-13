@@ -48,7 +48,7 @@ const Login = () => {
   return (
     <LoginContainer>
       <LoginBox>
-        <Logo src="/SeoulMilkLogo.png" alt="서울우유 로고" />
+        <Logo src="/SeoulMilkLogoL.png" alt="서울우유 로고" />
         <Form onSubmit={handleLogin}>
           <InputContainer>
             <FloatingLabel className={isFocused || employeeId ? "active" : ""}>아이디를 입력하세요</FloatingLabel>
@@ -141,14 +141,18 @@ const FloatingLabel = styled.span`
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 16px;
-  color: var(--gray-600, #A6A5A5);
+  color: var(--gray-500, #C0C0C0);
+font-family: Pretendard;
+font-size: 18px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
   transition: all 0.2s ease-in-out;
   pointer-events: none;
 
   &.active {
     top: 15px;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--gray-500, #C0C0C0);
   }
 `;
