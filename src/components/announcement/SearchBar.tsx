@@ -47,7 +47,7 @@ const SearchBar = () => {
     const selectedFilter = displayFilter(searchType);
 
     const allFilters = ["전체", "제목 + 내용", "작성자"];
-    const options = allFilters.filter((option) => option !== selectedFilter);
+    const options = allFilters; // 항상 모든 옵션 표시
 
     const handleSelectFilter = (filter: string) => {
         setSearchType(toSearchType(filter));
@@ -71,33 +71,36 @@ const SearchBar = () => {
 
     return (
         <Container>
-            <SearchBarContainer>
-                <FilterWrapper>
-                    <FilterButton onClick={() => setIsDropdownOpen((prev) => !prev)}>
-                        {selectedFilter}{" "}
-                        <DropdownIcon src={bottomArrowColorIcon} alt="Dropdown Icon" />
-                    </FilterButton>
-                    {isDropdownOpen && (
-                        <FilterDropdown>
-                            {options.map((option) => (
-                                <DropdownItem key={option} onClick={() => handleSelectFilter(option)}>
-                                    {option}
-                                </DropdownItem>
-                            ))}
-                        </FilterDropdown>
-                    )}
-                </FilterWrapper>
-                <SearchInput
-                    type="text"
-                    placeholder="검색 조건을 입력해주세요"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                />
-                <SearchButton onClick={handleSearch}>
-                    <SearchIcon src={searchButtonIcon} alt="Search Icon" />
-                </SearchButton>
-            </SearchBarContainer>
+            <SearchBarWrapper>
+                <SearchBarContainer>
+                    <FilterWrapper>
+                        <FilterButton onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                            {selectedFilter}{" "}
+                            <DropdownIcon src={bottomArrowColorIcon} alt="Dropdown Icon" />
+                        </FilterButton>
+                    </FilterWrapper>
+                    <SearchInput
+                        type="text"
+                        placeholder="검색 조건을 입력해주세요"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <SearchButton onClick={handleSearch}>
+                        <SearchIcon src={searchButtonIcon} alt="Search Icon" />
+                    </SearchButton>
+                </SearchBarContainer>
+
+                {isDropdownOpen && (
+                    <FilterDropdown>
+                        {options.map((option) => (
+                            <DropdownItem key={option} onClick={() => handleSelectFilter(option)}>
+                                {option}
+                            </DropdownItem>
+                        ))}
+                    </FilterDropdown>
+                )}
+            </SearchBarWrapper>
         </Container>
     );
 };
@@ -112,6 +115,11 @@ const Container = styled.div`
     padding: 0 1rem;
 `;
 
+const SearchBarWrapper = styled.div`
+    position: relative;
+    width: 100%;
+`;
+
 const SearchBarContainer = styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -123,8 +131,6 @@ const SearchBarContainer = styled.div`
     padding: 0 1rem;
     background-color: ${theme.colors.white};
     transition: width 0.3s ease-in-out;
-    position: relative;
-    opacity: 0.6;
 
     @media (max-width: 1024px) {
         width: 100%;
@@ -140,7 +146,6 @@ const SearchBarContainer = styled.div`
 `;
 
 const FilterWrapper = styled.div`
-    position: relative;
     display: flex;
     align-items: center;
 `;
@@ -166,24 +171,26 @@ const FilterDropdown = styled.div`
     position: absolute;
     top: 100%;
     left: 0;
-    width: 200px;
+    width: 15%;
     background-color: ${theme.colors.white};
     border: 2px solid ${theme.colors.main200};
     border-radius: 0.5rem;
-    margin-top: 1rem;
     padding: 0.5rem;
     z-index: 1000;
+    margin-top: 0.5rem;
+    box-sizing: border-box;
 `;
 
 const DropdownItem = styled.div`
     padding: 0.5rem;
-    font-size: 1rem;
+    font-size: ${({ theme }) => theme.typography.buttonL.fontSize};
+    font-weight: ${({ theme }) => theme.typography.buttonL.fontWeight};
     cursor: pointer;
-    color: ${theme.colors.gray800};
+    color: #717171;
     border-radius: 0.25rem;
 
     &:hover {
-        background-color: ${theme.colors.main100};
+        color: ${theme.colors.main100};
     }
 `;
 
