@@ -267,11 +267,15 @@ const UserInfo = styled.span`
 
 const Main = styled.main`
   width: 100%;
-  max-width: 1440px;
-  min-width: 1104px;
+  margin-left : 50px;
+  min-width: 1440px;
   padding: 16px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;  
+  min-height: 100vh; 
+
   margin-top: 110px;
 
   @media screen and (max-width: 768px) {
@@ -284,6 +288,7 @@ const Main = styled.main`
     padding: 4px;
   }
 `;
+
 
 const ModalContainer = styled.div`
 `;
