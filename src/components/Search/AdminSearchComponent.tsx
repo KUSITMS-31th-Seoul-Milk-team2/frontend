@@ -277,6 +277,7 @@ font-size: 16px;
 font-style: normal;
 font-weight: 700;
 line-height: normal;
+margin-right : 6px;
 `;
 const WriterLabel = styled.label`
   display: flex;
@@ -296,6 +297,7 @@ line-height: normal;
 const DateLabel = styled(Label)`
   margin-right: 10px;
   width : 632px;
+  margin-bottom : -10px;
 `;
 
 const Input = styled.input`
@@ -308,6 +310,7 @@ border-radius: 4px;
 border: 1px solid var(--gray-600, #A6A5A5);
 background: var(--white, #FFF);
 box-shadow: 0px 0px 0px 1px #FFF inset;
+margin-left : 10px;
   &::placeholder {
     color: #777;
   }
@@ -530,7 +533,7 @@ const DateComponent =styled.div`
   justify-content: space-between;
   align-items: left;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 29px;
   margin-bottom : 20px;
   height : 60px;
   margin-left : 10px;
