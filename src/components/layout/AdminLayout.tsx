@@ -50,8 +50,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ name, employeeId, onClose }) 
 export default AdminLayout;
 
 const ModalOverlay = styled.div`
-    position: absolute;
-  top: 11%;
+  position: fixed;
+  top: 9%;
   right: 18%;
   padding: 8px;
   z-index: 10;

@@ -46,7 +46,7 @@ export default EmployeeLayout;
 
 const ModalOverlay = styled.div`
   position: absolute;
-  top: 11%;
+  top: 9%;
   right: 18%;
   padding: 8px;
   z-index: 10;
