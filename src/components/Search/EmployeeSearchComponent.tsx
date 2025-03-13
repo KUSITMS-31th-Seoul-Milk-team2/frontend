@@ -257,6 +257,7 @@ const SearchBox = styled.div`
 `;
 
 const InputContainer = styled.div`
+  position: relative; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -465,8 +466,10 @@ const ResetIcon = styled.img`
 `;
 
 const ClearIcon = styled.img`
-  position: absolute;
-  right: 320px;
+  position: absolute; 
+  right: 3%; 
+  top: 69%;
+  transform: translateY(-50%); 
   width: 14px;
   height: 14px;
   cursor: pointer;
