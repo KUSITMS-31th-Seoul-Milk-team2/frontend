@@ -107,10 +107,8 @@ const DetailForm: React.FC<DetailFormProps> = ({
 
 export default DetailForm;
 
-/* Styled Components */
-
 const DetailFormContainer = styled.div`
-    border: 1px solid #ddd;
+    border: 2px solid var(--gray-300, #E5E5E4);
     border-radius: 16px;
     padding: 24px;
     margin-top: 8px;
@@ -137,7 +135,7 @@ const InputRow = styled.div`
 
 const InputWrapper = styled.div`
     position: relative;
-    width: 300px;
+    width: 500px;
 
     input {
         width: 100%;

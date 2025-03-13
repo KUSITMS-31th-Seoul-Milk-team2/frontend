@@ -149,15 +149,17 @@ const Component = styled.div``;
 const ContentWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 10px;
   width : 1040px;
 `;
 
 const Container = styled.div`
   width: 400px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+border: 2px solid var(--gray-300, #E5E5E4);
+height : 430px;
+margin-top : 10px;
 `;
 
 const Title = styled.h2`
@@ -166,14 +168,14 @@ const Title = styled.h2`
   color: #333;
   margin-bottom: 16px;
   margin-left : 30px;
-  margin-top : 17px;
+  margin-top : 20px;
 `;
 
 const InfoBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 58px 28px;
+  padding: 50px 28px;
 `;
 
 const InfoRow = styled.div`
