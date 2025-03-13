@@ -43,4 +43,25 @@ export default NoticeList;
 
 const ListContainer = styled.div`
     width: 100%;
+
+    /* 첫 번째 아이템: 하단에만 라운드 */
+    & > :first-child {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    /* 마지막 아이템: 상단에만 라운드 */
+    & > :last-child {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    /* 중간 아이템은 라운드 없음 */
+    & > :not(:first-child):not(:last-child) {
+        border-radius: 0;
+    }
 `;

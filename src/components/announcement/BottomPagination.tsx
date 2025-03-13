@@ -1,7 +1,7 @@
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import LeftArrowIcon from "@assets/icons/leftArrowIcon.svg?react";
-import RightArrowIcon from "@assets/icons/rightArrowIcon.svg?react";
+import RightArrowIcon from "@assets/icons/rightArrow.svg?react";
 import DoubleLeftArrowIcon from "@assets/icons/doubleLeftIcon.svg?react";
 import DoubleRightArrowIcon from "@assets/icons/doubleRightIcon.svg?react";
 

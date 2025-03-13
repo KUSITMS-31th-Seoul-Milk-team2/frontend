@@ -1,40 +1,39 @@
 import styled from "styled-components";
-import ArrowRight from "@assets/icons/rightArrowIcon.svg";
+import ArrowRight from "@assets/icons/arrowRightIcon.svg";
 
-interface CardProps{
+interface CardProps {
     title: string;
     bgColor?: string;
     buttonText?: string;
     imageSrc?: string;
     onButtonClick?: () => void;
-    color?:string;
+    color?: string;
 }
 
-const Card = ({title,bgColor,buttonText,imageSrc, onButtonClick,color}:CardProps)=>{
+const Card = ({ title, bgColor, buttonText, imageSrc, onButtonClick, color }: CardProps) => {
     return (
         <CardContainer $bgColor={bgColor}>
             <Title $color={color}>{title}</Title>
             <CardContent>
                 <CardImage src={imageSrc} alt={title} />
-                <CardButton
-                    $color={color}
-                    $bgColor={bgColor}
-                    onClick={onButtonClick}
-                >
-                    {buttonText}
-                    <Arrow>
-                        <img
-                            src={ArrowRight}
-                            alt="ArrowRight Icon"
-                            style={{width: "1.5rem", height: "auto"}}
-                        />
-                    </Arrow>
+                <CardButton $color={color} $bgColor={bgColor} onClick={onButtonClick}>
+                    <ButtonContent>
+                        <span>{buttonText}</span>
+                        <Arrow>
+                            <img
+                                src={ArrowRight}
+                                alt="ArrowRight Icon"
+                                style={{ width: "1.5rem", height: "auto" }}
+                            />
+                        </Arrow>
+                    </ButtonContent>
                 </CardButton>
             </CardContent>
         </CardContainer>
-    )
-}
-export default Card
+    );
+};
+
+export default Card;
 
 const CardContainer = styled.div<{ $bgColor?: string }>`
     display: flex;
@@ -43,12 +42,15 @@ const CardContainer = styled.div<{ $bgColor?: string }>`
     flex-direction: column;
     margin: 0.5rem;
     max-width: 50rem;
-    width: 100%; // 추가: 컨테이너의 전체 너비 사용
+    width: 100%;
     border-radius: 8px;
-    padding: 0.7rem;
+    padding-top: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-bottom: 1.2rem;
     background-color: ${({ $bgColor }) => $bgColor};
     flex-wrap: wrap;
-    overflow: hidden; // 추가: 내부 콘텐츠가 넘치지 않도록 설정
+    overflow: hidden;
 
     @media (max-width: 768px) {
         flex-direction: column;
@@ -56,16 +58,16 @@ const CardContainer = styled.div<{ $bgColor?: string }>`
         gap: 1rem;
         padding: 1rem;
         margin: 0.5rem;
-        max-width: 100%; // 변경: calc 대신 100%로 단순화
+        max-width: 100%;
     }
 `;
 
 const CardContent = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     width: 100%;
-    flex-wrap: wrap; // 추가: 콘텐츠가 넘칠 경우 줄바꿈 허용
+    flex-wrap: wrap;
 
     @media (max-width: 768px) {
         flex-direction: column;
@@ -74,6 +76,7 @@ const CardContent = styled.div`
         gap: 1rem;
     }
 `;
+
 const Title = styled.h2<{ $color?: string }>`
     margin-left: 2rem;
     color: ${({ $color }) => $color};
@@ -91,25 +94,26 @@ const Title = styled.h2<{ $color?: string }>`
 `;
 
 const CardImage = styled.img`
-    width: 100%;
-    max-width: 180px;
+    width: 70%;
+    max-width: 160px;
     height: auto;
-    align-self: flex-start;
+    margin-left: 1rem;
 
     @media (max-width: 768px) {
         max-width: 120px;
         align-self: center;
     }
 `;
-const CardButton = styled.button<{ $color?: string, $bgColor?: string }>`
+
+const CardButton = styled.button<{ $color?: string; $bgColor?: string }>`
     display: flex;
     justify-content: center;
     align-items: center;
     width: auto;
-    min-width: min(14rem, 100%); // 변경: 컨테이너 너비를 넘지 않도록 설정
+    min-width: min(14rem, 100%);
     max-width: 13rem;
     height: 3rem;
-    padding: 0 1rem; // 패딩 축소
+    padding: 0 1rem;
     margin-top: 2rem;
     white-space: nowrap;
     background-color: ${({ $color }) => $color};
@@ -123,24 +127,36 @@ const CardButton = styled.button<{ $color?: string, $bgColor?: string }>`
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        background-color: ${({ $bgColor }) => $bgColor};
+        opacity: 0.5;
     }
 
+
     @media (max-width: 1024px) {
-        max-width: min(12rem, 100%); // 변경: 컨테이너 너비를 넘지 않도록 설정
+        max-width: min(12rem, 100%);
         padding: 0 1rem;
     }
 
     @media (max-width: 768px) {
         width: 100%;
-        max-width: 100%; // 변경: 모바일에서는 가득 차도록
-        min-width: 0; // 추가: 최소 너비 제한 해제
+        max-width: 100%;
+        min-width: 0;
         padding: 0.5rem 1rem;
-        margin-right: 0; // 추가: 오른쪽 여백 제거
+        margin-right: 0;
         text-align: center;
     }
 `;
-const Arrow = styled.span`
+
+
+const ButtonContent = styled.div`
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
+    margin: 0;
+`;
+
+const Arrow = styled.span`
+  display: flex;
+  align-items: center;
+  color: #ffffff;
 `;

@@ -50,7 +50,7 @@ const Container = styled.div`
     min-height: 5rem;
     justify-content: center;
     border: 0.0625rem solid ${({ theme }) => theme.colors.gray300};
-    border-radius: 0.5rem;
+
     background-color: ${({ theme }) => theme.colors.white};
     box-sizing: border-box;
 
@@ -82,9 +82,11 @@ const NewIcon = styled.div`
     color: ${({ theme }) => theme.colors.main100};
     font-size: 0.75rem;
     font-weight: bold;
-    padding: 0.25rem 0.5rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 0.75rem;
     white-space: nowrap;
+    border: 1px solid  ${({ theme }) =>
+    transparentize(0.3, theme.colors.main200)};
 `;
 
 const DateTab = styled.div`
