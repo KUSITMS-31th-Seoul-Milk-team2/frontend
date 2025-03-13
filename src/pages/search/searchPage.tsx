@@ -32,7 +32,7 @@ const PageContainer = styled.div`
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  margin-top : -170px;
+  margin-top : -85px;
   padding: 16px;
 `;
 

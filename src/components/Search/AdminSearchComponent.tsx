@@ -48,6 +48,11 @@ const AdminSearchComponent: React.FC = () => {
     try {
       const response = await token.post("/v1/receipt/search", requestBody);
       console.log("검색 결과:", response.data);
+      if (!response.data.data || response.data.data.length === 0) {
+        alert("검색 결과가 없습니다."); 
+        setSearchResults([]); 
+        return;
+      }
       setSearchResults(response.data.data);
     } catch (error) {
       console.error("검색 중 오류 발생:", error);
