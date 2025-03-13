@@ -137,7 +137,7 @@ const handleClearField = (field: keyof typeof filters) => {
     onChange={handleChange}
   />
     {filters.writer && (
-    <ClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("writer")} />
+    <WriterClearIcon src={cancelIcon} alt="Clear" onClick={() => handleClearField("writer")} />
     )}
     </WriterInputContainer>
       <DateComponent>
@@ -243,15 +243,18 @@ const SearchBox = styled.div`
 `;
 
 const InputContainer = styled.div`
+  position: relative; 
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 12px;
-  gap : 10px;
+  gap: 10px;
   width: 406px;
 `;
+
 const WriterInputContainer = styled.div`
+  position: relative; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -460,6 +463,7 @@ export const GlobalStyles = createGlobalStyle`
   font-size: 14px;
   cursor: pointer;
   width: 90px; 
+  height : 20px;
 }
 
   .react-datepicker__day--today {
@@ -499,8 +503,19 @@ const ResetIcon = styled.img`
 `;
 
 const ClearIcon = styled.img`
-  position: absolute;
-  right: 320px;
+  position: absolute; 
+  right: 3%; 
+  top: 69%;
+  transform: translateY(-50%); 
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+`;
+const WriterClearIcon = styled.img`
+  position: absolute; 
+  right: 2%; 
+  top: 69%;
+  transform: translateY(-50%); 
   width: 14px;
   height: 14px;
   cursor: pointer;

@@ -139,7 +139,7 @@ const NotificationText = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
- margin-right: 1000px;
+ margin-right: 1100px;
 
   @media screen and (max-width: 1104px) {
     font-size: 10px;

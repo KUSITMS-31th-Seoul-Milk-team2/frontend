@@ -4,6 +4,7 @@ import dropdown from "@assets/icons/dropdown.svg";
 import download from "@assets/icons/download.svg"
 import PaginationComponent from "./PaginationComponent";
 import token from "@utils/token";
+import { useNavigate } from "react-router-dom";
 
 interface ListItem{
   id: number;
@@ -19,6 +20,7 @@ const EmployeeListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const sortedData = [...data].sort((a, b) => {
     if (sortOrder === "최신순") return (b.erdatEnd ?? "").localeCompare(a.erdatEnd ?? "");
@@ -35,6 +37,15 @@ const EmployeeListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
+  const handleItemClick = (item: ListItem) => {
+    navigate(`/tax-detail/${item.id}`, {
+      state: {
+        suName: item.suName,
+        ipName: item.ipName,
+        erdatEnd: item.erdatEnd,
+      },
+    });
+  };   
 
   const handleSortChange = (order: string) => {
     setSortOrder(order);
@@ -105,12 +116,12 @@ const EmployeeListComponent: React.FC<{ data: ListItem[] }> = ({ data }) => {
         </thead>
         <tbody>
           {currentItems.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>{item.suName}</TableCell>
-              <TableCell>{item.ipName}</TableCell>
-              <TableCell>{item.erdatEnd}</TableCell>
-            </TableRow>
+            <TableRow key={item.id} onClick={() => handleItemClick(item)} style={{ cursor: "pointer" }}>
+            <TableCell>{item.id}</TableCell>
+            <TableCell>{item.suName}</TableCell>
+            <TableCell>{item.ipName}</TableCell>
+            <TableCell>{item.erdatEnd}</TableCell>
+          </TableRow>                   
           ))}
         </tbody>
       </Table>

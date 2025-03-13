@@ -25,7 +25,7 @@ const WriteButtonWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
     width: 100%;
-    margin-bottom: 16px;
+    margin-top: 16px;
 `;
 
 const StyledWriteButton = styled.button`

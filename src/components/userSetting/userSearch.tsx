@@ -62,12 +62,15 @@ const SearchInput = styled.input`
   border: none;
   outline: none;
   padding: 5px;
-  color: var(--gray-500, #C0C0C0);
+  color: #393C3C;
   font-family: Pretendard;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  &::placeholder {
+    color: var(--gray-500, #C0C0C0);
+  }
 `;
 
 const SearchButton = styled.button`
