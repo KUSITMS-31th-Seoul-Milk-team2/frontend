@@ -5,6 +5,7 @@ import UserCreate from "@components/userSetting/userCreate";
 import UserSuccess from "@components/userSetting/userSuccess";
 import UserSearch from "@components/userSetting/userSearch";
 import token from "@utils/token";
+import DeleteModal from "./deleteModal";
 
 interface User {
   id: number;
@@ -26,6 +27,7 @@ const UserList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -87,12 +89,19 @@ const UserList: React.FC = () => {
     setSelectAll(!selectAll);
   };
 
-  const handleDeleteSelected = async () => {
-    if (selectedUsers.length === 0) return alert("삭제할 사용자를 선택하세요.");
+  const handleOpenDeleteModal = () => {
+    if (selectedUsers.length === 0) {
+      alert("삭제할 사용자를 선택하세요.");
+      return;
+    }
+    setIsDeleteModalOpen(true);  
+  };
 
+  const handleConfirmDelete = async () => {
     try {
       await token.delete("/v1/admin", { data: { ids: selectedUsers } });
       alert("삭제가 완료되었습니다.");
+      setIsDeleteModalOpen(false);  
       fetchUsers();
     } catch (err: any) {
       alert("삭제 중 오류 발생: " + (err.response?.data?.message || "다시 시도해주세요."));
@@ -112,7 +121,7 @@ console.log("에러 발생 ",error);
               <input type="checkbox" onChange={handleSelectAll} checked={selectAll} />
             </TableHeader>
             <TableHeader>
-              <DeleteButton onClick={handleDeleteSelected} isActive={selectedUsers.length > 0}>삭제</DeleteButton>
+              <DeleteButton onClick={handleOpenDeleteModal} isActive={selectedUsers.length > 0}>삭제</DeleteButton>
             </TableHeader>
             <TableHeader>이름</TableHeader>
             <TableHeader>사번</TableHeader>
@@ -158,6 +167,7 @@ console.log("에러 발생 ",error);
 
       {isCreateOpen && <UserCreate onClose={() => setIsCreateOpen(false)} onCreateSuccess={handleCreateSuccess} />}
       {isSuccessOpen && newUser && <UserSuccess user={newUser} onClose={() => setIsSuccessOpen(false)} />}
+      <DeleteModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleConfirmDelete} />  
     </Container>
   );
 };
