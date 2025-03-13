@@ -51,7 +51,7 @@ export default AdminLayout;
 
 const ModalOverlay = styled.div`
     position: absolute;
-  top: 8%;
+  top: 11%;
   right: 18%;
   padding: 8px;
   z-index: 10;
