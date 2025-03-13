@@ -226,6 +226,7 @@ const SubmitButton = styled.button`
   font-weight: bold;
   border: none;
   margin-top: 20px;
+  height : 63px;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   &:hover {
     background: ${({ disabled }) => (disabled ? "#ccc" : "#007a48")};
