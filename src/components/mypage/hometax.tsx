@@ -5,7 +5,6 @@ import quikAuth from "@assets/icons/quickAuth.svg";
 import DigitalCertifi from "@assets/icons/DigitalCertifi.svg"; 
 import Info from "@assets/icons/infoBlack.svg";
 import RightArrow from "@assets/icons/rightArrow.svg";
-import Recent from "@assets/icons/recentLogin.png";
 
 const HomeTax: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -27,7 +26,6 @@ const HomeTax: React.FC = () => {
           </AuthContent>
           <Arrow src={RightArrow}/>
         </Content>
-        <RecentLoginTag src={Recent}/>
       </AuthBox>
 
       <AuthBox>
@@ -124,13 +122,6 @@ const Arrow = styled.img`
   width: 26px;
   height: 26px;
   aspect-ratio: 1/1;
-`;
-
-const RecentLoginTag = styled.img`
-  width: 80px;
-  position: absolute;
-  top: 83%;
-  left: 43%;
 `;
 
 const Content = styled.div`
